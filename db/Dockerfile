@@ -1,0 +1,5 @@
+FROM mysql:latest
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_DATABASE=xuxemons_db
+ENV MYSQL_USER=xuxemons_admin
+ENV MYSQL_PASSWORD=1234

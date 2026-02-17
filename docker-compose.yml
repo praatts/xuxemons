@@ -1,0 +1,61 @@
+name: fullstack-xuxemons
+services:
+  backend:
+    container_name: backend-laravel
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=xuxemons_db
+      - DB_USERNAME=xuxemons_admin
+      - DB_PASSWORD=1234
+    volumes:
+      - ./backend:/app
+      - /app/vendor
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - fullstack-network
+
+  frontend:
+    container_name: frontend-angular
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - fullstack-network
+
+  db:
+    container_name: db-mysql
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_volume:/var/lib/mysql
+    networks:
+      - fullstack-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+volumes:
+  db_volume:
+
+networks:
+  fullstack-network:
+    driver: bridge
