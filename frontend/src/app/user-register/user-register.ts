@@ -57,13 +57,23 @@ export class UserRegister {
 
   //al enviar
   onSubmit(): void {
-    if (!this.passwdForm.valid) {
+    if (!this.passwdForm.valid || !this.registerForm.valid) {
       return;
     }
 
-    console.log('Cuenta creada correctemente', this.passwdForm.value);
+    console.log('Cuenta creada correctemente', this.passwdForm.value, this.registerForm.value);
     alert('Usuario creado correctamente');
   };
+
+  //comprobar si el campo es valido
+  isFieldInvalid(field: string): boolean{
+
+    const control1 = this.passwdForm.get(field);
+    const control2 = this.registerForm.get(field);
+
+    return !!(control1 && control1?.invalid && control1.touched || control2 && control2.invalid && control2.touched);
+  };
+
 
   //validacion de email
   emailExistsValidator(): AsyncValidatorFn {
