@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
@@ -78,33 +80,29 @@ class UserController extends Controller
         ]);
     }
 
-    //login usuarios
-    public function login(Request $request){
-        $credentials = $request->only('email', 'password');
-        
+    //mostrar perfil usuario
+    public function getUser()
+    {
         try {
-            if (!$token = Auth::attempt($credentials)) {
-                return response()->json(['error' => 'Invalid credentials'], 401);
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
             }
+            return response()->json($user);
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token'], 500);
+            return response()->json(['error' => 'Failed to fetch user profile'], 500);
         }
-
-        return response()->json([
-            'token' => $token,
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
-        ]);
     }
 
-    //logout usuarios
-    public function logout(){
+    //actualizar perfil usuario
+    public function updateUser(Request $request)
+    {
         try {
-            JWTAuth::invalidate(JWTAuth::getToken());
+            $user = Auth::user();
+            $user->update($request->only(['name', 'email']));
+            return response()->json($user);
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Failed to logout, please try again'], 500);
+            return response()->json(['error' => 'Failed to update user'], 500);
         }
-
-        return response()->json(['message' => 'Successfully logged out']);
     }
-
 }
