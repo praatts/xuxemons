@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    //mostrar listado usuarios
      public function index(){
         $users = User::all();
         return UserResource::collection($users);
     }
 
+    //registro usuarios
     public function store(Request $request){
         $request->validate([
             'player_id' => [
@@ -29,7 +32,7 @@ class UserController extends Controller
                 'max:255',
             ],
 
-            'surename' => [
+            'surname' => [
                 'required',
                 'string',
                 'max:255',
@@ -57,12 +60,51 @@ class UserController extends Controller
         $user = User::create([
             'player_id' => $request->player_id,
             'name' => $request->name,
-            'surename' => $request->surename,
+            'surname' => $request->surname,
             'email' => $request->email,
             'password' => $request->password,
             'role' => $request->role
         ]);
 
-        return new UserResource($user);
+        try {
+            $token = JWTAuth::fromUser($user);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Could not create token'], 500);
+        }
+
+        return response()->json([
+            'token' => $token,
+            'user' => new UserResource($user)
+        ]);
     }
+
+    //login usuarios
+    public function login(Request $request){
+        $credentials = $request->only('email', 'password');
+        
+        try {
+            if (!$token = Auth::attempt($credentials)) {
+                return response()->json(['error' => 'Invalid credentials'], 401);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Could not create token'], 500);
+        }
+
+        return response()->json([
+            'token' => $token,
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
+        ]);
+    }
+
+    //logout usuarios
+    public function logout(){
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Failed to logout, please try again'], 500);
+        }
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
 }

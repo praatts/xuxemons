@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('player_id')->unique(); //format: nameXXXX
             $table->string('name');
-            $table->string('surename');
+            $table->string('surname');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
