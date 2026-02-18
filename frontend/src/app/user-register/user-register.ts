@@ -15,65 +15,33 @@ import { UserService } from '../user.service';
 })
 export class UserRegister {
 
+  registerForm: FormGroup;
+  passwdForm: FormGroup;
+  namePattern = /^[a-zA-ZÀ-ÿ\s]+$/;
+
+
   constructor(private userService: UserService) {
-  }
+    this.registerForm = new FormGroup({
+      player_id: new FormControl('', [Validators.required]),
+      name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
+      surname: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
+      email: new FormControl('', [Validators.required, Validators.email], [this.userService.checkEmailExists()])
+    });
 
-  //formulario registro
-  registerForm: FormGroup = new FormGroup({
-
-    player_id: new FormControl(
-      '',
-      [Validators.required]
-    
-    ),
-
-    name: new FormControl(
-      '',
-      [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)
-      ]
-    ),
-
-    surname: new FormControl(
-      '',
-      [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)
-      ]
-    ),
-
-    email: new FormControl(
-      '',
-      [
-        Validators.required,
-        Validators.email
-      ],
-      [
-        this.emailExistsValidator()
-      ]
-    )
-  });
-
-  //Formgroup para passwd
-  passwdForm: FormGroup = new FormGroup(
-    {
+    this.passwdForm = new FormGroup({
       passwd1: new FormControl<string>('', [Validators.required]),
       passwd2: new FormControl<string>('', [Validators.required]),
-    },
-    [confirmPasswordValidator] //clase nueva, llamada confirm-password.validator.ts
-  );
+    }, [confirmPasswordValidator]);
+  }
 
-  //al enviar
+  //Llamada al servicio para crear un nuevo usuario en la base de datos
   onSubmit(): void {
-    if (!this.passwdForm.valid) {
+    if (!this.passwdForm.valid || !this.registerForm.valid) {
       return;
     }
 
     const user = {
-      player_id: this.generatePlayerId(), 
+      player_id: this.generatePlayerId(),
       name: this.registerForm.get('name')?.value,
       surname: this.registerForm.get('surname')?.value,
       email: this.registerForm.get('email')?.value,
@@ -83,47 +51,21 @@ export class UserRegister {
 
     this.userService.postUser(user).subscribe({
       next: (response) => {
-        console.log('Usuario creado correctamente:', response);
         alert('Usuario creado correctamente');
       },
       error: (error) => {
-          console.error('Error al crear el usuario:', error);
-          alert('Error al crear el usuario');
-        }
-      });
+        console.log(error);
+        alert('Error al crear el usuario');
+      }
+    });
   }
 
   generatePlayerId(): string | undefined {
     const id = this.registerForm.get('player_id');
     if (id) {
-      const randomNum = Math.floor(1000 + Math.random() * 9000);
-      const finalId = `${id.value}#${randomNum}`;
-      return finalId;
+      const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+      return `${id.value}#${randomNum}`;
     }
-
     return undefined
-  }
-
-  //validacion de email
-  emailExistsValidator(): AsyncValidatorFn {
-    return (control): Observable<ValidationErrors | null> => {
-
-      if (!control.value) {
-        return of(null);
-      }
-      const existingEmails = [ //cambiar por llamada a bd
-        'test@test.com', //change 
-        'reserva@viajes.com',
-        'admin@travel.com'
-      ];
-
-      return of(control.value).pipe(
-        delay(1000),
-        map(email => {
-          const exists = existingEmails.includes(email.toLowerCase());
-          return exists ? { emailExists: true } : null;
-        })
-      );
-    };
   }
 }

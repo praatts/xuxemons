@@ -12,6 +12,12 @@ class UserController extends Controller
         return response()->json($users);
     }
 
+    public function checkEmail(Request $request){
+        $email = $request->query('email');
+        $exists = User::where('email', $email)->exists();
+        return response()->json(['exists' => $exists]);
+    }
+
     public function store(Request $request){
         $request->validate([
             'player_id' => [

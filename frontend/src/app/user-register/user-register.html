@@ -38,7 +38,7 @@
     </div>
   </div>
 
-  <button type="submit" [disabled]="passwdForm.invalid">
+  <button type="submit" [disabled]="passwdForm.invalid || registerForm.invalid">
     Submit
   </button>
 </form>

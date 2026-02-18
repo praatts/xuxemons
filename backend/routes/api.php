@@ -19,3 +19,6 @@ Route::get('/users', [UserController::class, 'index']);
 
 //registrar usuarios
 Route::post('/store/users', [UserController::class, 'store']);
+
+//Comprobar si el email ya existe
+Route::get('/check-email', [UserController::class, 'checkEmail']);
