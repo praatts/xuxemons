@@ -7,7 +7,8 @@ import { confirmPasswordValidator } from './confirm-password.validator';
 
 @Component({
   selector: 'app-user-register',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, NgClass],
   templateUrl: './user-register.html',
   styleUrl: './user-register.css'
 })
