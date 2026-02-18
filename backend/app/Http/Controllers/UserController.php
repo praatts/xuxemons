@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
      public function index(){
         $users = User::all();
-        return response()->json($users);
+        return UserResource::collection($users);
     }
 
     public function store(Request $request){
@@ -18,7 +19,7 @@ class UserController extends Controller
                 'required',
                 'string',
                 'max:255',
-                'unique:users,playerId',
+                'unique:users,player_id',
                 'regex:/^[A-Za-z]+[0-9]{4}$/'
             ],
 
@@ -62,6 +63,6 @@ class UserController extends Controller
             'role' => $request->role
         ]);
 
-        return response()->json($user, 201);
+        return new UserResource($user);
     }
 }
