@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormArray, AbstractControl, ValidatorFn, AsyncValidatorFn, ValidationErrors, MinLengthValidator } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+import { delay, map, min } from 'rxjs/operators';
 import { confirmPasswordValidator } from './confirm-password.validator';
 
 @Component({
@@ -49,8 +49,8 @@ export class UserRegister {
   //Formgroup para passwd
   passwdForm: FormGroup = new FormGroup(
     {
-      passwd1: new FormControl<string>('', [Validators.required]),
-      passwd2: new FormControl<string>('', [Validators.required]),
+      passwd1: new FormControl<string>('', [Validators.required, Validators.minLength(8)]),
+      passwd2: new FormControl<string>('', [Validators.required, Validators.minLength(8)]),
     },
     [confirmPasswordValidator] //clase nueva, llamada confirm-password.validator.ts
   );
@@ -74,6 +74,34 @@ export class UserRegister {
     return !!(control1 && control1?.invalid && control1.touched || control2 && control2.invalid && control2.touched);
   };
 
+  getErrorMessage(field: string): string{
+    const control1 = this.passwdForm.get(field);
+    const control2 = this.registerForm.get(field);
+
+    if(!control1?.errors || !control1.touched){
+      return '';
+    }
+    if(!control2?.errors || !control2?.touched){
+      return '';
+    }
+
+    if(control1.errors['required'] || control2.errors['required']){
+      return 'Aquest camp es obligatori';
+    }
+
+    if(control1.errors['pattern'] || control2.errors['pattern']){
+      return'Formato Incorrecto';
+    }
+
+    if(control1.errors['min']){
+      return `El valor mínim és ${control1.errors['min'].min}`;
+    }
+    if(control2.errors['min']){
+      return `El valor mínim és ${control2.errors['min'].min}`;
+    }
+
+    return 'error de validació';
+  }
 
   //validacion de email
   emailExistsValidator(): AsyncValidatorFn {
