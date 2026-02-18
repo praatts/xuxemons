@@ -4,16 +4,28 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormArray, Abs
 import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { confirmPasswordValidator } from './confirm-password.validator';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user-register',
-  imports: [],
+  imports: [ReactiveFormsModule, CommonModule, NgClass],
+  standalone: true,
   templateUrl: './user-register.html',
   styleUrl: './user-register.css'
 })
 export class UserRegister {
+
+  constructor(private userService: UserService) {
+  }
+
   //formulario registro
   registerForm: FormGroup = new FormGroup({
+
+    player_id: new FormControl(
+      '',
+      [Validators.required]
+    
+    ),
 
     name: new FormControl(
       '',
@@ -60,9 +72,37 @@ export class UserRegister {
       return;
     }
 
-    console.log('Cuenta creada correctemente', this.passwdForm.value);
-    alert('Usuario creado correctamente');
-  };
+    const user = {
+      player_id: this.generatePlayerId(), 
+      name: this.registerForm.get('name')?.value,
+      surname: this.registerForm.get('surname')?.value,
+      email: this.registerForm.get('email')?.value,
+      password: this.passwdForm.get('passwd1')?.value,
+      role: 'user',
+    };
+
+    this.userService.postUser(user).subscribe({
+      next: (response) => {
+        console.log('Usuario creado correctamente:', response);
+        alert('Usuario creado correctamente');
+      },
+      error: (error) => {
+          console.error('Error al crear el usuario:', error);
+          alert('Error al crear el usuario');
+        }
+      });
+  }
+
+  generatePlayerId(): string | undefined {
+    const id = this.registerForm.get('player_id');
+    if (id) {
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      const finalId = `${id.value}#${randomNum}`;
+      return finalId;
+    }
+
+    return undefined
+  }
 
   //validacion de email
   emailExistsValidator(): AsyncValidatorFn {

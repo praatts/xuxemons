@@ -3,6 +3,10 @@
 <!-- campos name surname email -->
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div>
+        <label for="player_id">ID:</label>
+        <input type="text" id="player_id" formControlName="player_id">
+    </div>
+    <div>
         <label for="name">Nombre:</label>
         <input type="text" id="name" formControlName="name">
     </div>
@@ -37,5 +41,4 @@
   <button type="submit" [disabled]="passwdForm.invalid">
     Submit
   </button>
-
 </form>

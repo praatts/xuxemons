@@ -18,8 +18,8 @@ class UserController extends Controller
                 'required',
                 'string',
                 'max:255',
-                'unique:users,playerId',
-                'regex:/^[A-Za-z]+[0-9]{4}$/'
+                'unique:users,player_id',
+                'regex:/^[A-Za-z]+#[0-9]{4}$/'
             ],
 
             'name' => [
@@ -28,7 +28,7 @@ class UserController extends Controller
                 'max:255',
             ],
 
-            'surename' => [
+            'surname' => [
                 'required',
                 'string',
                 'max:255',
@@ -56,7 +56,7 @@ class UserController extends Controller
         $user = User::create([
             'player_id' => $request->player_id,
             'name' => $request->name,
-            'surename' => $request->surename,
+            'surname' => $request->surname,
             'email' => $request->email,
             'password' => $request->password,
             'role' => $request->role
