@@ -1,41 +1,11 @@
 <h1>Registro XUXEMONS</h1>
 
-<!-- campos name surname email -->
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div>
-        <label for="name">Nombre:</label>
-        <input type="text" id="name" formControlName="name">
-    </div>
+  <section>
 
-    <div>
-        <label for="surname">Apellido:</label>
-        <input type="text" id="surname" formControlName="surname">
-    </div>
+  </section>
+  <section>
 
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" formControlName="email">
-    </div>
-</form>
-
-<!-- campos de passwd -->
-<form [formGroup]="passwdForm" (ngSubmit)="onSubmit()">
-  
-  <div>
-    <label for="passwd1">Passwd:</label>
-    <input type="password" id="passwd1" formControlName="passwd1">
-  </div>
-
-  <div>
-    <label for="passwd2">Confirm Passwd:</label>
-    <input type="password" id="passwd2" formControlName="passwd2">
-    <div class="error-message" *ngIf="passwdForm.errors?.['PasswdNoMatch']">
-        Passwd no coincide.
-    </div>
-  </div>
-
-  <button type="submit" [disabled]="passwdForm.invalid" [disabled]="registerForm.invalid">
-    Submit
-  </button>
-
+  </section>
+  <button type="submit" [disabled]="registerForm.invalid"></button>
 </form>

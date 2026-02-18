@@ -43,61 +43,62 @@ export class UserRegister {
       [
         this.emailExistsValidator()
       ]
+    ),
+
+    //campo para passwds
+    passwords: new FormGroup(
+      {
+      passwd1: new FormControl<string>('', [Validators.required, Validators.minLength(6)]),
+      passwd2: new FormControl<string>('', [Validators.required, Validators.minLength(6)]),
+    },
+    [confirmPasswordValidator]
     )
   });
 
-  //Formgroup para passwd
-  passwdForm: FormGroup = new FormGroup(
-    {
-      passwd1: new FormControl<string>('', [Validators.required, Validators.minLength(8)]),
-      passwd2: new FormControl<string>('', [Validators.required, Validators.minLength(8)]),
-    },
-    [confirmPasswordValidator] //clase nueva, llamada confirm-password.validator.ts
-  );
 
   //al enviar
   onSubmit(): void {
-    if (!this.passwdForm.valid || !this.registerForm.valid) {
+    if (!this.registerForm.valid) {
       return;
     }
 
-    console.log('Cuenta creada correctemente', this.passwdForm.value, this.registerForm.value);
+    console.log('Cuenta creada correctemente', this.registerForm.value);
     alert('Usuario creado correctamente');
   };
 
   //comprobar si el campo es valido
   isFieldInvalid(field: string): boolean{
+    const control = this.registerForm.get(field);
 
-    const control1 = this.passwdForm.get(field);
-    const control2 = this.registerForm.get(field);
-
-    return !!(control1 && control1?.invalid && control1.touched || control2 && control2.invalid && control2.touched);
+    return !!(control && control?.invalid && control.touched);
   };
 
+  //Mostrar Errores 
   getErrorMessage(field: string): string{
-    const control1 = this.passwdForm.get(field);
-    const control2 = this.registerForm.get(field);
+    const control = this.registerForm.get(field);
 
-    if(!control1?.errors || !control1.touched){
-      return '';
-    }
-    if(!control2?.errors || !control2?.touched){
+    if(!control?.errors || !control?.touched){
       return '';
     }
 
-    if(control1.errors['required'] || control2.errors['required']){
+    if(control.errors['required']){
       return 'Aquest camp es obligatori';
     }
 
-    if(control1.errors['pattern'] || control2.errors['pattern']){
+    if(control.errors['pattern']){
       return'Formato Incorrecto';
     }
 
-    if(control1.errors['min']){
-      return `El valor mínim és ${control1.errors['min'].min}`;
+    if(control.errors['required']){
+      return 'Este campo es Obligatorio'
     }
-    if(control2.errors['min']){
-      return `El valor mínim és ${control2.errors['min'].min}`;
+
+    if(control.errors['email']){
+      return 'Formato de correo invalido';
+    }
+
+    if(control.errors['min']){
+      return `El valor mínim és ${control.errors['min'].min}`;
     }
 
     return 'error de validació';
