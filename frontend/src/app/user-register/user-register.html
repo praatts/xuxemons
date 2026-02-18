@@ -1,11 +1,43 @@
 <h1>Registro XUXEMONS</h1>
 
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <section>
 
-  </section>
   <section>
-
+    <!-- SECTION NOMBRE -->
+    <div class="form-group">
+      <label for="name">Nombre</label>
+      <!-- validar nombre -->
+      <input type="text" formControlName="name" id="name"
+      [ngClass]="{
+        'valid': !isFieldInvalid('name'),
+        'invalid': isFieldInvalid('name')
+      }">
+      <!-- en caso de que sea invalido -->
+       @if(isFieldInvalid('name')){
+        <span class="error">
+          {{getErrorMessage('name')}}
+        </span>
+       }
+    </div>
+    <!-- SECTION APELLIDO -->
+    <div class="form-group">
+      <label for="surname">Apellido</label>
+      <!-- validar apellido -->
+      <input type="text" formControlName="surname" id="surname"
+      [ngClass]="{
+        'valid': !isFieldInvalid('surname'),
+        'invalid': isFieldInvalid('surname')
+      }">
+      <!-- en caso de que no sea valido -->
+    </div>
   </section>
-  <button type="submit" [disabled]="registerForm.invalid"></button>
+
+  <section>
+    <div class="form-group">
+
+    </div>
+  </section>
+
+  <button type="submit" [disabled]="registerForm.invalid">Enviar</button>
+
 </form>
