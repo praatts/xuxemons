@@ -12,7 +12,7 @@ export const confirmPasswordValidator: ValidatorFn = (
   const passwd2 = control.get('passwd2')?.value;
 
   if (!passwd1 || !passwd2) {
-    return null; // aún no validamos si están vacíos
+    return null;
   }
 
   return passwd1 === passwd2

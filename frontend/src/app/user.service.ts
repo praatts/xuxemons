@@ -27,11 +27,8 @@ export class UserService {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       if (!control.value) return of(null);
 
-      return of(control.value).pipe(
-        debounceTime(500),
-        switchMap(value => this.http.get<{ exists: boolean }>(`${this.url}/check-email`, { params: { email: value } })
-        ),
-        map(response => (response.exists ? { emailExists: true } : null)),
+      return this.http.get<{ exists: boolean }>(`${this.url}/check-email`, { params: { email: control.value } }).pipe(
+        map(response => response.exists ? { emailExists: true } : null),
         catchError(() => of(null)),
         first()
       );

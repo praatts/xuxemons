@@ -16,7 +16,6 @@ import { UserService } from '../user.service';
 export class UserRegister {
 
   registerForm: FormGroup;
-  passwdForm: FormGroup;
   namePattern = /^[a-zA-ZÀ-ÿ\s]+$/;
 
 
@@ -25,18 +24,49 @@ export class UserRegister {
       player_id: new FormControl('', [Validators.required]),
       name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
       surname: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
-      email: new FormControl('', [Validators.required, Validators.email], [this.userService.checkEmailExists()])
-    });
-
-    this.passwdForm = new FormGroup({
-      passwd1: new FormControl<string>('', [Validators.required]),
-      passwd2: new FormControl<string>('', [Validators.required]),
-    }, [confirmPasswordValidator]);
+      email: new FormControl('', [Validators.required, Validators.email], [this.userService.checkEmailExists()]),
+      passwd1: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      passwd2: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    }, { validators: this.passwordMatchValidator });
   }
+
+  passwordMatchValidator(control: AbstractControl) : ValidationErrors | null {
+    const p1 = control.get('passwd1')?.value;
+    const p2 = control.get('passwd2')?.value;
+
+    if (!p1 || !p2) return null;
+
+    if (p1 === p2) {
+      return null;
+    } else {
+      return { PasswdNoMatch: 'Las contraseñas no coinciden' };
+    }
+  }
+
+  getErrorMessage(controlName: string): string {
+    const control = this.registerForm.get(controlName);
+
+    if (!control || !control.errors || !control.touched) return '';
+
+    const errors = control.errors;
+
+    if (errors['required']) return 'Este campo es obligatorio';
+    if (errors['email']) return 'Formato de email no válido';
+    if (errors['emailExists']) return 'El email introducido ya está en uso';
+    if (errors['PasswdNoMatch']) return errors['PasswdNoMatch'];
+
+    return 'Error de validación';
+  }
+
+   isFieldInvalid(fieldName: string): boolean {
+    const control = this.registerForm.get(fieldName);
+    return !!(control && control.invalid && control.touched); //!!(...): converteix el resultat en boolean.
+  }
+    
 
   //Llamada al servicio para crear un nuevo usuario en la base de datos
   onSubmit(): void {
-    if (!this.passwdForm.valid || !this.registerForm.valid) {
+    if (!this.registerForm.valid) {
       return;
     }
 
@@ -45,7 +75,7 @@ export class UserRegister {
       name: this.registerForm.get('name')?.value,
       surname: this.registerForm.get('surname')?.value,
       email: this.registerForm.get('email')?.value,
-      password: this.passwdForm.get('passwd1')?.value,
+      password: this.registerForm.get('passwd1')?.value,
       role: 'user',
     };
 
