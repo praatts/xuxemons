@@ -1,43 +1,53 @@
 <h1>Registro XUXEMONS</h1>
 
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <section>
-    <!-- SECTION NOMBRE -->
-    <div class="form-group">
-      <label for="name">Nombre</label>
-      <!-- validar nombre -->
-      <input type="text" formControlName="name" id="name" [ngClass]="{
-        'valid': !isFieldInvalid('name'),
-        'invalid': isFieldInvalid('name')
-      }">
-      <!-- en caso de que sea invalido -->
-      @if(isFieldInvalid('name')){
-      <span class="error">
-        {{getErrorMessage('name')}}
-      </span>
-      }
-    </div>
-    <!-- SECTION APELLIDO -->
-    <div class="form-group">
-      <label for="surname">Apellido</label>
-      <!-- validar apellido -->
-      <input type="text" formControlName="surname" id="surname" [ngClass]="{
-        'valid': !isFieldInvalid('surname'),
-        'invalid': isFieldInvalid('surname')
-      }">
-      <!-- en caso de que no sea valido -->
-      @if(isFieldInvalid('surname')){
-      <span class="error">
-        {{getErrorMessage('surname')}}
-      </span>
-      }
-    </div>
-  </section>
-  <section>
-    <div class="form-group">
+  <div>
 
-    </div>
-  </section>
+    <label for="player_id">ID:</label>
+    <input type="text" id="player_id" formControlName="player_id">
+    @if (isFieldInvalid('player_id')) {
+    <span>{{ getErrorMessage('player_id') }}</span>
+    }
+  </div>
+  <div>
+    <label for="name">Nombre:</label>
+    <input type="text" id="name" formControlName="name">
+    @if (isFieldInvalid('name')) {
+    <span>{{ getErrorMessage('name') }}</span>
+    }
+  </div>
 
-  <button type="submit" [disabled]="registerForm.invalid">Enviar</button>
+  <div>
+    <label for="surname">Apellido:</label>
+    <input type="text" id="surname" formControlName="surname">
+    @if (isFieldInvalid('surname')) {
+    <span>{{ getErrorMessage('surname') }}</span>
+    }
+  </div>
+
+  <div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" formControlName="email">
+    @if (isFieldInvalid('email')) {
+    <span>{{ getErrorMessage('email') }}</span>
+    }
+  </div>
+  <div>
+    <label for="passwd1">Passwd:</label>
+    <input type="password" id="passwd1" formControlName="passwd1">
+    @if (isFieldInvalid('passwd1')) {
+    <span>{{ getErrorMessage('passwd1') }}</span>
+    }
+  </div>
+  <div>
+    <label for="passwd2">Confirm Passwd:</label>
+    <input type="password" id="passwd2" formControlName="passwd2" [disabled]="!registerForm.get('passwd1')?.value">
+    @if (registerForm.hasError('PasswdNoMatch') && registerForm.get('passwd2')?.touched) {
+    <span>Las contraseñas no coinciden</span>
+    }
+  </div>
+
+  <button type="submit" [disabled]="registerForm.invalid">
+    Submit
+  </button>
 </form>

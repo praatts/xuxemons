@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormArray, AbstractControl, ValidatorFn, AsyncValidatorFn, ValidationErrors, MinLengthValidator } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { delay, map, min } from 'rxjs/operators';
-import { confirmPasswordValidator } from './confirm-password.validator';
 import { UserService } from '../user.service';
 
 @Component({
@@ -73,8 +70,17 @@ export class UserRegister {
       password: this.registerForm.get('passwd1')?.value,
       role: 'user',
     }
-    console.log('Cuenta creada correctemente', this.registerForm.value);
-    alert('Usuario creado correctamente');
+
+    this.userService.postUser(user).subscribe({
+      next: (response) => {
+        console.log('Usuario creado:', response);
+        alert('Usuario creado correctamente. Ahora puedes iniciar sesión.');
+      },
+      error: (error) => {
+        console.error('Error al crear usuario:', error);
+        alert('Error al crear el usuario. Por favor, inténtalo de nuevo.');
+      }
+    });
   };
 
   //comprobar si el campo es valido
