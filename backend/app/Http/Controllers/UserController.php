@@ -45,8 +45,14 @@ class UserController extends Controller
     {
         try {
             $user = Auth::user();
-            $user->update($request->only(['name', 'email']));
-            return response()->json($user);
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+                
+            }
+
+            $user_to_update = User::where('email', $request->input('email'))->first();
+            $user_to_update->update($request->only(['name', 'email']));
+            return response()->json($user_to_update);
         } catch (JWTException $e) {
             return response()->json(['error' => 'Failed to update user'], 500);
         }
