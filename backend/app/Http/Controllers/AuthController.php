@@ -12,11 +12,12 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 class AuthController extends Controller
 {
     //login usuarios
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $credentials = $request->only('email', 'password');
-        
+
         try {
-            if (!$token = Auth::attempt($credentials)) {
+            if (!$token = Auth::guard('api')->attempt($credentials)) {
                 return response()->json(['error' => 'Invalid credentials'], 401);
             }
         } catch (JWTException $e) {
@@ -30,7 +31,8 @@ class AuthController extends Controller
     }
 
     //logout usuarios
-    public function logout(){
+    public function logout()
+    {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
         } catch (JWTException $e) {
@@ -41,7 +43,8 @@ class AuthController extends Controller
     }
 
     //registro usuarios
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $request->validate([
             'player_id' => [
                 'required',
