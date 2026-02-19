@@ -20,7 +20,7 @@ export class UserService {
   }
 
   postUser(user: UserInterface) {
-    return this.http.post(`${this.url}/store/users`, user);
+    return this.http.post(`${this.url}/register`, user);
   }
 
   checkEmailExists(): AsyncValidatorFn {
