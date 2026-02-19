@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormArray, AbstractControl, ValidatorFn, AsyncValidatorFn, ValidationErrors, MinLengthValidator } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+import { delay, map, min } from 'rxjs/operators';
 import { confirmPasswordValidator } from './confirm-password.validator';
 import { UserService } from '../user.service';
 
@@ -17,7 +17,6 @@ export class UserRegister {
 
   registerForm: FormGroup;
   namePattern = /^[a-zA-ZÀ-ÿ\s]+$/;
-
 
   constructor(private userService: UserService) {
     this.registerForm = new FormGroup({
@@ -54,22 +53,18 @@ export class UserRegister {
     if (errors['email']) return 'Formato de email no válido';
     if (errors['emailExists']) return 'El email introducido ya está en uso';
     if (errors['PasswdNoMatch']) return errors['PasswdNoMatch'];
+    if (errors['pattern']) return 'Formato no válido';
+    if (errors['minlength']) return `El valor mínimo es ${errors['minlength'].requiredLength} caracteres`;
+    if (errors['min']) return `El valor mínimo es ${errors['min'].min}`;
 
     return 'Error de validación';
   }
-
-   isFieldInvalid(fieldName: string): boolean {
-    const control = this.registerForm.get(fieldName);
-    return !!(control && control.invalid && control.touched); //!!(...): converteix el resultat en boolean.
-  }
-    
 
   //Llamada al servicio para crear un nuevo usuario en la base de datos
   onSubmit(): void {
     if (!this.registerForm.valid) {
       return;
     }
-
     const user = {
       player_id: this.generatePlayerId(),
       name: this.registerForm.get('name')?.value,
@@ -77,18 +72,17 @@ export class UserRegister {
       email: this.registerForm.get('email')?.value,
       password: this.registerForm.get('passwd1')?.value,
       role: 'user',
-    };
+    }
+    console.log('Cuenta creada correctemente', this.registerForm.value);
+    alert('Usuario creado correctamente');
+  };
 
-    this.userService.postUser(user).subscribe({
-      next: (response) => {
-        alert('Usuario creado correctamente');
-      },
-      error: (error) => {
-        console.log(error);
-        alert('Error al crear el usuario');
-      }
-    });
-  }
+  //comprobar si el campo es valido
+  isFieldInvalid(field: string): boolean{
+    const control = this.registerForm.get(field);
+
+    return !!(control && control?.invalid && control.touched);
+  };
 
   generatePlayerId(): string | undefined {
     const id = this.registerForm.get('player_id');

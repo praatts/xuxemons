@@ -11,6 +11,6 @@ export const routes: Routes = [
     {
         path: 'register',
         component: UserRegister,
-        title: 'Registro'
+        title: 'Register'
     }
 ];
