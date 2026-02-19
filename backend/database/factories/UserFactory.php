@@ -26,7 +26,7 @@ class UserFactory extends Factory
         return [
             'player_id' => fake()->unique()->regexify('[A-Za-z]+[0-9]{4}'),
             'name' => fake()->name(),
-            'surename' => fake()->lastName(),
+            'surname' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'role' => fake()->randomElement(['user', 'admin']),
             'email_verified_at' => now(),
