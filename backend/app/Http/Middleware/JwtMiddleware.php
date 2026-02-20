@@ -18,7 +18,10 @@ class JwtMiddleware
     public function handle(Request $request, Closure $next)
     {
         try{
-            JWTAuth::parseToken()->authenticate();
+            // Forzamos a que JWTAuth use el guard 'api' y parsee el token
+            if (! $user = JWTAuth::getFacadeRoot()->setRequest($request)->parseToken()->authenticate()) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
         } catch (Exception $e) {
             return response()->json(['error' => 'Unauthorized', 'message' => $e->getMessage()], 401);
         }
