@@ -1,12 +1,14 @@
-<div class="main-container">
+<div class="principal">
     <h1>{{ title }}</h1>
 
-    <div class="button">
-        <button 
-        routerLink="user-info"
-        [ngClass]="{'hover': botonInfoHover}"
-        (mouseenter)="botonInfoHover = true"
-        (mouseleave)="botonInfoHover = false"
-        >Info Usuari</button>
-    </div>
+    <button 
+      routerLink="userinfo"
+      [ngClass]="{'hover': botonInfoHover}"
+      (mouseenter)="botonInfoHover = true"
+      (mouseleave)="botonInfoHover = false">
+      Artistes
+    </button>
+
+    <router-outlet/>
+    
 </div>

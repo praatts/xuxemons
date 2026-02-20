@@ -22,7 +22,7 @@ export const routes: Routes = [
         component: UserPrincipalComponent,
         children: [ //ruta hija
             {
-                path: 'user-info',
+                path: 'userinfo',
                 title: 'user-info',
                 component: UserInfoComponent
             }
