@@ -51,6 +51,7 @@ export class UserService {
       if (!control.value) return of(null);
 
       return this.http.get<{ exists: boolean }>(`${this.url}/check-email`, { params: { email: control.value } }).pipe(
+        debounceTime(1000),
         map(response => response.exists ? { emailExists: true } : null),
         catchError(() => of(null)),
         first()

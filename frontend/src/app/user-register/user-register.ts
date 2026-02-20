@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormArray, AbstractControl, ValidatorFn, AsyncValidatorFn, ValidationErrors, MinLengthValidator } from '@angular/forms';
 import { UserService } from '../user.service';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-user-register',
-  imports: [ReactiveFormsModule, CommonModule, NgClass],
+  imports: [ReactiveFormsModule, CommonModule, NgClass, RouterLink],
   standalone: true,
   templateUrl: './user-register.html',
   styleUrl: './user-register.css'
@@ -32,17 +33,6 @@ export class UserRegister {
 
     if (!p1 || !p2) return null;
 
-    if (p1 !== p2) {
-      console.log ('No coincideixen');
-    }
-
-    if (p1 === p2) {
-      console.log ("Coincideixen");
-    }
-
-    console.log(p1);
-    console.log(p2);
-    
     if (p1 === p2) {
       return null;
     } else {
@@ -66,6 +56,37 @@ export class UserRegister {
     if (errors['min']) return `El valor mínimo es ${errors['min'].min}`;
 
     return 'Error de validación';
+  }
+
+  getAllErrors(): string[] {
+    const errors: string[] = [];
+    
+    // Verificar errores a nivel del formulario
+    if (this.registerForm.hasError('PasswdNoMatch')) {
+      errors.push('Las contraseñas no coinciden');
+    }
+
+    // Verificar errores en cada control
+    const fieldNames: { [key: string]: string } = {
+      'player_id': 'Nombre de usuario',
+      'name': 'Nombre',
+      'surname': 'Apellido',
+      'email': 'Email',
+      'passwd1': 'Contraseña',
+      'passwd2': 'Confirmar Contraseña'
+    };
+
+    Object.keys(fieldNames).forEach(fieldName => {
+      const control = this.registerForm.get(fieldName);
+      if (control && control.errors && control.touched) {
+        const errorMsg = this.getErrorMessage(fieldName);
+        if (errorMsg) {
+          errors.push(`${fieldNames[fieldName]}: ${errorMsg}`);
+        }
+      }
+    });
+
+    return errors;
   }
 
   //Llamada al servicio para crear un nuevo usuario en la base de datos

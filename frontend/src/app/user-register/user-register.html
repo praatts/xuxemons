@@ -1,59 +1,80 @@
-<h1>Registro XUXEMONS</h1>
+<div class="register-container">
+  <div class="logo-container">
+    <img src="" alt="">
+  </div>
+  <div class="form-container">
+    <h1>BENVINGUT/DA A XUXEMONS!</h1>
 
-<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <div>
+    
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-    <label for="player_id">ID:</label>
-    <input type="text" id="player_id" formControlName="player_id">
-    @if (isFieldInvalid('player_id')) {
-    <span>{{ getErrorMessage('player_id') }}</span>
-    }
-  </div>
-  <div>
-    <label for="name">Nombre:</label>
-    <input type="text" id="name" formControlName="name">
-    @if (isFieldInvalid('name')) {
-    <span>{{ getErrorMessage('name') }}</span>
-    }
-  </div>
+      <label for="player_id">ID:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('player_id')?.valid}">
+        <input type="text" id="player_id" formControlName="player_id" placeholder="Nombre de usuario">
+        @if (registerForm.get('player_id')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
 
-  <div>
-    <label for="surname">Apellido:</label>
-    <input type="text" id="surname" formControlName="surname">
-    @if (isFieldInvalid('surname')) {
-    <span>{{ getErrorMessage('surname') }}</span>
-    }
-  </div>
+      <label for="name">Nombre:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('name')?.valid}">
+        <input type="text" id="name" formControlName="name" placeholder="Nombre">
+        @if (registerForm.get('name')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
 
-  <div>
-    <label for="email">Email:</label>
-    <input type="email" id="email" formControlName="email">
-    @if (isFieldInvalid('email')) {
-    <span>{{ getErrorMessage('email') }}</span>
-    }
-  </div>
-  <div>
-    <label for="passwd1">Passwd:</label>
-    <input type="password" id="passwd1" formControlName="passwd1">
-    @if (isFieldInvalid('passwd1')) {
-    <span>{{ getErrorMessage('passwd1') }}</span>
-    }
-    @if (registerForm.hasError('PasswdNoMatch') && registerForm.get('passwd1')?.touched) {
-    <span>Las contraseñas no coinciden</span>
-    }
-  </div>
-  <div>
-    <label for="passwd2">Confirm Passwd:</label>
-    <input type="password" id="passwd2" formControlName="passwd2" [disabled]="!registerForm.get('passwd1')?.value">
-    @if (isFieldInvalid('passwd2')) {
-    <span>{{ getErrorMessage('passwd2') }}</span>
-    }
-    @if (registerForm.hasError('PasswdNoMatch') && registerForm.get('passwd2')?.touched) {
-    <span>Las contraseñas no coinciden</span>
-    }
-  </div>
+      <label for="surname">Apellido:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('surname')?.valid}">
+        <input type="text" id="surname" formControlName="surname" placeholder="Apellidos">
+        @if (registerForm.get('surname')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
 
-  <button type="submit" [disabled]="registerForm.invalid">
-    Submit
-  </button>
-</form>
+      <label for="email">Email:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('email')?.valid}">
+        <input type="email" id="email" formControlName="email" placeholder="Correo electrónico">
+        @if (registerForm.get('email')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <label for="passwd1">Passwd:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('passwd1')?.valid}">
+        <input type="password" id="passwd1" formControlName="passwd1" placeholder="Contraseña">
+        @if (registerForm.get('passwd1')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <label for="passwd2">Confirm Passwd:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('passwd2')?.valid && registerForm.get('passwd1')?.value}">
+        <input type="password" id="passwd2" formControlName="passwd2" [disabled]="!registerForm.get('passwd1')?.value"
+          placeholder="Confirmar Contraseña">
+        @if (registerForm.get('passwd2')?.valid && registerForm.get('passwd1')?.value) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <div class="link-container">
+        <a routerLink="/" class="login-redirect">Ya tienes cuenta? Inicia sesión aquí</a>
+      </div>
+      <button type="submit" [disabled]="registerForm.invalid" [ngClass]="{'disabled-button': registerForm.invalid}">
+        Submit
+      </button>
+    </form>
+    <!--Mostrar alert con todos los errores del formulario -->
+    @if (getAllErrors().length > 0) {
+    <div class="alert alert-danger" role="alert">
+      <strong>Por favor corrige los siguientes errores:</strong>
+      <ul class="mb-0">
+        @for (error of getAllErrors(); track $index) {
+        <li>{{ error }}</li>
+        }
+      </ul>
+    </div>
+    }
+
+  </div>
+</div>
