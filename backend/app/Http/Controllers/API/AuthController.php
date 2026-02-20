@@ -3,33 +3,78 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+
 
 class AuthController extends Controller
 {
     // Register new user
-    public function register(Request $request)
+    public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|string|email|max:255|unique:users',
-            'password'   => 'required|string|min:6|confirmed',
-        ]);
+        $request->validate([
+            'player_id' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:users,player_id',
+                'regex:/^[A-Za-z]+#[0-9]{4}$/'
+            ],
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'surname' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                'unique:users,email'
+            ],
+
+            'password' => [
+                'required',
+                'string',
+                'min:6'
+            ],
+
+            'role' => [
+                'required',
+                'in:user,admin'
+            ],
+        ]);
 
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => bcrypt($request->password),
+            'player_id' => $request->player_id,
+            'name' => $request->name,
+            'surname' => $request->surname,
+            'email' => $request->email,
+            'password' => $request->password,
+            'role' => $request->role
         ]);
 
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+        /* try {
+            $token = JWTAuth::fromUser($user);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Could not create token'], 500);
+        }
+
+        return response()->json([
+            'token' => $token,
+            'user' => new UserResource($user)
+        ]); */
     }
     // Login user and return JWT token
     public function login(Request $request)

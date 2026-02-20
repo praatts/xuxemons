@@ -38,10 +38,16 @@
     @if (isFieldInvalid('passwd1')) {
     <span>{{ getErrorMessage('passwd1') }}</span>
     }
+    @if (registerForm.hasError('PasswdNoMatch') && registerForm.get('passwd1')?.touched) {
+    <span>Las contraseñas no coinciden</span>
+    }
   </div>
   <div>
     <label for="passwd2">Confirm Passwd:</label>
     <input type="password" id="passwd2" formControlName="passwd2" [disabled]="!registerForm.get('passwd1')?.value">
+    @if (isFieldInvalid('passwd2')) {
+    <span>{{ getErrorMessage('passwd2') }}</span>
+    }
     @if (registerForm.hasError('PasswdNoMatch') && registerForm.get('passwd2')?.touched) {
     <span>Las contraseñas no coinciden</span>
     }

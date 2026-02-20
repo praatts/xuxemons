@@ -32,6 +32,17 @@ export class UserRegister {
 
     if (!p1 || !p2) return null;
 
+    if (p1 !== p2) {
+      console.log ('No coincideixen');
+    }
+
+    if (p1 === p2) {
+      console.log ("Coincideixen");
+    }
+
+    console.log(p1);
+    console.log(p2);
+    
     if (p1 === p2) {
       return null;
     } else {
@@ -70,6 +81,8 @@ export class UserRegister {
       password: this.registerForm.get('passwd1')?.value,
       role: 'user',
     }
+
+    console.log('Enviando usuario:', user);
 
     this.userService.postUser(user).subscribe({
       next: (response) => {
