@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { UserService } from '../user.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-user-login',
   standalone: true,
-  imports: [],
+  imports: [ɵInternalFormsSharedModule, ReactiveFormsModule, NgClass],
   templateUrl: './user-login.component.html',
   styleUrl: './user-login.component.css'
 })

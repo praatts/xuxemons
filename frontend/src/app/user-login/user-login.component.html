@@ -1,4 +1,20 @@
-<h1>User Login Page</h1>
+<h1>Login XUXEMONS</h1>
 
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" formControlName="email" id="email">
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" formControlName="password">
+    </div>
+    <button type="submit" >enter</button>
 
+    @if(errorMessage){
+        <p class="errorMessage">
+            {{ errorMessage }}
+        </p>
+    }
+</form>
 
