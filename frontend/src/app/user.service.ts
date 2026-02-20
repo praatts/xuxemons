@@ -23,6 +23,29 @@ export class UserService {
     return this.http.post(`${this.url}/register`, user);
   }
 
+  getToken() {
+    return localStorage.getItem('authToken');
+  }
+
+  isAutentificated(): boolean {
+    return !!this.getToken();
+  }
+
+  logIn(email: string, password: string) {
+    return this.http.post<{ token: string, userId: number }>(`${this.url}/login`, { email, password }).pipe(
+      map(response => {
+        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('userId', response.userId.toString());
+        return response;
+      })
+    );
+  }
+
+  logOut() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userId');
+  }
+
   checkEmailExists(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       if (!control.value) return of(null);
