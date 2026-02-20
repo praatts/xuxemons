@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../user.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-login',
@@ -9,10 +11,34 @@ import { UserService } from '../user.service';
   styleUrl: './user-login.component.css'
 })
 export class UserLoginComponent {
-  constructor(private userService: UserService) { }
 
-  
+  errorMessage: string = '';
+  loginForm: FormGroup;
 
+  constructor(
+    private fb: FormBuilder,
+    private userService: UserService,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
+      email: [''],
+      password: ['']
+    });
+  }
+
+  onSubmit() {
+    const { email, password } = this.loginForm.value;
+    this.userService.logIn(email, password).subscribe({
+      next: (response) => {
+        console.log('Login exitoso:', response);
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        console.error('Error de login:', error);
+        this.errorMessage = 'Credenciales incorrectas. Inténtalo de nuevo.';
+      }
+    });
+  }
 
   test() {
     this.userService.getTest().subscribe({

@@ -32,10 +32,10 @@ export class UserService {
   }
 
   logIn(email: string, password: string) {
-    return this.http.post<{ token: string, userId: number }>(`${this.url}/login`, { email, password }).pipe(
+    return this.http.post<{ token: string, user_id: number }>(`${this.url}/login`, { email, password }).pipe(
       map(response => {
         localStorage.setItem('authToken', response.token);
-        localStorage.setItem('userId', response.userId.toString());
+        localStorage.setItem('user_id', response.user_id.toString());
         return response;
       })
     );
@@ -43,7 +43,7 @@ export class UserService {
 
   logOut() {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('userId');
+    localStorage.removeItem('user_id');
   }
 
   checkEmailExists(): AsyncValidatorFn {
