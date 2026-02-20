@@ -1,1 +1,12 @@
-<p>user-principal works!</p>
+<div class="main-container">
+    <h1>{{ title }}</h1>
+
+    <div class="button">
+        <button 
+        routerLink="user-info"
+        [ngClass]="{'hover': botonInfoHover}"
+        (mouseenter)="botonInfoHover = true"
+        (mouseleave)="botonInfoHover = false"
+        >Info Usuari</button>
+    </div>
+</div>
