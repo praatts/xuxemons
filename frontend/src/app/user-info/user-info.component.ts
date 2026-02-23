@@ -14,7 +14,9 @@ export class UserInfoComponent {
   title = 'user info page';
   text = 'This is the page that you can see your info';
 
-  constructor(){}
+  constructor(
+    
+  ){}
   
 
 }

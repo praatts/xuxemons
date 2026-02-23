@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from '../user.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgClass } from '@angular/common';
 
@@ -12,43 +12,58 @@ import { NgClass } from '@angular/common';
   styleUrl: './user-login.component.css'
 })
 export class UserLoginComponent {
-
-  errorMessage: string = '';
+  
   loginForm: FormGroup;
-
+  submitted = false;
+  loading = false;
+  errorMessage = '';
+  
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
     private router: Router
   ) {
+
+    // Creamos el formulario reactivo
     this.loginForm = this.fb.group({
-      email: [''],
-      password: ['']
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
     });
+
   }
 
   onSubmit() {
-    const { email, password } = this.loginForm.value;
-    this.userService.logIn(email, password).subscribe({
-      next: (response) => {
-        console.log('Login exitoso:', response);
+
+    this.submitted = true;
+    this.errorMessage = '';
+
+    // Si el formulario es inválido, no continuamos
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+
+    const email = this.loginForm.value.email;
+    const password = this.loginForm.value.password;
+
+    this.userService.logIn(email, password).subscribe(
+
+      (response) => {
+        this.loading = false;
         this.router.navigate(['/home']);
       },
-      error: (error) => {
-        console.error('Error de login:', error);
-        this.errorMessage = 'Credenciales incorrectas. Inténtalo de nuevo.';
-      }
-    });
-  }
 
-  test() {
-    this.userService.getTest().subscribe({
-      next: (response) => {
-        console.log('API funcionant:', response);
-      },
-      error: (error) => {
-        console.error('Error API:', error);
+      (error) => {
+        this.loading = false;
+
+        if (error.status === 401) {
+          this.errorMessage = 'Credenciales incorrectas.';
+        } else {
+          this.errorMessage = 'Error al iniciar sesión.';
+        }
       }
-    });
+
+    );
   }
 }
