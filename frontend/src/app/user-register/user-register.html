@@ -1,11 +1,11 @@
 <div class="register-container">
   <div class="logo-container">
-    <img src="" alt="">
+    <img src="logo-main.png" class="logo" alt="Logo de Xuxemons">
   </div>
   <div class="form-container">
     <h1>BENVINGUT/DA A XUXEMONS!</h1>
 
-    
+
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
       <label for="player_id">ID:</label>
@@ -49,7 +49,8 @@
       </div>
 
       <label for="passwd2">Confirm Passwd:</label>
-      <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('passwd2')?.valid && registerForm.get('passwd1')?.value}">
+      <div class="input-wrapper"
+        [ngClass]="{'valid-input': registerForm.get('passwd2')?.valid && registerForm.get('passwd1')?.value}">
         <input type="password" id="passwd2" formControlName="passwd2" [disabled]="!registerForm.get('passwd1')?.value"
           placeholder="Confirmar Contraseña">
         @if (registerForm.get('passwd2')?.valid && registerForm.get('passwd1')?.value) {
