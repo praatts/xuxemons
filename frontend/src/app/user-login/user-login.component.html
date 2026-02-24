@@ -1,5 +1,28 @@
-<h1>User Login Page</h1>
+<h1>Login XUXEMONS</h1>
 
-<form action=""></form>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" formControlName="email" id="email"
+        [ngClass]="{
+            'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched,
+            'is-valid': loginForm.get('email')?.valid && loginForm.get('email')?.touched
+        }">
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" formControlName="password"
+        [ngClass]="{
+            'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched,
+            'is-valid': loginForm.get('password')?.valid && loginForm.get('password')?.touched
+        }">
+    </div>
+    <button type="submit" >enter</button>
 
+    @if(errorMessage){
+        <p class="errorMessage">
+            {{ errorMessage }}
+        </p>
+    }
+</form>
 
