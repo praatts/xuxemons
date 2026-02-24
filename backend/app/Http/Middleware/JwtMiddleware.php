@@ -18,17 +18,16 @@ class JwtMiddleware
     public function handle(Request $request, Closure $next)
     {
         try{
-            // Forzamos a que JWTAuth use el guard 'api' y parsee el token
-            if (!$user = JWTAuth::getFacadeRoot()->setRequest($request)->parseToken()->authenticate()) {
-                return response()->json(['error' => 'User not found'], 404);
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch(Exception $e){
+            if($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
+                return response()->json(['status' => 'Token is Invalid'], 401);
+            } else if($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
+                return response()->json(['status' => 'Token is Expired'], 401);
             } else {
-                // Si el usuario es encontrado, lo adjuntamos a la solicitud
-                return $next($request->merge(['user' => $user]));
+                return response()->json(['status' => 'Authorization Token not found'], 401);
             }
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Unauthorized', 'message' => $e->getMessage()], 401);
         }
-
         return $next($request);
     }
 }
