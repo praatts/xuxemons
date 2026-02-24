@@ -18,7 +18,12 @@ export class UserInfoComponent {
 
   infoForm: FormGroup;
   msg = '';
+  
+  nameValue = '';
+  surnameValue = '';
+  emailValue = '';
   currentPassword = '123456';
+  passwordValue = '';
 
   constructor(private userService: UserService, private router: Router)
   {
@@ -26,7 +31,7 @@ export class UserInfoComponent {
       name: new FormControl(''),
       surname: new FormControl(''),
       email: new FormControl('', Validators.email),
-      
+
       password: new FormControl('', [Validators.minLength(6),
         (control: AbstractControl): ValidationErrors | null => {
           const val = control.value;
@@ -38,17 +43,39 @@ export class UserInfoComponent {
     })
   }
 
-  ngOnInit(): void{
-    this.userService.getUser().subscribe((u: any) => this.infoForm.patchValue(u));
+  ngOnInit(): void {
+    // traemos los datos "normales"
+    this.userService.getUser().subscribe((u: any) => {
+      this.nameValue = u.name || '';
+      this.surnameValue = u.surname || '';
+      this.emailValue = u.email || '';
+      this.currentPassword = u.passwordActual || this.currentPassword;
+
+      // seteamos los valores en el formulario de manera directa
+      this.infoForm.controls['name'].setValue(this.nameValue);
+      this.infoForm.controls['surname'].setValue(this.surnameValue);
+      this.infoForm.controls['email'].setValue(this.emailValue);
+    });
   }
 
-  save() {
+   save() {
     if (this.infoForm.invalid) return;
 
-    this.userService.updateUser(this.infoForm.value).subscribe({
+    // copiamos los valores del formulario
+    this.nameValue = this.infoForm.controls['name'].value;
+    this.surnameValue = this.infoForm.controls['surname'].value;
+    this.emailValue = this.infoForm.controls['email'].value;
+    this.passwordValue = this.infoForm.controls['password'].value;
+
+    this.userService.updateUser({
+      name: this.nameValue,
+      surname: this.surnameValue,
+      email: this.emailValue,
+      password: this.passwordValue
+    }).subscribe({
       next: () => {
         this.msg = 'Información actualizada';
-        this.infoForm.get('password')?.reset();
+        this.infoForm.controls['password'].setValue('');
       },
       error: () => this.msg = 'Error al actualizar'
     });
