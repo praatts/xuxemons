@@ -25,7 +25,7 @@ export class UserService {
   }
 
   //modificar Usuarios
-  updateUser(){
+  updateUser(user: any){
     return this.http.put(`${this.url}/user`, user);
   }
 

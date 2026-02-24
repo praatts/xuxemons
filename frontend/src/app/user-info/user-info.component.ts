@@ -30,7 +30,23 @@ export class UserInfoComponent {
   }
 
   ngOnInit(): void{
-    //this.userService
+    this.userService.getUser().subscribe((u: any) => this.infoForm.patchValue(u));
+  }
+
+  save() {
+    if (this.infoForm.invalid) return;
+
+    this.userService.updateUser(this.infoForm.value).subscribe({
+      next: () => {
+        this.msg = 'Información actualizada';
+        this.infoForm.get('password')?.reset();
+      },
+      error: () => this.msg = 'Error al actualizar'
+    });
+  }
+  
+  delete(){
+
   }
   
 
