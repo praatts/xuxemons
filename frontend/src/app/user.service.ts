@@ -19,6 +19,21 @@ export class UserService {
     return this.http.get(`${this.url}/test`);
   }
 
+  //conseguir usuario
+  getUser(){
+    return this.http.get(`${this.url}/user`);
+  }
+
+  //modificar Usuarios
+  updateUser(){
+    return this.http.put(`${this.url}/user`, user);
+  }
+
+  //eliminar Usuarios
+  deleteUser(){
+    return this.http.delete(`${this.url}/user`);
+  }
+
   postUser(user: UserInterface) {
     return this.http.post(`${this.url}/register`, user);
   }

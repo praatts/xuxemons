@@ -1,6 +1,8 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validator, ValidatorFn, ValidationErrors, Validators } from '@angular/forms';
+import { UserService } from '../user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-info',
@@ -14,8 +16,22 @@ export class UserInfoComponent {
   title = 'user info page';
   text = 'This is the page that you can see your info';
 
-  constructor(
-  ){}
+  infoForm: FormGroup;
+  msg = '';
+
+  constructor(private userService: UserService, private router: Router)
+  {
+    this.infoForm = new FormGroup({
+      name: new FormControl(''),
+      surname: new FormControl(''),
+      email: new FormControl(''),
+      password: new FormControl('')
+    })
+  }
+
+  ngOnInit(): void{
+    //this.userService
+  }
   
 
 }
