@@ -44,10 +44,15 @@ export class UserInfoComponent {
       error: () => this.msg = 'Error al actualizar'
     });
   }
-  
-  delete(){
 
-  }
+  delete(){
+    if (!confirm('¿Estás seguro de que quieres eliminar tu cuenta?')) return;
+
+    this.userService.deleteUser().subscribe(() => {
+      localStorage.removeItem('authToken');
+      this.router.navigate(['/login']);
+    });
+  };
   
 
 }
