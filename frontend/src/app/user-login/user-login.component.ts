@@ -3,6 +3,7 @@ import { UserService } from '../user.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgClass } from '@angular/common';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-user-login',
@@ -21,7 +22,8 @@ export class UserLoginComponent {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
 
     // Creamos el formulario reactivo
@@ -34,36 +36,28 @@ export class UserLoginComponent {
 
   onSubmit() {
 
-    this.submitted = true;
+    this.loading = true;
     this.errorMessage = '';
+    const email = this.loginForm.value.email;
+    const password = this.loginForm.value.password;
 
     // Si el formulario es inválido, no continuamos
     if (this.loginForm.invalid) {
       return;
     }
 
-    this.loading = true;
+    // Llamamos al servicio de login
 
-    const email = this.loginForm.value.email;
-    const password = this.loginForm.value.password;
-
-    this.userService.logIn(email, password).subscribe(
-
-      (response) => {
+    this.authService.login({ email, password }).subscribe({
+      next: (response) => {
         this.loading = false;
-        this.router.navigate(['/home']);
+        this.router.navigate(['/principal/userinfo']);
       },
-
-      (error) => {
+      error: (err) => {
         this.loading = false;
+        this.errorMessage = 'Correo electrónico o contraseña incorrectos';
+        console.error('Error en el login', err);}
+    });
 
-        if (error.status === 401) {
-          this.errorMessage = 'Credenciales incorrectas.';
-        } else {
-          this.errorMessage = 'Error al iniciar sesión.';
-        }
-      }
-
-    );
   }
 }

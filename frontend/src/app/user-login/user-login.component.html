@@ -17,7 +17,7 @@
             'is-valid': loginForm.get('password')?.valid && loginForm.get('password')?.touched
         }">
     </div>
-    <button type="submit" >enter</button>
+    <button type="submit" (click)="onSubmit()" >enter</button>
 
     @if(errorMessage){
         <p class="errorMessage">

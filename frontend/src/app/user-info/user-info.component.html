@@ -1,2 +1,14 @@
 <h1>{{ title }}</h1>
 <p>{{ text }}</p>
+
+<!--User info-->
+<div>
+
+    @if (user){
+    <h1>{{ user.name }} {{ user.surname }}</h1>
+        <h2>{{ user.email }}</h2>
+        <p>{{ user.player_id }}</p>
+        <button (click)="logout()">Cerrar sesión</button>
+    }
+
+</div>
