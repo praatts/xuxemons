@@ -1,6 +1,6 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validator, ValidatorFn, ValidationErrors, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validator, ValidatorFn, ValidationErrors, Validators, AbstractControl } from '@angular/forms';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 
@@ -18,14 +18,23 @@ export class UserInfoComponent {
 
   infoForm: FormGroup;
   msg = '';
+  currentPassword = '123456';
 
   constructor(private userService: UserService, private router: Router)
   {
     this.infoForm = new FormGroup({
       name: new FormControl(''),
       surname: new FormControl(''),
-      email: new FormControl(''),
-      password: new FormControl('')
+      email: new FormControl('', Validators.email),
+      
+      password: new FormControl('', [Validators.minLength(6),
+        (control: AbstractControl): ValidationErrors | null => {
+          const val = control.value;
+          if (!val) return null;
+          return val === this.currentPassword ? { same: true } : null;
+        }
+      ])
+
     })
   }
 
@@ -53,6 +62,5 @@ export class UserInfoComponent {
       this.router.navigate(['/login']);
     });
   };
-  
 
 }
