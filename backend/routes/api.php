@@ -27,7 +27,7 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/register', [AuthController::class, 'store']);
 
 
-Route::get('/check-headers', function (Illuminate\Http\Request $request) {
+Route::get('/check-headers', function (Request $request) {
     return response()->json([
         'all_headers' => $request->headers->all(),
         'auth_header' => $request->header('Authorization'),
