@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 
@@ -61,20 +62,18 @@ class AuthController extends Controller
             'name' => $request->name,
             'surname' => $request->surname,
             'email' => $request->email,
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
             'role' => $request->role
         ]);
 
-        /* try {
-            $token = JWTAuth::fromUser($user);
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token'], 500);
-        }
+        $token = Auth::guard('api')->login($user);
 
         return response()->json([
             'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => Auth::guard('api')->factory()->getTTL() * 60,
             'user' => new UserResource($user)
-        ]); */
+        ]);
     }
     // Login user and return JWT token
     public function login(Request $request)
@@ -105,7 +104,7 @@ class AuthController extends Controller
     // Refresh JWT token
     public function refresh()
     {
-        return $newToken = Auth::guard('api')->refresh();
+       return $this->respondWithToken(Auth::guard('api')->refresh());
     }
 
     // Return token response structure

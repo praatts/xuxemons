@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
@@ -30,9 +29,10 @@ class UserController extends Controller
     public function getUser()
     {
         try {
-            $user = Auth::user();
+            $user = Auth::guard('api')->user();
+
             if (!$user) {
-                return response()->json(['error' => 'User not found'], 404);
+                return response()->json(['error' => 'User not found or invalid token'], 404);
             }
             return response()->json($user);
         } catch (JWTException $e) {
@@ -44,15 +44,16 @@ class UserController extends Controller
     public function updateUser(Request $request)
     {
         try {
-            $user = Auth::user();
+            $user = Auth::guard('api')->user();
+
             if (!$user) {
-                return response()->json(['error' => 'User not found'], 404);
+                return response()->json(['error' => 'User not found or token invalid'], 404);
                 
             }
 
-            $user_to_update = User::where('email', $request->input('email'))->first();
-            $user_to_update->update($request->only(['name', 'email']));
-            return response()->json($user_to_update);
+            $user->update($request->only(['name', 'email']));
+
+            return response()->json($user);
         } catch (JWTException $e) {
             return response()->json(['error' => 'Failed to update user'], 500);
         }
