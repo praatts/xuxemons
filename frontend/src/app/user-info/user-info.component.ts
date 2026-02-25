@@ -45,6 +45,26 @@ export class UserInfoComponent {
     })
   }
 
+
+  //VALIDACION DE ERRORES
+  getErrorMessage(controlName: string): string {
+    const control = this.infoForm.get(controlName);
+
+    if (!control || !control.errors || !control.touched) return '';
+
+    const errors = control.errors;
+
+    if (errors['required']) return 'Este campo es obligatorio';
+    if (errors['email']) return 'Formato de email no válido';
+    if (errors['emailExists']) return 'El email introducido ya está en uso';
+    if (errors['PasswdNoMatch']) return errors['PasswdNoMatch'];
+    if (errors['pattern']) return 'Formato no válido';
+    if (errors['minlength']) return `El valor mínimo es ${errors['minlength'].requiredLength} caracteres`;
+    if (errors['min']) return `El valor mínimo es ${errors['min'].min}`;
+
+    return 'Error de validación';
+  }
+
   ngOnInit(): void {
     // traemos los datos "normales"
     this.userService.getUser().subscribe((u: any) => {
