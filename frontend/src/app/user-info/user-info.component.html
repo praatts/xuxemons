@@ -3,44 +3,50 @@
 
 <form [formGroup]="infoForm" (ngSubmit)="save()">
 
-    <label for="name">Nombre:</label>
-    <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('name')?.valid}">
+  <label>Nom:</label>
+  <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.controls['name'].valid}">
+    <input type="text" formControlName="name" placeholder="Nom">
+    <span class="check-mark" [class.visible]="infoForm.controls['name'].valid">✓</span>
+  </div>
 
-        <input type="text" id="name" formControlName="name" placeholder="Nombre">
+  <label>Cognoms:</label>
+  <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.controls['surname'].valid}">
+    <input type="text" formControlName="surname" placeholder="Cognoms">
+    <span class="check-mark" [class.visible]="infoForm.controls['surname'].valid">✓</span>
+  </div>
 
-        @if (infoForm.get('name')?.valid) {
-            <span class="check-mark">✓</span>
-        }
-    </div>
+  <label>Email:</label>
+  <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.controls['email'].valid}">
+    <input type="email" formControlName="email" placeholder="Email">
+    <span class="check-mark" [class.visible]="infoForm.controls['email'].valid">✓</span>
+  </div>
 
-    <label for="surname">Apellido:</label>
-    <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('surname')?.valid}">
+  <label>Contrasenya:</label>
+  <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.controls['password'].valid}">
+    <input type="password" formControlName="password" placeholder="Nova contrasenya">
+    <span class="check-mark" [class.visible]="infoForm.controls['password'].valid">✓</span>
+  </div>
 
-        <input type="text" id="surname" formControlName="name" placeholder="Apellido">
-        @if(infoForm.get('surname')?.valid){
-            <span class="check-mark">✓</span>
-        }
-    </div>
-
-    <label for="email">Email:</label>
-    <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('email')?.valid}">
-
-        <input type="email" id="email" formControlName="email" placeholder="Email">
-        @if(infoForm.get('email')?.valid){
-            <span class="check-mark">✓</span>
-        }
-    </div>
-
-    <label for="password">Contraseña:</label>
-    <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('password')?.valid}">
-
-        <input type="password" id="password" formControlName="password" placeholder="Contraseña">
-        @if(infoForm.get('password')?.valid){
-            <span class="check-mark">✓</span>
-        }
-    </div>
-
-    <button type="submit" [disabled]="infoForm.invalid" [ngClass]="{'disabeled-button': infoForm.invalid}">
-        Guardar
-    </button>
+  <button type="submit" [disabled]="infoForm.invalid" [ngClass]="{'disabeled-button': infoForm.invalid}">
+    Guardar
+  </button>
 </form>
+
+<p>{{ msg }}</p>
+
+<hr>
+<button (click)="showDeleteDialog = true">Donar-se de baixa</button>
+<!-- <button (click)="showLogoutDialog = true">Tancar sessió</button> -->
+<button 
+  (click)="goBack()" 
+  [ngClass]="{'active': botonInfoHover}" 
+  (mouseenter)="botonInfoHover = true"
+  (mouseleave)="botonInfoHover = false">
+  Tornar
+</button>
+
+<div *ngIf="showDeleteDialog">
+  <p>Estàs segur que vols donar-te de baixa? No podràs tornar a entrar amb aquest usuari.</p>
+  <button (click)="confirmDelete()">Sí, donar-me de baixa</button>
+  <button (click)="showDeleteDialog = false">Cancel·lar</button>
+</div>

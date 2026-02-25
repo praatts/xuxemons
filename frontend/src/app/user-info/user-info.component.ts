@@ -2,7 +2,7 @@ import { CommonModule, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validator, ValidatorFn, ValidationErrors, Validators, AbstractControl } from '@angular/forms';
 import { UserService } from '../user.service';
-import { Router } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-info',
@@ -13,31 +13,33 @@ import { Router } from '@angular/router';
 })
 export class UserInfoComponent {
 
-  title = 'user info page';
-  text = 'This is the page that you can see your info';
+  title = 'Informació de l\'usuari';
+  text = 'Des d\'aquesta pàgina pots veure i canviar la teva informació personal.';
+
+  botonInfoHover = false;
 
   infoForm: FormGroup;
   msg = '';
-  
+  showDeleteDialog = false;
+
   nameValue = '';
   surnameValue = '';
   emailValue = '';
   currentPassword = '123456';
   passwordValue = '';
 
-  constructor(private userService: UserService, private router: Router)
-  {
+  constructor(private userService: UserService, private router: Router) {
     this.infoForm = new FormGroup({
-      name: new FormControl(''),
-      surname: new FormControl(''),
+      name: new FormControl('', Validators.minLength(3)),
+      surname: new FormControl('', Validators.minLength(3)),
       email: new FormControl('', Validators.email),
 
       password: new FormControl('', [Validators.minLength(6),
-        (control: AbstractControl): ValidationErrors | null => {
-          const val = control.value;
-          if (!val) return null;
-          return val === this.currentPassword ? { same: true } : null;
-        }
+      (control: AbstractControl): ValidationErrors | null => {
+        const val = control.value;
+        if (!val) return null;
+        return val === this.currentPassword ? { same: true } : null;
+      }
       ])
 
     })
@@ -58,7 +60,7 @@ export class UserInfoComponent {
     });
   }
 
-   save() {
+  save() {
     if (this.infoForm.invalid) return;
 
     // copiamos los valores del formulario
@@ -74,20 +76,22 @@ export class UserInfoComponent {
       password: this.passwordValue
     }).subscribe({
       next: () => {
-        this.msg = 'Información actualizada';
+        this.msg = 'Informació actualitzada correctament.';
         this.infoForm.controls['password'].setValue('');
       },
-      error: () => this.msg = 'Error al actualizar'
+      error: () => this.msg = 'Error en actualitzar la informació.'
     });
   }
 
-  delete(){
-    if (!confirm('¿Estás seguro de que quieres eliminar tu cuenta?')) return;
-
+  confirmDelete() {
     this.userService.deleteUser().subscribe(() => {
       localStorage.removeItem('authToken');
       this.router.navigate(['/login']);
     });
-  };
+  }
+
+  goBack() {
+    this.router.navigate(['/principal']);
+  }
 
 }
