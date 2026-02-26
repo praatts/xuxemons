@@ -118,5 +118,5 @@ export class UserInfoComponent {
   goBack() {
     this.router.navigate(['/principal']);
   }
-
+//coments
 }
