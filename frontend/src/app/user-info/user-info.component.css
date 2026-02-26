@@ -1,0 +1,131 @@
+:root {
+    --primary-color: #FFD9A3;
+    --accent-color: #FF4400;
+    --accent-color-hover: #E63D00;
+}
+
+.initial-container {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    height: auto;
+    width: fit-content;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    height: auto;
+    width: fit-content;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    height: auto;
+    width: fit-content;
+}
+
+.form-container form label {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    height: auto;
+    width: fit-content;
+}
+
+.form-container form .input-wrapper {
+    position: relative;
+    width: fit-content;
+}
+
+.form-container form input {
+    border: 2px solid black;
+    height: 36px;
+    color: var(--accent-color, #FF4400);
+    padding-left: 10px;
+    padding-right: 40px;
+    box-sizing: border-box;
+    font-size: 14px;
+    width: 220px;
+}
+
+.form-container form input.ng-invalid.ng-touched {
+    border: 2px solid #dc3545;
+    background-color: #fff5f5;
+}
+
+.form-container form .check-mark {
+    position: absolute;
+    content: '✓';
+    color: #28A745;
+    font-size: 24px;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    font-weight: bold;
+}
+
+.form-container form input:hover {
+    border: 2px solid var(--accent-color, #FF4400);
+    transition: 0.3s;
+}
+
+.form-container form input:focus {
+    outline: none;
+    border-left: 5px solid var(--accent-color, #FF4400);
+}
+
+.form-container form input::placeholder {
+    color: #aaa;
+}
+
+.form-container form button {
+    height: 36px;
+    padding: 0 20px;
+    border-radius: 6px;
+    color: #FFFFFF;
+    background: var(--accent-color, #FF4400);
+    border: 1px solid var(--accent-color, #FF4400);
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.form-container form button:hover:not(:disabled) {
+    background: var(--accent-color-hover, #E63D00);
+    border-color: var(--accent-color-hover, #E63D00);
+    transition: 0.3s;
+}
+
+.form-container form button.disabeled-button,
+.form-container form button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.form-container form .link-container a:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent-color, #FF4400);
+    transition: all 0.3s ease-in-out;
+}
+
+.form-container .alert {
+    width: 60%;
+    margin: 0 auto 44px;
+    border-left: 5px solid #dc3545;
+}
+
+.form-container .alert-danger {
+    margin-top: 20px;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}

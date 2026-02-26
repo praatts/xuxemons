@@ -1,48 +1,54 @@
-<h1>{{ title }}</h1>
-<p>{{ text }}</p>
+<div class="initial-container">
 
-<form [formGroup]="infoForm" (ngSubmit)="save()">
+  <h1>{{ title }}</h1>
+  <p>{{ text }}</p>
 
-  <!-- 
-  <label for="player_id">ID:</label>
-      <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('player_id')?.valid}">
-        <input type="text" id="player_id" formControlName="player_id" placeholder="Nombre de usuario">
-        @if (registerForm.get('player_id')?.valid) {
+  <div class="form-container">
+    <form [formGroup]="infoForm" (ngSubmit)="save()">
+
+      <label for="name">Nom:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('name')?.valid}">
+        <input type="text" id="name" formControlName="name" placeholder="Nom">
+        @if (infoForm.get('name')?.valid) {
         <span class="check-mark">✓</span>
         }
       </div>
-  -->
 
-  <label for="name">Nom:</label>
-  <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('name')?.valid}">
-    <input type="text" formControlName="name" placeholder="Nom">
-    <span class="check-mark" [class.visible]="infoForm.controls['name'].valid">✓</span>
+      <label for="surname">Cognoms:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('surname')?.valid}">
+        <input type="text" id="surname" formControlName="surname" placeholder="Cognoms">
+        @if (infoForm.get('surname')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <label for="email">Email:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('email')?.valid}">
+        <input type="email" id="email" formControlName="email" placeholder="Email">
+        @if (infoForm.get('email')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <label for="password">Contrasenya:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('password')?.valid}">
+        <input type="password" id="password" formControlName="password" placeholder="Nova contrasenya">
+        @if (infoForm.get('password')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <br>
+
+      <button type="submit" [disabled]="infoForm.invalid" [ngClass]="{'disabeled-button': infoForm.invalid}">
+        Guardar
+      </button>
+    </form>
+
+    <p>{{ msg }}</p>
   </div>
 
-  <label for="surname">Cognoms:</label>
-  <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.controls['surname'].valid}">
-    <input type="text" formControlName="surname" placeholder="Cognoms">
-    <span class="check-mark" [class.visible]="infoForm.controls['surname'].valid">✓</span>
-  </div>
-
-  <label for="email">Email:</label>
-  <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.controls['email'].valid}">
-    <input type="email" formControlName="email" placeholder="Email">
-    <span class="check-mark" [class.visible]="infoForm.controls['email'].valid">✓</span>
-  </div>
-
-  <label for="password">Contrasenya:</label>
-  <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.controls['password'].valid}">
-    <input type="password" formControlName="password" placeholder="Nova contrasenya">
-    <span class="check-mark" [class.visible]="infoForm.controls['password'].valid">✓</span>
-  </div>
-
-  <button type="submit" [disabled]="infoForm.invalid" [ngClass]="{'disabeled-button': infoForm.invalid}">
-    Guardar
-  </button>
-</form>
-
-<p>{{ msg }}</p>
+</div>
 
 <hr>
 <button (click)="showDeleteDialog = true">Donar-se de baixa</button>
