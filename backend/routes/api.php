@@ -13,7 +13,7 @@ Route::get('/check-email', [UserController::class, 'checkEmail']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'store']);
 
-
+//debug
 Route::get('/check-headers', function (Request $request) {
     return response()->json([
         'all_headers' => $request->headers->all(),
