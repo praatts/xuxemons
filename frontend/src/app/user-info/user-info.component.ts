@@ -110,6 +110,11 @@ export class UserInfoComponent {
     });
   }
 
+  logout() {
+    this.userService.logOut();
+    this.router.navigate(['']);
+  }
+
   goBack() {
     this.router.navigate(['/principal']);
   }
