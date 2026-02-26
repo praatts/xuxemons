@@ -20,10 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend([
             HandleCors::class,
         ]);
-        $middleware->alias([
-            'JwtMiddleware' => JwtMiddleware::class,
-
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

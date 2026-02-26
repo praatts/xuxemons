@@ -1,28 +1,60 @@
-<h1>Login XUXEMONS</h1>
+<div class="login-container">
+  <div class="logo-container">
+    <img src="logo-main.png" class="logo" alt="Logo de Xuxemons">
+  </div>
 
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" formControlName="email" id="email"
-        [ngClass]="{
-            'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched,
-            'is-valid': loginForm.get('email')?.valid && loginForm.get('email')?.touched
-        }">
-    </div>
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" formControlName="password"
-        [ngClass]="{
-            'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched,
-            'is-valid': loginForm.get('password')?.valid && loginForm.get('password')?.touched
-        }">
-    </div>
-    <button type="submit" >enter</button>
+  <div class="form-container">
+    <h1>BENVINGUT/DA A XUXEMONS!</h1>
 
-    @if(errorMessage){
-        <p class="errorMessage">
-            {{ errorMessage }}
-        </p>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <label for="email">Email:</label>
+      <div class="input-wrapper"
+           [ngClass]="{'valid-input': loginForm.get('email')?.valid}">
+        <input type="email"
+               id="email"
+               formControlName="email"
+               placeholder="Correo electrónico">
+        @if (loginForm.get('email')?.valid) {
+          <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <label for="password">Password:</label>
+      <div class="input-wrapper"
+           [ngClass]="{'valid-input': loginForm.get('password')?.valid}">
+        <input type="password"
+               id="password"
+               formControlName="password"
+               placeholder="Contraseña">
+        @if (loginForm.get('password')?.valid) {
+          <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <div class="link-container">
+        <a routerLink="/register" class="login-redirect">
+          No tienes cuenta? Regístrate aquí
+        </a>
+      </div>
+
+      <button type="submit"
+              [disabled]="loginForm.invalid"
+              [ngClass]="{'disabled-button': loginForm.invalid}">
+        Entrar
+      </button>
+
+    </form>
+
+    <!--mensajes de error-->
+    @if (errorMessage) {
+      <div class="alert alert-danger" role="alert">
+        <strong>Error:</strong>
+        <ul class="mb-0">
+          <li>{{ errorMessage }}</li>
+        </ul>
+      </div>
     }
-</form>
 
+  </div>
+</div>
