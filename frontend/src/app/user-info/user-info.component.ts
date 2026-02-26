@@ -1,6 +1,6 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validator, ValidatorFn, ValidationErrors, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
@@ -25,7 +25,6 @@ export class UserInfoComponent {
   nameValue = '';
   surnameValue = '';
   emailValue = '';
-  currentPassword = '123456';
   passwordValue = '';
 
   constructor(private userService: UserService, private router: Router) {
@@ -33,15 +32,7 @@ export class UserInfoComponent {
       name: new FormControl('', Validators.minLength(3)),
       surname: new FormControl('', Validators.minLength(3)),
       email: new FormControl('', Validators.email),
-
-      password: new FormControl('', [Validators.minLength(6),
-      (control: AbstractControl): ValidationErrors | null => {
-        const val = control.value;
-        if (!val) return null;
-        return val === this.currentPassword ? { same: true } : null;
-      }
-      ])
-
+      password: new FormControl('', Validators.minLength(6))
     })
   }
 
@@ -71,9 +62,8 @@ export class UserInfoComponent {
       this.nameValue = u.name || '';
       this.surnameValue = u.surname || '';
       this.emailValue = u.email || '';
-      this.currentPassword = u.passwordActual || this.currentPassword;
+      this.passwordValue = u.passwordActual || this.passwordValue;
 
-      // seteamos los valores en el formulario de manera directa
       this.infoForm.controls['name'].setValue(this.nameValue);
       this.infoForm.controls['surname'].setValue(this.surnameValue);
       this.infoForm.controls['email'].setValue(this.emailValue);
@@ -83,18 +73,22 @@ export class UserInfoComponent {
   save() {
     if (this.infoForm.invalid) return;
 
-    // copiamos los valores del formulario
     this.nameValue = this.infoForm.controls['name'].value;
     this.surnameValue = this.infoForm.controls['surname'].value;
     this.emailValue = this.infoForm.controls['email'].value;
     this.passwordValue = this.infoForm.controls['password'].value;
 
-    this.userService.updateUser({
+    const payload: any = {
       name: this.nameValue,
       surname: this.surnameValue,
-      email: this.emailValue,
-      password: this.passwordValue
-    }).subscribe({
+      email: this.emailValue
+    };
+
+    if (this.passwordValue) {
+      payload.password = this.passwordValue;
+    }
+
+    this.userService.updateUser(payload).subscribe({
       next: () => {
         this.msg = 'Informació actualitzada correctament.';
         this.infoForm.controls['password'].setValue('');
@@ -118,5 +112,4 @@ export class UserInfoComponent {
   goBack() {
     this.router.navigate(['/principal']);
   }
-//coments
 }
