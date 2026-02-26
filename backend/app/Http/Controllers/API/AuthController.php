@@ -23,7 +23,7 @@ class AuthController extends Controller
                 'string',
                 'max:255',
                 'unique:users,player_id',
-                'regex:/^[A-Za-z]+#[0-9]{4}$/'
+                'regex:/^#[A-Za-z]+[0-9]{4}$/'
             ],
 
             'name' => [
