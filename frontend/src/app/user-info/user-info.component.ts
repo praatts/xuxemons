@@ -112,7 +112,7 @@ export class UserInfoComponent {
 
   logout() {
     this.userService.logOut();
-    this.router.navigate(['']);
+    this.router.navigate(['/']);
   }
 
   goBack() {
