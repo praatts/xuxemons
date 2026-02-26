@@ -47,23 +47,19 @@ export class UserLoginComponent {
     const email = this.loginForm.value.email;
     const password = this.loginForm.value.password;
 
-    this.userService.logIn(email, password).subscribe(
+    this.userService.logIn(email, password).subscribe({
 
-      (response) => {
+      next: (response) => {
+        console.log('Respuesta recibida en componente:', response);
         this.loading = false;
-        this.router.navigate(['/home']);
+        // Forzamos la navegación
+        this.router.navigateByUrl('/principal'); 
       },
-
-      (error) => {
+      error: (error) => {
         this.loading = false;
-
-        if (error.status === 401) {
-          this.errorMessage = 'Credenciales incorrectas.';
-        } else {
-          this.errorMessage = 'Error al iniciar sesión.';
-        }
+        console.error('Error capturado:', error);
+        this.errorMessage = error.status === 401 ? 'Credenciales incorrectas.' : 'Error al iniciar sesión.';
       }
-
-    );
+    });
   }
 }
