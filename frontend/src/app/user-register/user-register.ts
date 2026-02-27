@@ -107,6 +107,7 @@ export class UserRegister {
       next: (response) => {
         console.log('Usuario creado:', response);
         alert('Usuario creado correctamente. Ahora puedes iniciar sesión.');
+        this.router.navigate(['/']); //para que vaya al inicio al completar el registro
       },
       error: (error) => {
         console.error('Error al crear usuario:', error);
