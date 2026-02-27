@@ -8,14 +8,6 @@
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-      <label for="player_id">ID:</label>
-      <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('player_id')?.valid}">
-        <input type="text" id="player_id" formControlName="player_id" placeholder="Nombre de usuario">
-        @if (registerForm.get('player_id')?.valid) {
-        <span class="check-mark">✓</span>
-        }
-      </div>
-
       <label for="name">Nombre:</label>
       <div class="input-wrapper" [ngClass]="{'valid-input': registerForm.get('name')?.valid}">
         <input type="text" id="name" formControlName="name" placeholder="Nombre">

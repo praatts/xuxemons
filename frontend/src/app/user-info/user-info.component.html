@@ -1,14 +1,69 @@
-<h1>{{ title }}</h1>
-<p>{{ text }}</p>
+<div class="initial-container">
 
-<!--User info-->
+  <h1>{{ title }}</h1>
+  <p>{{ text }}</p>
+
+  <div class="form-container">
+    <form [formGroup]="infoForm" (ngSubmit)="save()">
+
+      <label for="name">Nom:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('name')?.valid}">
+        <input type="text" id="name" formControlName="name" placeholder="Nom">
+        @if (infoForm.get('name')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <label for="surname">Cognoms:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('surname')?.valid}">
+        <input type="text" id="surname" formControlName="surname" placeholder="Cognoms">
+        @if (infoForm.get('surname')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <label for="email">Email:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('email')?.valid}">
+        <input type="email" id="email" formControlName="email" placeholder="Email">
+        @if (infoForm.get('email')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <label for="password">Contrasenya:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('password')?.valid}">
+        <input type="password" id="password" formControlName="password" placeholder="Nova contrasenya">
+        @if (infoForm.get('password')?.valid) {
+        <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <br>
+
+      <button type="submit" [disabled]="infoForm.invalid" [ngClass]="{'disabeled-button': infoForm.invalid}">
+        Guardar
+      </button>
+    </form>
+
+    <p>{{ msg }}</p>
+  </div>
+
+</div>
+
+<hr>
+<button (click)="showDeleteDialog = true">Donar-se de baixa</button>
+<!-- <button (click)="showLogoutDialog = true">Tancar sessió</button> -->
+<button (click)="goBack()" [ngClass]="{'active': botonInfoHover}" (mouseenter)="botonInfoHover = true"
+  (mouseleave)="botonInfoHover = false">
+  Tornar
+</button>
+
+<button (click)="logout()">Log Out</button>
+
 <div>
-
-    @if (user){
-    <h1>{{ user.name }} {{ user.surname }}</h1>
-        <h2>{{ user.email }}</h2>
-        <p>{{ user.player_id }}</p>
-        <button (click)="logout()">Cerrar sesión</button>
-    }
-
+  @if(showDeleteDialog){
+  <p>Estàs segur que vols donar-te de baixa? No podràs tornar a entrar amb aquest usuari.</p>
+  <button (click)="confirmDelete()">Sí, donar-me de baixa</button>
+  <button (click)="showDeleteDialog = false">Cancel·lar</button>
+  }
 </div>

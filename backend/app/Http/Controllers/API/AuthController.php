@@ -23,7 +23,7 @@ class AuthController extends Controller
                 'string',
                 'max:255',
                 'unique:users,player_id',
-                'regex:/^[A-Za-z]+#[0-9]{4}$/'
+                'regex:/^#[A-Za-z]+[0-9]{4}$/'
             ],
 
             'name' => [
@@ -111,7 +111,8 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         return response()->json([
-            'access_token' => $token,
+            'token' => $token,
+            'user_id' => Auth::guard('api')->user()->id,
             'token_type'   => 'bearer',
             'expires_in'   => Auth::guard('api')->factory()->getTTL() * 60,
         ]);

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth.guard';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { UserRegister } from './user-register/user-register';
 import { UserPrincipalComponent } from './user-principal/user-principal.component';
@@ -20,11 +21,13 @@ export const routes: Routes = [
         path: 'principal',
         title: 'Principal',
         component: UserPrincipalComponent,
+        canActivate: [authGuard],
         children: [ //ruta hija
             {
                 path: 'userinfo',
                 title: 'user-info',
-                component: UserInfoComponent
+                component: UserInfoComponent,
+                canActivate: [authGuard]
             }
         ]
     }

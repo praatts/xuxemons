@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserInterface } from './user-interface';
-import { AbstractControl, AsyncValidator, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { map } from 'rxjs/internal/operators/map';
-import { catchError, debounce, debounceTime, first, of, switchMap } from 'rxjs';
+import { catchError, debounceTime, first, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +14,30 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
+  // Retorna headers con el token JWT
+  private authHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({ Authorization: `Bearer ${token}` });
+  }
+
   //Mètode de test per comprovar el endpoint 'test' del backend
   getTest() {
     return this.http.get(`${this.url}/test`);
+  }
+
+  //conseguir usuario
+  getUser() {
+    return this.http.get(`${this.url}/profile`, { headers: this.authHeaders() });
+  }
+
+  //modificar Usuarios
+  updateUser(user: any) {
+    return this.http.put(`${this.url}/update`, user, { headers: this.authHeaders() });
+  }
+
+  //eliminar Usuarios (endpoint pendiente en backend)
+  deleteUser() {
+    return this.http.delete(`${this.url}/user`, { headers: this.authHeaders() });
   }
 
   postUser(user: UserInterface) {

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
@@ -48,10 +49,15 @@ class UserController extends Controller
 
             if (!$user) {
                 return response()->json(['error' => 'User not found or token invalid'], 404);
-                
             }
 
-            $user->update($request->only(['name', 'email']));
+            $data = $request->only(['name', 'surname', 'email']);
+
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->password);
+            }
+
+            $user->update($data);
 
             return response()->json($user);
         } catch (JWTException $e) {

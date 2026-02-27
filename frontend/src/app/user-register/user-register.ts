@@ -18,7 +18,6 @@ export class UserRegister {
 
   constructor(private userService: UserService) {
     this.registerForm = new FormGroup({
-      player_id: new FormControl('', [Validators.required]),
       name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
       surname: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
       email: new FormControl('', [Validators.required, Validators.email], [this.userService.checkEmailExists()]),
@@ -68,7 +67,6 @@ export class UserRegister {
 
     // Verificar errores en cada control
     const fieldNames: { [key: string]: string } = {
-      'player_id': 'Nombre de usuario',
       'name': 'Nombre',
       'surname': 'Apellido',
       'email': 'Email',
@@ -125,10 +123,12 @@ export class UserRegister {
   };
 
   generatePlayerId(): string | undefined {
-    const id = this.registerForm.get('player_id');
-    if (id) {
+    const id = this.registerForm.get('name');
+
+    if (id && id.value) {
+      const cleanId = id.value.replace(/[^a-zA-Z0-9]/g, '').trim();
       const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-      return `${id.value}#${randomNum}`;
+      return `#${cleanId}${randomNum}`;
     }
     return undefined
   }

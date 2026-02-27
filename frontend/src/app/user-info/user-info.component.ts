@@ -1,9 +1,9 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../auth.service';
-import { UserInterface } from '../user-interface';
-import { Router } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UserService } from '../user.service';
+import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-user-info',
@@ -14,39 +14,103 @@ import { Router } from '@angular/router';
 })
 export class UserInfoComponent {
 
-  title = 'user info page';
-  text = 'This is the page that you can see your info';
+  title = 'Informació de l\'usuari';
+  text = 'Des d\'aquesta pàgina pots veure i canviar la teva informació personal.';
 
-  user: UserInterface | null = null;
-  errorMessage: string = '';
+  botonInfoHover = false;
 
-  ngOnInit() {
-    this.loadProfile();
+  infoForm: FormGroup;
+  msg = '';
+  showDeleteDialog = false;
+
+  nameValue = '';
+  surnameValue = '';
+  emailValue = '';
+  passwordValue = '';
+
+  constructor(private userService: UserService, private router: Router) {
+    this.infoForm = new FormGroup({
+      name: new FormControl('', Validators.minLength(3)),
+      surname: new FormControl('', Validators.minLength(3)),
+      email: new FormControl('', Validators.email),
+      password: new FormControl('', Validators.minLength(6))
+    })
   }
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
 
-  //Método que carga el usuario
-  loadProfile() {
-    this.authService.getProfile().subscribe({
-      next: (data: UserInterface) => {
-        this.user = data;
-      },
-      error: (err) => {
-        console.error('Error al cargar el perfil', err);
-        this.errorMessage = 'No se ha podido cargar el usuario';
-      }
+  //VALIDACION DE ERRORES
+  getErrorMessage(controlName: string): string {
+    const control = this.infoForm.get(controlName);
+
+    if (!control || !control.errors || !control.touched) return '';
+
+    const errors = control.errors;
+
+    if (errors['required']) return 'Este campo es obligatorio';
+    if (errors['email']) return 'Formato de email no válido';
+    if (errors['emailExists']) return 'El email introducido ya está en uso';
+    if (errors['PasswdNoMatch']) return errors['PasswdNoMatch'];
+    if (errors['pattern']) return 'Formato no válido';
+    if (errors['minlength']) return `El valor mínimo es ${errors['minlength'].requiredLength} caracteres`;
+    if (errors['min']) return `El valor mínimo es ${errors['min'].min}`;
+
+    return 'Error de validación';
+  }
+
+  ngOnInit(): void {
+    // traemos los datos "normales"
+    this.userService.getUser().subscribe((u: any) => {
+      this.nameValue = u.name || '';
+      this.surnameValue = u.surname || '';
+      this.emailValue = u.email || '';
+      this.passwordValue = u.passwordActual || this.passwordValue;
+
+      this.infoForm.controls['name'].setValue(this.nameValue);
+      this.infoForm.controls['surname'].setValue(this.surnameValue);
+      this.infoForm.controls['email'].setValue(this.emailValue);
     });
   }
 
-  //Limpia el token y redirecciona al /login
-  logout() {
-    this.authService.logout();
-    return this.router.navigate(['/login'])
-  }
-  
+  save() {
+    if (this.infoForm.invalid) return;
 
+    this.nameValue = this.infoForm.controls['name'].value;
+    this.surnameValue = this.infoForm.controls['surname'].value;
+    this.emailValue = this.infoForm.controls['email'].value;
+    this.passwordValue = this.infoForm.controls['password'].value;
+
+    const payload: any = {
+      name: this.nameValue,
+      surname: this.surnameValue,
+      email: this.emailValue
+    };
+
+    if (this.passwordValue) {
+      payload.password = this.passwordValue;
+    }
+
+    this.userService.updateUser(payload).subscribe({
+      next: () => {
+        this.msg = 'Informació actualitzada correctament.';
+        this.infoForm.controls['password'].setValue('');
+      },
+      error: () => this.msg = 'Error en actualitzar la informació.'
+    });
+  }
+
+  confirmDelete() {
+    this.userService.deleteUser().subscribe(() => {
+      localStorage.removeItem('authToken');
+      this.router.navigate(['/login']);
+    });
+  }
+
+  logout() {
+    this.userService.logOut();
+    this.router.navigate(['/']);
+  }
+
+  goBack() {
+    this.router.navigate(['/principal']);
+  }
 }
