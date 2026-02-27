@@ -27,5 +27,6 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/profile', [UserController::class, 'getUser']);
     Route::get('/users', [UserController::class, 'index']);
     Route::put('/update', [UserController::class, 'updateUser']);
+    Route::delete('/user', [UserController::class, 'deleteUser']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
