@@ -53,7 +53,8 @@
       <div class="link-container">
         <a routerLink="/" class="login-redirect">Ya tienes cuenta? Inicia sesión aquí</a>
       </div>
-      <button type="submit" [disabled]="registerForm.invalid" [ngClass]="{'disabled-button': registerForm.invalid}">
+      <button type="submit" (click)="goBack()" [disabled]="registerForm.invalid"
+        [ngClass]="{'disabled-button': registerForm.invalid}">
         Submit
       </button>
     </form>

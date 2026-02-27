@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormArray, AbstractControl, ValidatorFn, AsyncValidatorFn, ValidationErrors, MinLengthValidator } from '@angular/forms';
 import { UserService } from '../user.service';
-import { RouterLink } from "@angular/router";
+import { RouterLink, Router } from "@angular/router";
 
 @Component({
   selector: 'app-user-register',
@@ -16,7 +16,7 @@ export class UserRegister {
   registerForm: FormGroup;
   namePattern = /^[a-zA-ZÀ-ÿ\s]+$/;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private router: Router) {
     this.registerForm = new FormGroup({
       name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
       surname: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
@@ -26,7 +26,7 @@ export class UserRegister {
     }, { validators: this.passwordMatchValidator });
   }
 
-  passwordMatchValidator(control: AbstractControl) : ValidationErrors | null {
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const p1 = control.get('passwd1')?.value;
     const p2 = control.get('passwd2')?.value;
 
@@ -59,7 +59,7 @@ export class UserRegister {
 
   getAllErrors(): string[] {
     const errors: string[] = [];
-    
+
     // Verificar errores a nivel del formulario
     if (this.registerForm.hasError('PasswdNoMatch')) {
       errors.push('Las contraseñas no coinciden');
@@ -116,7 +116,7 @@ export class UserRegister {
   };
 
   //comprobar si el campo es valido
-  isFieldInvalid(field: string): boolean{
+  isFieldInvalid(field: string): boolean {
     const control = this.registerForm.get(field);
 
     return !!(control && control?.invalid && control.touched);
@@ -131,5 +131,9 @@ export class UserRegister {
       return `#${cleanId}${randomNum}`;
     }
     return undefined
+  }
+
+  goBack() {
+    this.router.navigate(['/']);
   }
 }
