@@ -1,0 +1,39 @@
+.panel-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Lado izquierdo */
+.panel-menu {
+  width: 220px;
+  padding: 20px;
+  border-right: 2px solid black;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #ff7746;
+}
+
+/* Links */
+.panel-menu a {
+  text-decoration: none;
+  padding: 8px;
+  border: 2px solid black;
+  color: #FF4400;
+}
+
+.panel-menu a:hover {
+  border-color: #FF4400;
+  transition: 0.3s;
+}
+
+.panel-menu a.active {
+  border-left: 5px solid #FF4400;
+  font-weight: bold;
+}
+
+/* Lado derecho */
+.panel-content {
+  flex: 1;
+  padding: 40px;
+}
