@@ -1,6 +1,7 @@
 .panel-container {
   display: flex;
   min-height: 100vh;
+  background-color: #ffaf92;
 }
 
 /* Lado izquierdo */
