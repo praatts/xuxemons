@@ -14,7 +14,7 @@ export const routes: Routes = [
         path: 'register',
         title: 'Register',
         component: UserRegister
-        
+
     },
     { //rura padre
         path: 'principal',
@@ -27,5 +27,6 @@ export const routes: Routes = [
                 component: UserInfoComponent
             }
         ]
-    }
+    },
+
 ];
