@@ -63,7 +63,7 @@
 <div>
   @if(showDeleteDialog){
   <p>Estàs segur que vols donar-te de baixa? No podràs tornar a entrar amb aquest usuari.</p>
-  <button (click)="confirmDelete()">Sí, donar-me de baixa</button>
+  <button (click)="confirmDelete()" (click)="logout()">Sí, donar-me de baixa</button>
   <button (click)="showDeleteDialog = false">Cancel·lar</button>
   }
 </div>
