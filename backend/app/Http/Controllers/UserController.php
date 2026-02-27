@@ -64,4 +64,20 @@ class UserController extends Controller
             return response()->json(['error' => 'Failed to update user'], 500);
         }
     }
+
+    public function deleteUser(){
+        try {
+            $user = Auth::guard('api')->user();
+
+            if (!$user) {
+                return response()->json(['error' => 'User not found or token invalid'], 404);
+            }
+
+            $user->delete();
+
+            return response()->json(['message' => 'User deleted successfully']);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Failed to delete user'], 500);
+        }
+    }
 }
