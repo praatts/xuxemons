@@ -3,6 +3,7 @@ import { UserService } from '../user.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-user-login',
@@ -21,7 +22,8 @@ export class UserLoginComponent {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
 
     // Creamos el formulario reactivo
@@ -34,18 +36,15 @@ export class UserLoginComponent {
 
   onSubmit() {
 
-    this.submitted = true;
+    this.loading = true;
     this.errorMessage = '';
+    const email = this.loginForm.value.email;
+    const password = this.loginForm.value.password;
 
     // Si el formulario es inválido, no continuamos
     if (this.loginForm.invalid) {
       return;
     }
-
-    this.loading = true;
-
-    const email = this.loginForm.value.email;
-    const password = this.loginForm.value.password;
 
     this.userService.logIn(email, password).subscribe({
 
