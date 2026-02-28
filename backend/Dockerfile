@@ -7,6 +7,4 @@ WORKDIR /app
 COPY . . 
 RUN composer install 
 RUN composer update
-RUN php artisan migrate
-RUN php artisan migrate:refresh --seed
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
