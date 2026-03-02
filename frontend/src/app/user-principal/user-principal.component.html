@@ -1,14 +1,13 @@
-<div class="principal">
-    <h1>{{ title }}</h1>
+<div class="panel-container">
+  <aside class="panel-menu">
+    @for(ruta of rutas; track ruta.label){
+      <a routerLink="{{ruta.route}}" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}" (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
+        {{ruta.label}}
+      </a>
+    }
+  </aside>
 
-    <button 
-      routerLink="userinfo"
-      [ngClass]="{'hover': botonInfoHover}"
-      (mouseenter)="botonInfoHover = true"
-      (mouseleave)="botonInfoHover = false">
-      Informació del usuari
-    </button>
-
+  <section class="panel-content">
     <router-outlet/>
-    
+  </section>
 </div>
