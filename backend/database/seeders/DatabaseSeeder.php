@@ -25,5 +25,11 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'password' => bcrypt(123456),
         ]);
+        
+        /* para que se ejecute el seeder sin tener que elejutarlo especificamente */
+        $this->call([
+        XuxeSeeder::class,
+        ]);  
+
     }
 }
