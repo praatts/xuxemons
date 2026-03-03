@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('xuxes', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['agua', 'tierra', 'aire']);
-            $table->enum('size', ['pequeno', 'mediano', 'grande']);
+            $table->timestamps();
         });
     }
 
