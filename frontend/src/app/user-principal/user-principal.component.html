@@ -1,21 +1,39 @@
 <div class="panel-container">
   <nav class="panel-menu">
     <img src="logo_xuxemons.png" alt="Xuxemons Logo" class="logo-img">
-    @for(ruta of rutas; track ruta.label){
     <div class="link-wrapper">
-      <img src="{{ruta.img}}" alt="{{ruta.label}} icon">
-      <a routerLink="{{ruta.route}}" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}"
-        (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
-        {{ruta.label}}
-      </a>
+      @for(ruta of rutas; track ruta.label){
+      <div class="link-nav">
+        <img src="{{ruta.img}}" alt="{{ruta.label}} icon">
+        <a routerLink="{{ruta.route}}" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}"
+          (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
+          {{ruta.label}}
+        </a>
+      </div>
+      }
     </div>
-    }
+
+    <div class="dark-toggle">
+      <img src="modo_oscuro.png" alt="modo oscuro icon">
+      <span class="dark-text">Mode fosc</span>
+      <label class="switch">
+        <input type="checkbox" [checked]="darkMode" (change)="toggleDarkMode()">
+        <span class="slider"></span>
+      </label>
+    </div>
 
     <div class="user-info">
-      <a (click)="logout()"><img src="logout.png" alt="Logout" class="logout-icon"></a>
+      <div class="user-left">
+        <img src="user.jpg" alt="Usuario" class="user-avatar">
+        <p class="user-name">Nombre Usuario</p>
+      </div>
+
+      <a (click)="logout()">
+        <img src="logout.png" alt="Logout" class="logout-icon">
+      </a>
     </div>
   </nav>
-  
+
   <section class="panel-content">
     <router-outlet />
   </section>

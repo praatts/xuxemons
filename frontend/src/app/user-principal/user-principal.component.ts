@@ -20,10 +20,9 @@ interface rutas {
 })
 export class UserPrincipalComponent {
   
-  constructor(private userService: UserService, private router: Router) {
+  constructor(private userService: UserService, private router: Router) {}
 
-  }
-
+  darkMode = false;
   botonInfoHover = false;
 
   rutas: rutas[] = [
@@ -36,6 +35,10 @@ export class UserPrincipalComponent {
   logout() {
     this.userService.logOut();
     this.router.navigate(['/']);
+  }
+
+  toggleDarkMode() {
+    this.darkMode = !this.darkMode;
   }
 
 }
