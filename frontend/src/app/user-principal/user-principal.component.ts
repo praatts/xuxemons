@@ -1,6 +1,8 @@
 import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { UserService } from '../user.service';
+import { Router } from '@angular/router';
 
 interface rutas {
   label: string;
@@ -17,8 +19,10 @@ interface rutas {
   styleUrl: './user-principal.component.css'
 })
 export class UserPrincipalComponent {
-  title = 'inicio';
-  content = 'welcome to ower principal page...'
+  
+  constructor(private userService: UserService, private router: Router) {
+
+  }
 
   botonInfoHover = false;
 
@@ -27,5 +31,10 @@ export class UserPrincipalComponent {
     { label: 'Usuario', route: 'userinfo', exact: true, img: 'user.png' },
     { label: 'xuxedex', route: 'xuxedex', exact: true },
   ];
+
+  logout() {
+    this.userService.logOut();
+    this.router.navigate(['/']);
+  }
 
 }
