@@ -26,7 +26,7 @@ export class UserPrincipalComponent {
   botonInfoHover = false;
 
   rutas: rutas[] = [
-    //{ label: 'Inicio', route: 'inicio', exact: true },
+    //{ label: 'Inicio', route: 'inicio', exact: true, img: 'inicio.png' },
     { label: 'Usuario', route: 'userinfo', exact: true, img: 'user.png' },
     { label: 'xuxedex', route: 'xuxedex', exact: true, img: 'xuxedex.png' },
     { label: 'Motxilla', route: 'inventari', exact: true, img: 'inventari.png' },
