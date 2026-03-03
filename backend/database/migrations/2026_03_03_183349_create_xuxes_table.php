@@ -9,6 +9,8 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
+    /* esta es una tabla para todas las xuxes que van a existir en el juego */
     public function up(): void
     {
         Schema::create('xuxes', function (Blueprint $table) {
