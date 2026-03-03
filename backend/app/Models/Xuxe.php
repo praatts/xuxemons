@@ -9,4 +9,11 @@ class Xuxe extends Model
 {
     /** @use HasFactory<\Database\Factories\XuxeFactory> */
     use HasFactory;
+
+    protected $fillable = ['name', 'type', 'size'];
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
 }
