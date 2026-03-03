@@ -6,6 +6,7 @@ interface rutas {
   label: string;
   route: string;
   exact: boolean;
+  img?: string;
 }
 
 @Component({
@@ -23,7 +24,8 @@ export class UserPrincipalComponent {
 
   rutas: rutas[] = [
     //{ label: 'Inicio', route: 'inicio', exact: true },
-    { label: 'Usuario', route: 'userinfo', exact: true }
+    { label: 'Usuario', route: 'userinfo', exact: true, img: 'user.png' },
+    { label: 'xuxedex', route: 'xuxedex', exact: true },
   ];
 
 }

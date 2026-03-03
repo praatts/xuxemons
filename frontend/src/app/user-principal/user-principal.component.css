@@ -6,30 +6,45 @@
 
 /* Lado izquierdo */
 .panel-menu {
-  width: 220px;
-  padding: 20px;
-  border-right: 2px solid black;
+  width: 400px;
+  border-right: 2px solid #FF4400;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  background-color: #ff7746;
+  background-color: rgba(255, 68, 0, 0.25);
 }
 
 /* Links */
 .panel-menu a {
   text-decoration: none;
-  padding: 8px;
-  border: 2px solid black;
-  color: #FF4400;
+  width: 100%;
+  padding: 20px;
+  color: #000000;
+  position: relative;
+}
+
+.panel-menu .link-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.link-wrapper img {
+  width: 32px;
+  height: 32px;
+  margin-left: 10px;
 }
 
 .panel-menu a:hover {
-  border-color: #FF4400;
+  background-color: rgba(255, 68, 0, 0.60);
+  color: #FFFFFF;
   transition: 0.3s;
 }
 
+
+
 .panel-menu a.active {
-  border-left: 5px solid #FF4400;
+  color: #FFFFFF;
+  background-color: rgba(255, 68, 0);
   font-weight: bold;
 }
 

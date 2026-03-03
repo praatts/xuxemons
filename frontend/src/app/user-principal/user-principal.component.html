@@ -1,13 +1,17 @@
 <div class="panel-container">
-  <aside class="panel-menu">
+  <nav class="panel-menu">
     @for(ruta of rutas; track ruta.label){
-      <a routerLink="{{ruta.route}}" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}" (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
+    <div class="link-wrapper">
+      <img src="{{ruta.img}}" alt="{{ruta.label}} icon">
+      <a routerLink="{{ruta.route}}" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}"
+        (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
         {{ruta.label}}
       </a>
+    </div>
     }
-  </aside>
+  </nav>
 
   <section class="panel-content">
-    <router-outlet/>
+    <router-outlet />
   </section>
 </div>
