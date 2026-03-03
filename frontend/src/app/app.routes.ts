@@ -4,6 +4,7 @@ import { UserLoginComponent } from './user-login/user-login.component';
 import { UserRegister } from './user-register/user-register';
 import { UserPrincipalComponent } from './user-principal/user-principal.component';
 import { UserInfoComponent } from './user-info/user-info.component';
+import { XuxedexComponent } from './xuxedex/xuxedex.component';
 
 export const routes: Routes = [
     {
@@ -27,6 +28,12 @@ export const routes: Routes = [
                 path: 'userinfo',
                 title: 'user-info',
                 component: UserInfoComponent,
+                canActivate: [authGuard]
+            },
+            {
+                path: 'xuxedex',
+                title: 'xuxedex',
+                component: XuxedexComponent,
                 canActivate: [authGuard]
             }
         ]
