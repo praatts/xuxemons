@@ -1,0 +1,80 @@
+
+.container {
+    flex: 1;
+    padding: 50px;
+    background-color: #FFD9A3;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    overflow: hidden;
+    min-width: 0;
+    box-sizing: border-box;
+    max-height: 100vh;
+}
+
+.container .search-wrapper {
+    width: 100%;
+    background-color: #FFFFFF;
+    border-radius: 40px;
+    height: 62px;
+    min-height: 62px;
+    border: 1px solid #C1BBBB;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+}
+
+.search-wrapper img {
+    margin-left: 15px;
+    width: 32px;
+    height: 32pxgit ad;
+}
+
+.search-wrapper input {
+    height: fit-content;
+    border: none;
+    flex: 1;
+}
+
+
+
+.search-wrapper input::placeholder {
+    font-size: 20px;
+}
+
+.search-wrapper input:focus {
+    outline: none;
+}
+
+.search-wrapper select {
+    margin-left: auto;
+    margin-right: 20px;
+    background-color: #C1BBBB;
+    border-radius: 24px;
+    padding: 8px;
+}
+
+.search-wrapper select:focus {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.container .xuxedex-wrapper {
+    display: grid;
+    flex: 1;
+    grid-template-columns: repeat(4, 250px);
+    grid-auto-rows: 250px;
+    gap: 50px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-width: 0;
+    min-height: 0;
+    padding-right: 10px;
+
+}
+
+.xuxedex-wrapper .xuxemon-card {
+    background-color: #E6CCCC;
+    border-radius: 56px;
+}

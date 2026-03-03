@@ -51,5 +51,5 @@
 /* Lado derecho */
 .panel-content {
   flex: 1;
-  padding: 40px;
+  background-color: #FFD9A3;
 }
