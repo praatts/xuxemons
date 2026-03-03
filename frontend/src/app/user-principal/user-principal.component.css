@@ -53,3 +53,23 @@
   flex: 1;
   padding: 40px;
 }
+
+.logo-img {
+  width: 300px;
+  height: auto;
+  margin: 20px auto;
+  flex: wrap;
+  content: center;
+}
+
+.logout-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.user-info {
+  margin-top: auto;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}

@@ -29,7 +29,8 @@ export class UserPrincipalComponent {
   rutas: rutas[] = [
     //{ label: 'Inicio', route: 'inicio', exact: true },
     { label: 'Usuario', route: 'userinfo', exact: true, img: 'user.png' },
-    { label: 'xuxedex', route: 'xuxedex', exact: true },
+    { label: 'xuxedex', route: 'xuxedex', exact: true, img: 'xuxedex.png' },
+    { label: 'Motxilla', route: 'inventari', exact: true, img: 'inventari.png' },
   ];
 
   logout() {

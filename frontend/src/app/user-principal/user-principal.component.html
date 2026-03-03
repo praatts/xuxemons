@@ -1,5 +1,6 @@
 <div class="panel-container">
   <nav class="panel-menu">
+    <img src="logo_xuxemons.png" alt="Xuxemons Logo" class="logo-img">
     @for(ruta of rutas; track ruta.label){
     <div class="link-wrapper">
       <img src="{{ruta.img}}" alt="{{ruta.label}} icon">
@@ -9,10 +10,12 @@
       </a>
     </div>
     }
+
+    <div class="user-info">
+      <a (click)="logout()"><img src="logout.png" alt="Logout" class="logout-icon"></a>
+    </div>
   </nav>
-  <nav class="user-info">
-    <button (click)="logout()">Logout</button>
-  </nav>
+  
   <section class="panel-content">
     <router-outlet />
   </section>
