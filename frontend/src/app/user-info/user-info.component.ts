@@ -111,6 +111,6 @@ export class UserInfoComponent {
   }
 
   goBack() {
-    this.router.navigate(['/principal']);
+    this.router.navigate(['/main/principal']);
   }
 }
