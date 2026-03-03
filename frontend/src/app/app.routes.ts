@@ -5,6 +5,7 @@ import { UserRegister } from './user-register/user-register';
 import { UserPrincipalComponent } from './user-principal/user-principal.component';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { XuxedexComponent } from './xuxedex/xuxedex.component';
+import { MotxillaComponent } from './motxilla/motxilla.component';
 
 export const routes: Routes = [
     {
@@ -34,6 +35,12 @@ export const routes: Routes = [
                 path: 'xuxedex',
                 title: 'xuxedex',
                 component: XuxedexComponent,
+                canActivate: [authGuard]
+            },
+            {
+                path: 'inventari',
+                title: 'motxilla',
+                component: MotxillaComponent,
                 canActivate: [authGuard]
             }
         ]
