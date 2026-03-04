@@ -15,5 +15,13 @@ class InventoryController extends Controller
     const MAX_SLOTS = 20;
     const MAX_STACK = 5;
 
-    
+    /* get api/Invenory | devuelve todos los slots unicamente del usuario registrado */
+    public function index(): JsonResponse
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $inventory = Inventory::width('xuxe')->where('user_id', $user->id)->get();
+
+        return response()->json($inventory);
+    }
 }
