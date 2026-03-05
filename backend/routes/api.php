@@ -24,9 +24,20 @@ Route::get('/check-headers', function (Request $request) {
 
 //Agrupamos las rutas que requieren autenticación con el middleware JWT
 Route::middleware([JwtMiddleware::class])->group(function () {
+    //USUARIO
     Route::get('/profile', [UserController::class, 'getUser']);
     Route::get('/users', [UserController::class, 'index']);
     Route::put('/update', [UserController::class, 'updateUser']);
     Route::delete('/user', [UserController::class, 'deleteUser']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    //MOXILA
+    Route::get('/inventory', [InventoryController::class, 'index']);
+    Route::post('/inventory/add', [InventoryController::class, 'add']);
+    Route::post('/inventory/{slotId}/evolve', [InventoryController::class, 'evolve']);
+
+    //XUXEDEX
+    Route::get('/xuxedex', [XuxedexController::class, 'index']);
+    Route::get('/xuxedex/users', [XuxedexController::class, 'users']);
+    Route::post('/xuxedex/add-random/{userId}', [XuxedexController::class, 'addRandom']);
 });

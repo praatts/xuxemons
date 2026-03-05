@@ -26,5 +26,11 @@ class DatabaseSeeder extends Seeder
             'pfp' => 'https://images.freeimages.com/fic/images/icons/2526/bloggers/256/admin.png',
             'password' => bcrypt(123456),
         ]);
+        
+        /* para que se ejecute el seeder sin tener que elejutarlo especificamente */
+        $this->call([
+        XuxeSeeder::class,
+        ]);  
+
     }
 }
