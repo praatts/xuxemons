@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             'surname' => 'administrador',
             'email' => 'admin@xuxemons.com',
             'role' => 'admin',
+            'pfp' => 1,
             'password' => bcrypt(123456),
         ]);
     }

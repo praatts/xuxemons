@@ -51,7 +51,7 @@ class UserController extends Controller
                 return response()->json(['error' => 'User not found or token invalid'], 404);
             }
 
-            $data = $request->only(['name', 'surname', 'email']);
+            $data = $request->only(['name', 'surname', 'email', 'pfp']);
 
             if ($request->filled('password')) {
                 $data['password'] = Hash::make($request->password);
