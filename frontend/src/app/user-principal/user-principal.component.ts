@@ -39,7 +39,7 @@ export class UserPrincipalComponent {
 
   rutas: rutas[] = [
     //{ label: 'Inicio', route: 'inicio', exact: true, img: 'inicio.png' },
-    { label: 'Pàgina principal', route: 'principal', exact: true, img: ''},
+    { label: 'Pàgina principal', route: 'principal', exact: true, img: 'Home.png'},
     { label: 'Usuario', route: 'principal/userinfo', exact: true, img: 'user.png' },
     { label: 'xuxedex', route: 'principal/xuxedex', exact: true, img: 'xuxedex.png' },
     { label: 'Motxilla', route: 'principal/inventari', exact: true, img: 'inventari.png' },
