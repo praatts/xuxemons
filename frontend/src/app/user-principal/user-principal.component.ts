@@ -19,8 +19,18 @@ interface rutas {
   styleUrl: './user-principal.component.css'
 })
 export class UserPrincipalComponent {
-  
-  constructor(private userService: UserService, private router: Router) {}
+
+  nameValue = '';
+  uidValue = '';
+  displayNameVal = '';
+
+  constructor(private userService: UserService, private router: Router) {
+    this.userService.getUser().subscribe((u: any) => {
+      this.nameValue = u.name || '';
+      this.uidValue = u.player_id || '';
+      this.displayNameVal = `${this.nameValue}${this.uidValue}`;
+    });
+  }
 
   darkMode = false;
   botonInfoHover = false;
