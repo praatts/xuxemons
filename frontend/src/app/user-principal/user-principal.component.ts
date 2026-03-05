@@ -34,7 +34,7 @@ export class UserPrincipalComponent {
     });
   }
 
-  darkMode = false;
+  public darkMode = false;
   botonInfoHover = false;
 
   rutas: rutas[] = [

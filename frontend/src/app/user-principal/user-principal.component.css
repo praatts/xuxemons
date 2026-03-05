@@ -1,3 +1,13 @@
+.panel-container,
+.panel-menu,
+.panel-content,
+.panel-menu a,
+.user-info,
+.user-name,
+.dark-text {
+  transition: background-color 0.35s ease, color 0.35s ease, border 0.35s ease;
+}
+
 .panel-container {
   display: flex;
   height: 100vh;
@@ -166,4 +176,56 @@ input:checked+.slider {
 
 input:checked+.slider::before {
   transform: translateX(24px);
+}
+
+/* ========================= */
+/* DARK MODE */
+/* ========================= */
+
+.dark-mode {
+  background-color: #121212;
+}
+
+/* Panel izquierdo */
+.dark-mode .panel-menu {
+  background-color: #2f2f2f; /* gris suave */
+  border-right: 2px solid #555;
+}
+
+/* Links normales */
+.dark-mode .panel-menu a {
+  color: #e5e5e5;
+}
+
+/* Hover enlaces */
+.dark-mode .panel-menu a:hover {
+  background-color: #000000;
+  color: #ffffff;
+  transition: 0.3s;
+}
+
+/* Ruta activa */
+.dark-mode .panel-menu a.active {
+  background-color: #000000;
+  color: #ffffff;
+  border-left: 4px solid white;
+  font-weight: bold;
+}
+
+/* Router outlet (contenido derecho) */
+.dark-mode .panel-content {
+  background-color: #1a1a1a; /* gris fuerte */
+}
+
+/* Usuario */
+.dark-mode .user-name {
+  color: #e5e5e5;
+}
+
+.dark-mode .dark-text {
+  color: #e5e5e5;
+}
+
+.dark-mode .user-info {
+  border-top: 1px solid #555;
 }

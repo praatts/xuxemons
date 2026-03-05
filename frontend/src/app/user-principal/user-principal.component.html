@@ -1,10 +1,10 @@
-<div class="panel-container">
+<div class="panel-container" [ngClass]="{'dark-mode': darkMode}">
   <nav class="panel-menu">
     <img src="logo_xuxemons.png" alt="Xuxemons Logo" class="logo-img">
     <div class="link-wrapper">
       @for(ruta of rutas; track ruta.label){
       <div class="link-nav">
-        <img src="{{ruta.img}}" alt="{{ruta.label}} icon">
+        <img [src]="darkMode ? 'dark-mode/' + ruta.img : ruta.img" alt="{{ruta.label}} icon">
         <a routerLink="{{ruta.route}}" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}"
           (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
           {{ruta.label}}
@@ -14,7 +14,7 @@
     </div>
 
     <div class="dark-toggle">
-      <img src="modo_oscuro.png" alt="modo oscuro icon">
+      <img [src]="darkMode ? 'dark-mode/whitemode.png' : 'modo_oscuro.png'" alt="modo oscuro icon">
       <span class="dark-text">Mode fosc</span>
       <label class="switch">
         <input type="checkbox" [checked]="darkMode" (change)="toggleDarkMode()">
@@ -29,7 +29,7 @@
       </div>
 
       <a (click)="logout()">
-        <img src="logout.png" alt="Logout" class="logout-icon">
+        <img [src]="darkMode ? 'dark-mode/logout.png' : 'logout.png'" alt="Logout" class="logout-icon">
       </a>
     </div>
   </nav>
