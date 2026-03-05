@@ -27,13 +27,15 @@ export class UserInfoComponent {
   surnameValue = '';
   emailValue = '';
   passwordValue = '';
+  pfpValue = '';
 
   constructor(private userService: UserService, private router: Router) {
     this.infoForm = new FormGroup({
       name: new FormControl('', Validators.minLength(3)),
       surname: new FormControl('', Validators.minLength(3)),
       email: new FormControl('', Validators.email),
-      password: new FormControl('', Validators.minLength(6))
+      password: new FormControl('', Validators.minLength(6)),
+      pfp: new FormControl('', Validators.required)
     })
   }
 
@@ -64,10 +66,13 @@ export class UserInfoComponent {
       this.surnameValue = u.surname || '';
       this.emailValue = u.email || '';
       this.passwordValue = u.passwordActual || this.passwordValue;
+      this.pfpValue = u.pfp || '';
 
       this.infoForm.controls['name'].setValue(this.nameValue);
       this.infoForm.controls['surname'].setValue(this.surnameValue);
       this.infoForm.controls['email'].setValue(this.emailValue);
+      this.infoForm.controls['pfp'].setValue(this.pfpValue);
+
     });
   }
 

@@ -10,7 +10,7 @@
       <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('name')?.valid}">
         <input type="text" id="name" formControlName="name" placeholder="Nom">
         @if (infoForm.get('name')?.valid) {
-        <span class="check-mark">✓</span>
+          <span class="check-mark">✓</span>
         }
       </div>
 
@@ -18,7 +18,7 @@
       <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('surname')?.valid}">
         <input type="text" id="surname" formControlName="surname" placeholder="Cognoms">
         @if (infoForm.get('surname')?.valid) {
-        <span class="check-mark">✓</span>
+          <span class="check-mark">✓</span>
         }
       </div>
 
@@ -26,7 +26,15 @@
       <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('email')?.valid}">
         <input type="email" id="email" formControlName="email" placeholder="Email">
         @if (infoForm.get('email')?.valid) {
-        <span class="check-mark">✓</span>
+          <span class="check-mark">✓</span>
+        }
+      </div>
+
+      <label for="pfp">Foto Perfil:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('pfp')?.valid}">
+        <input type="text" id="pfp" formControlName="pfp" placeholder="Url foto perfil">
+        @if (infoForm.get('pfp')?.valid) {
+          <span class="check-mark">✓</span>
         }
       </div>
 
@@ -34,7 +42,7 @@
       <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('password')?.valid}">
         <input type="password" id="password" formControlName="password" placeholder="Nova contrasenya">
         @if (infoForm.get('password')?.valid) {
-        <span class="check-mark">✓</span>
+          <span class="check-mark">✓</span>
         }
       </div>
 
