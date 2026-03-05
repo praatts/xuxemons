@@ -52,7 +52,7 @@ export class UserLoginComponent {
         console.log('Respuesta recibida en componente:', response);
         this.loading = false;
         // Forzamos la navegación
-        this.router.navigateByUrl('/principal'); 
+        this.router.navigateByUrl('/main/principal'); 
       },
       error: (error) => {
         this.loading = false;
