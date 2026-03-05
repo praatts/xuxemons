@@ -12,72 +12,55 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class InventoryController extends Controller
 {
-    const MAX_SLOTS = 20;
-    const MAX_STACK = 5;
-
-    /* get api/Invenory 
-    devuelve todos los slots unicamente del usuario registrado */
+    // NO es necesario MAX_SLOTS ni MAX_STACK porque la tabla user_xuxe no tiene límites
+    
+    /* get api/Inventory 
+    devuelve todos los xuxes del usuario registrado */
     public function index(): JsonResponse
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $inventory = Inventory::width('xuxe')->where('user_id', $user->id)->get();
+        // Corregido: "width" por "with"
+        $inventory = Inventory::with('xuxe')->where('user_id', $user->id)->get();
 
         return response()->json($inventory);
     }
 
     //POST /API/INVENTORY/ADD
-    //el bot añade una cantidad de xuxes a la moxila de un jugador
-
+    //el bot añade una cantidad de xuxes al inventario de un jugador
     public function add(Request $request): JsonResponse
     {
         $user = JWTAuth::parseToken()->authenticate();
         $request->validate([
             'xuxe_id' => 'required|integer|exists:xuxes,id',
-            'amount' => 'sometimes|integer|min:1' 
+            'amount'  => 'sometimes|integer|min:1' 
         ]);
 
-        $xuxe = Xuxe::findOrFail($request->xuxe_id);
+        $xuxe_id = $request->xuxe_id;
         $amount = $request->input('amount', 1);
-        $added = 0;
-        $discarded = 0;
 
-        for($i = 0; $i < $amount; $i++){
-            //Hay un slot de la misma xuxe con espacio libre?
-            $slot = Inventory::where('user_id', $user->id)->where('xuxe_id', $xuxe->id)->where('quantity', '<', self::MAX_STACK)->first();
+        // Buscamos si el usuario ya tiene esta xuxe en su inventario
+        $slot = Inventory::where('user_id', $user->id)
+                         ->where('xuxe_id', $xuxe_id)
+                         ->first();
 
-            if($slot){
-                $slot->increment('quantity');
-                $added++;
-                continue;
-            }
-
-            //NO slot disponible, se necesita uno nuevo
-
-            $usedSlots = Inventory::where('user_id', $user->id)->count();
-
-            if($usedSlots <= self::MAX_SLOTS){
-                $discarded++;
-                continue;
-            }
-
+        // Lógica muy simple con IF: si ya existe le sumamos la cantidad. Si no, lo creamos.
+        if ($slot) {
+            $slot->increment('quantity', $amount);
+        } else {
             Inventory::create([
-                'user_id' => $user->id,
-                'xuxe_id' => $xuxe->id,
-                'quantity' => 1,
+                'user_id'  => $user->id,
+                'xuxe_id'  => $xuxe_id,
+                'quantity' => $amount,
             ]);
-            $added++;
         }
-        return response()-json([
-            'added'     => $added,
-            'discarded' => $discarded,
-            'message'   => $discarded > 0
-                ? "Afegits {$added}. Descartats {$discarded} per motxilla plena."
-                : "Afegits {$added} correctament.",
+
+        return response()->json([
+            'message' => "S'han afegit {$amount} xuxes correctament."
         ], 201);
     }
 
-   public function evolve(int $slotId): JsonResponse
+    public function evolve(int $slotId): JsonResponse
     {
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -86,9 +69,10 @@ class InventoryController extends Controller
             ->find($slotId);
 
         if (!$slot) {
-            return response()->json(['error' => 'Slot no trobat.'], 404);
+            return response()->json(['error' => 'Registro de inventario no trobat.'], 404);
         }
 
+        // Determinar qué tamaño será el siguiente
         $nextSize = match($slot->xuxe->size) {
             'petit' => 'mitja',
             'mitja' => 'gran',
@@ -103,9 +87,13 @@ class InventoryController extends Controller
             return response()->json(['error' => "Necessites 3 unitats. Tens {$slot->quantity}."], 422);
         }
 
-        // Restar 3 del slot actual, si llega a 0 borrar la fila
+        // Restar 3 unidades, si llega a 0 borrar la fila del inventario
         $slot->quantity -= 3;
-        $slot->quantity === 0 ? $slot->delete() : $slot->save();
+        if ($slot->quantity === 0) {
+            $slot->delete();
+        } else {
+            $slot->save();
+        }
 
         // Buscar el xuxe evolucionado: mismo tipo, siguiente tamaño
         $evolvedXuxe = Xuxe::where('type', $slot->xuxe->type)
@@ -116,19 +104,14 @@ class InventoryController extends Controller
             return response()->json(['error' => 'No existeix el xuxe evolucionat a la BD.'], 404);
         }
 
-        // Añadir el xuxe evolucionado a la motxilla con la misma lógica de slots
-        $slot2 = Inventory::where('user_id', $user->id)
+        // Añadir el xuxe evolucionado al inventario de forma sencilla
+        $slotEvolucionado = Inventory::where('user_id', $user->id)
             ->where('xuxe_id', $evolvedXuxe->id)
-            ->where('quantity', '<', self::MAX_STACK)
             ->first();
 
-        if ($slot2) {
-            $slot2->increment('quantity');
+        if ($slotEvolucionado) {
+            $slotEvolucionado->increment('quantity');
         } else {
-            $usedSlots = Inventory::where('user_id', $user->id)->count();
-            if ($usedSlots >= self::MAX_SLOTS) {
-                return response()->json(['error' => 'Evolució feta però motxilla plena. Xuxe evolucionat descartat.'], 422);
-            }
             Inventory::create([
                 'user_id'  => $user->id,
                 'xuxe_id'  => $evolvedXuxe->id,
