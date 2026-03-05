@@ -23,12 +23,14 @@ export class UserPrincipalComponent {
   nameValue = '';
   uidValue = '';
   displayNameVal = '';
+  pfpValue = '';
 
   constructor(private userService: UserService, private router: Router) {
     this.userService.getUser().subscribe((u: any) => {
       this.nameValue = u.name || '';
       this.uidValue = u.player_id || '';
       this.displayNameVal = `${this.nameValue}${this.uidValue}`;
+      this.pfpValue = u.pfp || '';
     });
   }
 
