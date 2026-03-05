@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('xuxe_id')->constrained('xuxes')->onDelete('cascade');
-            $table->usignedInteger('quantity')->default(1);
+            $table->unsignedInteger('quantity')->default(1);
         });
     }
 
