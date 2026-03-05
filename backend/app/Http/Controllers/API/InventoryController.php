@@ -77,4 +77,68 @@ class InventoryController extends Controller
         ], 201);
     }
 
+   public function evolve(int $slotId): JsonResponse
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $slot = Inventory::with('xuxe')
+            ->where('user_id', $user->id)
+            ->find($slotId);
+
+        if (!$slot) {
+            return response()->json(['error' => 'Slot no trobat.'], 404);
+        }
+
+        $nextSize = match($slot->xuxe->size) {
+            'petit' => 'mitja',
+            'mitja' => 'gran',
+            default => null,
+        };
+
+        if (!$nextSize) {
+            return response()->json(['error' => 'Aquest xuxe ja és gran i no pot evolucionar.'], 422);
+        }
+
+        if ($slot->quantity < 3) {
+            return response()->json(['error' => "Necessites 3 unitats. Tens {$slot->quantity}."], 422);
+        }
+
+        // Restar 3 del slot actual, si llega a 0 borrar la fila
+        $slot->quantity -= 3;
+        $slot->quantity === 0 ? $slot->delete() : $slot->save();
+
+        // Buscar el xuxe evolucionado: mismo tipo, siguiente tamaño
+        $evolvedXuxe = Xuxe::where('type', $slot->xuxe->type)
+            ->where('size', $nextSize)
+            ->first();
+
+        if (!$evolvedXuxe) {
+            return response()->json(['error' => 'No existeix el xuxe evolucionat a la BD.'], 404);
+        }
+
+        // Añadir el xuxe evolucionado a la motxilla con la misma lógica de slots
+        $slot2 = Inventory::where('user_id', $user->id)
+            ->where('xuxe_id', $evolvedXuxe->id)
+            ->where('quantity', '<', self::MAX_STACK)
+            ->first();
+
+        if ($slot2) {
+            $slot2->increment('quantity');
+        } else {
+            $usedSlots = Inventory::where('user_id', $user->id)->count();
+            if ($usedSlots >= self::MAX_SLOTS) {
+                return response()->json(['error' => 'Evolució feta però motxilla plena. Xuxe evolucionat descartat.'], 422);
+            }
+            Inventory::create([
+                'user_id'  => $user->id,
+                'xuxe_id'  => $evolvedXuxe->id,
+                'quantity' => 1,
+            ]);
+        }
+
+        return response()->json([
+            'message'      => 'Evolució completada!',
+            'evolved_into' => $evolvedXuxe,
+        ]);
+    }
 }
