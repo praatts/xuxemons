@@ -24,8 +24,9 @@ class XuxeSeeder extends Seeder
             ['name' => 'Aire Gran',   'type' => 'aire',  'size' => 'gran'],
         ];
 
-        for ($i = 0; $i < count($xuxes); $i++) {
-            Xuxe::create($xuxes[$i]);
+        //Enchufar seeder a la BD
+        foreach ($xuxes as $xuxe) {
+            Xuxe::create($xuxe);
         }
     }
 }
