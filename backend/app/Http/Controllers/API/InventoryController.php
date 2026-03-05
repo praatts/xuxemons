@@ -60,6 +60,8 @@ class InventoryController extends Controller
         ], 201);
     }
 
+    // POST /api/inventory/{slotId}/evolve
+    // Evoluciona 3 xuxes del mismo slot al siguiente tamaño
     public function evolve(int $slotId): JsonResponse
     {
         $user = JWTAuth::parseToken()->authenticate();
