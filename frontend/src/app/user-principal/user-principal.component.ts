@@ -30,7 +30,7 @@ export class UserPrincipalComponent {
     { label: 'Pàgina principal', route: 'principal', exact: true, img: ''},
     { label: 'Usuario', route: 'principal/userinfo', exact: true, img: 'user.png' },
     { label: 'xuxedex', route: 'principal/xuxedex', exact: true, img: 'xuxedex.png' },
-    { label: 'Motxilla', route: 'principal/inventari', exact: true, img: 'inventari.png' },
+    { label: 'Motxilla', route: 'principal/motxilla', exact: true, img: 'inventari.png' },
     
   ];
 
