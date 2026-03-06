@@ -4,6 +4,11 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { UserService } from '../user.service';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
+interface Pictures {
+  id: number,
+  label: string,
+  url: string
+}
 
 @Component({
   selector: 'app-user-info',
@@ -28,6 +33,20 @@ export class UserInfoComponent {
   emailValue = '';
   passwordValue = '';
   pfpValue = '';
+
+  selectPersonalizedPfp = false;
+  togglePfpMode() {
+    this.selectPersonalizedPfp = !this.selectPersonalizedPfp;
+  }
+  
+  pfpArray: Pictures [] = [
+    {id: 1, label: 'Isaac', url: 'https://static.wikia.nocookie.net/thebindingofisaac/images/9/93/Isaac-0.png/revision/latest?cb=20200917114527&path-prefix=fr'},
+    {id: 2, label: 'Rag mega', url: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/5/52/Boss_Rag_Mega_portrait.png/revision/latest?cb=20210409161229'},
+    {id: 3, label: 'Stain', url: 'https://bindingofisaacrebirth.wiki.gg/images/Boss_The_Stain_portrait.png?c4871b'},
+    {id: 4, label: 'Oprainfall', url: 'https://i0.wp.com/operationrainfall.com/wp-content/uploads/2015/03/Binding-of-Isaac-Rebirth-Carrion-Queen.png?ssl=1'},
+    {id: 5, label: 'Buck', url: 'https://fiendfolio.wiki.gg/images/Buck.png?212948'},
+    {id: 6, label: 'The fallen', url: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/5/56/Boss_The_Fallen_portrait.png/revision/latest?cb=20210409160756'}
+  ];
 
   constructor(private userService: UserService, private router: Router) {
     this.infoForm = new FormGroup({
@@ -83,11 +102,13 @@ export class UserInfoComponent {
     this.surnameValue = this.infoForm.controls['surname'].value;
     this.emailValue = this.infoForm.controls['email'].value;
     this.passwordValue = this.infoForm.controls['password'].value;
+    this.pfpValue = this.infoForm.controls['pfp'].value;
 
     const payload: any = {
       name: this.nameValue,
       surname: this.surnameValue,
-      email: this.emailValue
+      email: this.emailValue,
+      pfp: this.pfpValue
     };
 
     if (this.passwordValue) {
