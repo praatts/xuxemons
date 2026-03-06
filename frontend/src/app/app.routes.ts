@@ -6,6 +6,7 @@ import { UserPrincipalComponent } from './user-principal/user-principal.componen
 import { UserInfoComponent } from './user-info/user-info.component';
 import { XuxedexComponent } from './xuxedex/xuxedex.component';
 import { PaginaPrincipalComponent } from './pagina-principal/pagina-principal.component';
+import { UserStatsComponent } from './user-stats/user-stats.component';
 
 export const routes: Routes = [
     {
@@ -32,10 +33,18 @@ export const routes: Routes = [
                 canActivate: [authGuard],
                 children: [
                     {
-                        path: 'userinfo',
-                        title: 'user-info',
-                        component: UserInfoComponent,
-                        canActivate: [authGuard]
+                        path: 'userstats',
+                        title: 'user-stats',
+                        component: UserStatsComponent,
+                        canActivate: [authGuard],
+                        children: [
+                            {
+                                path: 'userinfo',
+                                title: 'user-info',
+                                component: UserInfoComponent,
+                                canActivate: [authGuard]
+                            }
+                        ]
                     },
                     {
                         path: 'xuxedex',
