@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Xuxe;
+use App\Models\Xuxemon;
 use Illuminate\Database\Seeder;
 
 class XuxeSeeder extends Seeder
@@ -12,7 +12,7 @@ class XuxeSeeder extends Seeder
      */
     public function run(): void
     {
-        $xuxes = [
+        $xuxemons = [
             ['name' => 'Aqua Petit',  'type' => 'agua',  'size' => 'petit'],
             ['name' => 'Aqua Mitja',  'type' => 'agua',  'size' => 'mitja'],
             ['name' => 'Aqua Gran',   'type' => 'agua',  'size' => 'gran'],
@@ -24,9 +24,9 @@ class XuxeSeeder extends Seeder
             ['name' => 'Aire Gran',   'type' => 'aire',  'size' => 'gran'],
         ];
 
-        //Enchufar seeder a la BD
-        foreach ($xuxes as $xuxe) {
-            Xuxe::create($xuxe);
+        // Enchufar xuxemons a la BD
+        foreach ($xuxemons as $xuxemon) {
+            Xuxemon::create($xuxemon);
         }
     }
 }

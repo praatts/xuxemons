@@ -10,10 +10,12 @@ return new class extends Migration
      * Run the migrations.
      */
 
-    /* esta es una tabla para todas las xuxes que van a existir en el juego */
+    //Catalogo de Criaturas
+
+    /* esta es una tabla para todos los xuxemons que van a existir en el juego (agua, tierra, aire) */
     public function up(): void
     {
-        Schema::create('xuxes', function (Blueprint $table) {
+        Schema::create('xuxemons', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->enum('type', ['agua', 'tierra', 'aire']);
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('xuxes');
+        Schema::dropIfExists('xuxemons');
     }
 };

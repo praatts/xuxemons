@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Inventory;
-use App\Models\Xuxe;
+use App\Models\Xuxemon;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -14,6 +14,8 @@ class InventoryController extends Controller
 {
     // NO es necesario MAX_SLOTS ni MAX_STACK porque la tabla user_xuxe no tiene límites
     
+    //GESTIONA LA MOXILA
+
     /* get api/Inventory 
     devuelve todos los xuxes del usuario registrado */
     public function index(): JsonResponse
@@ -21,7 +23,7 @@ class InventoryController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         // Corregido: "width" por "with"
-        $inventory = Inventory::with('xuxe')->where('user_id', $user->id)->get();
+        $inventory = Inventory::with('xuxemon')->where('user_id', $user->id)->get();
 
         return response()->json($inventory);
     }
@@ -66,7 +68,7 @@ class InventoryController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $slot = Inventory::with('xuxe')
+        $slot = Inventory::with('xuxemon')
             ->where('user_id', $user->id)
             ->find($slotId);
 
@@ -75,7 +77,7 @@ class InventoryController extends Controller
         }
 
         // Determinar qué tamaño será el siguiente
-        $nextSize = match($slot->xuxe->size) {
+        $nextSize = match($slot->xuxemon->size) {
             'petit' => 'mitja',
             'mitja' => 'gran',
             default => null,
@@ -98,17 +100,17 @@ class InventoryController extends Controller
         }
 
         // Buscar el xuxe evolucionado: mismo tipo, siguiente tamaño
-        $evolvedXuxe = Xuxe::where('type', $slot->xuxe->type)
+        $evolvedXuxemon = Xuxemon::where('type', $slot->xuxemon->type)
             ->where('size', $nextSize)
             ->first();
 
-        if (!$evolvedXuxe) {
-            return response()->json(['error' => 'No existeix el xuxe evolucionat a la BD.'], 404);
+        if (!$evolvedXuxemon) {
+            return response()->json(['error' => 'No existeix el xuxemon evolucionat a la BD.'], 404);
         }
 
-        // Añadir el xuxe evolucionado al inventario de forma sencilla
+        // Añadir el xuxemon evolucionado al inventario de forma sencilla
         $slotEvolucionado = Inventory::where('user_id', $user->id)
-            ->where('xuxe_id', $evolvedXuxe->id)
+            ->where('xuxe_id', $evolvedXuxemon->id)
             ->first();
 
         if ($slotEvolucionado) {
@@ -116,14 +118,14 @@ class InventoryController extends Controller
         } else {
             Inventory::create([
                 'user_id'  => $user->id,
-                'xuxe_id'  => $evolvedXuxe->id,
+                'xuxe_id'  => $evolvedXuxemon->id,
                 'quantity' => 1,
             ]);
         }
 
         return response()->json([
             'message'      => 'Evolució completada!',
-            'evolved_into' => $evolvedXuxe,
+            'evolved_into' => $evolvedXuxemon,
         ]);
     }
 }

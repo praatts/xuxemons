@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Xuxemon;
 
 class Inventory extends Model
 {
@@ -19,8 +20,9 @@ class Inventory extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function xuxe()
+    // Relación con el catálogo de xuxemons
+    public function xuxemon()
     {
-        return $this->belongsTo(Xuxe::class);
+        return $this->belongsTo(Xuxemon::class, 'xuxe_id');
     }
 }
