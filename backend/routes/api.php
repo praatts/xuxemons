@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\InventoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
@@ -32,8 +33,8 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     //MOTXILLA
-    Route::get('/inventory', [InventoryController::class, 'index']);
-    Route::post('/inventory/add', [InventoryController::class, 'add']);
+    Route::post('/inventory/add-xuxes/{user}', [InventoryController::class, 'addXuxe']);
+    Route::post('/inventory/users', [InventoryController::class, 'index']);
     Route::post('/inventory/{slot_id}/evolve', [InventoryController::class, 'evolve']);
 
     //XUXEDEX
