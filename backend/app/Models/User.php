@@ -75,7 +75,7 @@ class User extends Authenticatable implements JWTSubject
     public function getUsedSlots(): int
     {
         return $this->inventory->sum(function ($slot) {
-            return ceil($slot->quantity / $slot->item->max_stack);
+            return ceil($slot->quantity / $slot->item->max_capacity);
         });
     }
 

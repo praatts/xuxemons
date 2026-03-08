@@ -31,7 +31,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::delete('/user', [UserController::class, 'deleteUser']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    //MOXILA
+    //MOTXILLA
     Route::get('/inventory', [InventoryController::class, 'index']);
     Route::post('/inventory/add', [InventoryController::class, 'add']);
     Route::post('/inventory/{slot_id}/evolve', [InventoryController::class, 'evolve']);

@@ -19,6 +19,6 @@ class Inventory extends Model
 
     public function item()
     {
-        return $this->belongsTo(Items::class);
+        return $this->belongsTo(Item::class);
     }
 }
