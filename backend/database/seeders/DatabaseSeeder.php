@@ -15,24 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        // firstOrCreate: si ya existe, no hace nada. Si no existe, lo crea.
-        User::firstOrCreate(
-            ['player_id' => '#admin0001'],   // Busca por este campo único
-            [                                // Si no existe, lo crea con estos datos
-                'name'     => 'admin',
-                'surname'  => 'administrador',
-                'email'    => 'admin@xuxemons.com',
-                'role'     => 'admin',
-                'password' => bcrypt(123456),
-            ]
-        );
-        
-        /* para que se ejecute el seeder sin tener que elejutarlo especificamente */
-        $this->call([
-        XuxeSeeder::class,
-        ]);  
-
+         User::factory()->create([
+            'player_id' => '#admin0001',
+            'name' => 'admin',
+            'surname' => 'administrador',
+            'email' => 'admin@xuxemons.com',
+            'role' => 'admin',
+            'pfp' => 'https://images.freeimages.com/fic/images/icons/2526/bloggers/256/admin.png',
+            'password' => bcrypt(123456),
+        ]);
     }
 }
