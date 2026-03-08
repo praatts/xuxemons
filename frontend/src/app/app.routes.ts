@@ -7,6 +7,8 @@ import { UserInfoComponent } from './user-info/user-info.component';
 import { XuxedexComponent } from './xuxedex/xuxedex.component';
 import { PaginaPrincipalComponent } from './pagina-principal/pagina-principal.component';
 import { UserStatsComponent } from './user-stats/user-stats.component';
+import { MotxillaComponent } from './motxilla/motxilla.component';
+
 
 export const routes: Routes = [
     {
@@ -50,6 +52,12 @@ export const routes: Routes = [
                         path: 'xuxedex',
                         title: 'xuxedex',
                         component: XuxedexComponent,
+                        canActivate: [authGuard]
+                    },
+                    {
+                        path: 'motxilla',
+                        title: 'motxilla',
+                        component: MotxillaComponent,
                         canActivate: [authGuard]
                     }
                 ]

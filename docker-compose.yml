@@ -32,6 +32,7 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    command: npm start -- --host 0.0.0.0 --poll 2000
     depends_on:
       - backend
     networks:
