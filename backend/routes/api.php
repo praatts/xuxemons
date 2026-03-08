@@ -34,10 +34,10 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     //MOXILA
     Route::get('/inventory', [InventoryController::class, 'index']);
     Route::post('/inventory/add', [InventoryController::class, 'add']);
-    Route::post('/inventory/{slotId}/evolve', [InventoryController::class, 'evolve']);
+    Route::post('/inventory/{slot_id}/evolve', [InventoryController::class, 'evolve']);
 
     //XUXEDEX
     Route::get('/xuxedex', [XuxedexController::class, 'index']);
     Route::get('/xuxedex/users', [XuxedexController::class, 'users']);
-    Route::post('/xuxedex/add-random/{userId}', [XuxedexController::class, 'addRandom']);
+    Route::post('/xuxedex/add-random/{user_id}', [XuxedexController::class, 'addRandom']);
 });
