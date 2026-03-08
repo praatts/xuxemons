@@ -6,21 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inventory extends Model
 {
-    // Usamos la tabla 'user_xuxe' que es mucho más sencilla y no tiene límites de slots obligatorios
-    protected $table = 'user_xuxe';
+    protected $table = 'inventory';
 
-    // Desactivamos los timestamps si tu migración no tiene $table->timestamps()
     public $timestamps = false;
 
-    protected $fillable = ['user_id', 'xuxe_id', 'quantity'];
+    protected $fillable = ['user_id', 'item_id', 'quantity'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function xuxe()
+    public function item()
     {
-        return $this->belongsTo(Xuxe::class);
+        return $this->belongsTo(Items::class);
     }
 }

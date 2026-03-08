@@ -18,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var list<string>
      */
-     protected $fillable = [
+    protected $fillable = [
         'player_id',
         'name',
         'surname',
@@ -70,5 +70,18 @@ class User extends Authenticatable implements JWTSubject
     public function inventory()
     {
         return $this->hasMany(Inventory::class);
+    }
+
+    public function getUsedSlots(): int
+    {
+        return $this->inventory->sum(function ($slot) {
+            return ceil($slot->quantity / $slot->item->max_stack);
+        });
+    }
+
+    //Función que devuelve el número de slots disponibles en la mochila del usuario
+    public function getAvailableSlots()
+    {
+        return 20 - $this->getUsedSlots();
     }
 }
