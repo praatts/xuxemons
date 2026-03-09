@@ -1,2 +1,17 @@
-<p>user-stats works!</p>
-<router-outlet></router-outlet>
+<h1>Estado del Usuario</h1>
+<p>Aquí puedes ver los diversos estados del usuario (batallas, modificar información...)</p>
+<div class="link-wrapper">
+    @for(ruta of rutas; track ruta.label){
+        <div class="link-nav">
+            <a [routerLink]="ruta.route" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}"
+                (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
+                {{ruta.label}}
+            </a>
+        </div>
+    }
+</div>
+
+
+<section class="panel-content">
+    <router-outlet></router-outlet>
+</section>
