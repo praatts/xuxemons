@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
 
+
+//http://localhost:8000/api/
 //Comprobar si el email ya existe
 Route::get('/check-email', [UserController::class, 'checkEmail']);
 
@@ -33,9 +35,10 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     //MOTXILLA
-    Route::post('/inventory/add-xuxes/{user}', [InventoryController::class, 'addXuxe']);
-    Route::post('/inventory/users', [InventoryController::class, 'index']);
+    Route::post('/inventory/add-xuxes/{user}', [InventoryController::class, 'addXuxes']);
+    Route::get('/inventory/users', [InventoryController::class, 'index']);
     Route::post('/inventory/{slot_id}/evolve', [InventoryController::class, 'evolve']);
+    Route::get('/inventory/slots/{user}', [InventoryController::class, 'getAvailableSlots']);
 
     //XUXEDEX
     Route::get('/xuxedex', [XuxedexController::class, 'index']);

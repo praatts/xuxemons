@@ -20,7 +20,6 @@ class ItemsSeeder extends Seeder
             ['name' => 'Vacuna petita', 'stackable' => false, 'max_capacity' => 1],
             ['name' => 'Vacuna mitjana', 'stackable' => false, 'max_capacity' => 1],
             ['name' => 'Vacuna gran', 'stackable' => false, 'max_capacity' => 1],
-
         ];
 
         Item::insert($items);

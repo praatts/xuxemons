@@ -57,7 +57,8 @@ class InventoryController extends Controller
 
     //Devuelve todos los jugadores para añadir xuxes (no admins)
 
-    public function index() {
+    public function index()
+    {
         $users = User::where('role', 'user')->get();
 
         if ($users->isEmpty()) {
@@ -68,4 +69,12 @@ class InventoryController extends Controller
         return response()->json($users);
     }
 
+    //Devuelve el número de slots disponibles (testing)
+
+    public function getAvailableSlots(User $user)
+    {
+        return response()->json([
+            'available_slots' => $user->getAvailableSlots()
+        ]);
+    }
 }

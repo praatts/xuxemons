@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
     
 
-         User::factory()->create([
+         /* User::factory()->create([
             'player_id' => '#admin0001',
             'name' => 'admin',
             'surname' => 'administrador',
@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'pfp' => 'https://images.freeimages.com/fic/images/icons/2526/bloggers/256/admin.png',
             'password' => bcrypt(123456),
-        ]);
+        ]); */
 
         $this->call([
             ItemsSeeder::class,
