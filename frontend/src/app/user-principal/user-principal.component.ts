@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { ThemeService } from '../services/theme.service';
 
 interface rutas {
   label: string;
@@ -25,7 +26,7 @@ export class UserPrincipalComponent {
   displayNameVal = '';
   pfpValue = '';
 
-  constructor(private userService: UserService, private router: Router) {
+  constructor(private userService: UserService, private router: Router, public theme: ThemeService) {
     this.userService.getUser().subscribe((u: any) => {
       this.nameValue = u.name || '';
       this.uidValue = u.player_id || '';
@@ -33,8 +34,7 @@ export class UserPrincipalComponent {
       this.pfpValue = u.pfp || '';
     });
   }
-
-  public darkMode = false;
+  
   botonInfoHover = false;
 
   rutas: rutas[] = [
@@ -50,9 +50,4 @@ export class UserPrincipalComponent {
     this.userService.logOut();
     this.router.navigate(['/']);
   }
-
-  toggleDarkMode() {
-    this.darkMode = !this.darkMode;
-  }
-
 }
