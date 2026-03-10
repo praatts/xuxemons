@@ -11,81 +11,22 @@
         <h2>Objectes</h2>
         <div class="object-list">
             <div class="sections-wrapper">
-                <button>Tots</button>
-                <button>Apilables</button>
-                <button>No Apilables</button>
+                <button (click)="filterItems('all')">Tots</button>
+                <button (click)="filterItems('stackable')">Apilables</button>
+                <button (click)="filterItems('no_stackable')">No Apilables</button>
             </div>
             <div class="items">
-                <div class="item-card">
+                @for (slot of filteredMotxilla; track $index) {
+                  <div class="item-card">
                     <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
-                <div class="item-card">
-                    <img src="test-item.png" alt="" class="item-icon">
-                    <p class="item-name">Nombre Objeto</p>
-                    <p class="amount-item">X12</p>
-                </div>
+                    <p class="item-name">{{ slot.item.name }}</p>
+                    @if (slot.item.stackable) {
+                        <p class="amount-item">X{{ slot.quantity }}</p>
+                    } @else {
+                        <p class="amount-item">X1</p>
+                    }
+                  </div>  
+                }  
             </div>
         </div>
     </div>
