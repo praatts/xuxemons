@@ -6,7 +6,7 @@ use App\Http\Controllers\API\InventoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
-
+use App\Models\Inventory;
 
 //http://localhost:8000/api/
 //Comprobar si el email ya existe
@@ -39,6 +39,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/inventory/users', [InventoryController::class, 'index']);
     Route::post('/inventory/{slot_id}/evolve', [InventoryController::class, 'evolve']);
     Route::get('/inventory/slots/{user}', [InventoryController::class, 'getAvailableSlots']);
+    Route::get('/inventory', [InventoryController::class, 'getUserInventory']);
 
     //XUXEDEX
     Route::get('/xuxedex', [XuxedexController::class, 'index']);

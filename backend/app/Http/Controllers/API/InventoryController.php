@@ -40,6 +40,12 @@ class InventoryController extends Controller
         $maxQuantity = $availableSlots * $item->max_capacity;
         $finalQuantity = min($quantity, $maxQuantity);
 
+        if ($availableSlots == 0) {
+            return response()->json([
+                'error' => 'El inventario del usuario está lleno, no se ha podido añadir los items al inventario',
+            ], 404);
+        }
+
         if ($finalQuantity > 0) {
             $slot = Inventory::firstOrNew([
                 'user_id' => $user->id,
@@ -76,5 +82,12 @@ class InventoryController extends Controller
         return response()->json([
             'available_slots' => $user->getAvailableSlots()
         ]);
+    }
+
+    //Devuelve el inventario del usuario autenticado
+
+    public function getUserInventory() {
+        $user = auth()->user();
+        return response()->json($user->inventory);
     }
 }

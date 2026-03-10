@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MotxillaService } from '../motxilla.service';
 import { NgClass } from '@angular/common';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-motxilla',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, ReactiveFormsModule],
   templateUrl: './motxilla.component.html',
   styleUrl: './motxilla.component.css'
 })
@@ -15,6 +16,7 @@ export class MotxillaComponent implements OnInit {
   filteredMotxilla: any[] = [];
   selectedSlot: any = null;
   selectedIndex: number = -1;
+  searchControl = new FormControl('');
 
   constructor(private motxillaService: MotxillaService) { }
 
@@ -26,6 +28,9 @@ export class MotxillaComponent implements OnInit {
       },
       error: (err) => console.log("Error al càrregar inventari: ", err)
     });
+
+    this.searchControl.valueChanges.subscribe(value => this.searchItem(value));
+
   }
 
   expandSlots(motxilla: any[]): any[] {
@@ -49,5 +54,11 @@ export class MotxillaComponent implements OnInit {
   selectSlot(slot: any, index: number): void {
     this.selectedSlot = this.selectedIndex === index ? null : slot;
     this.selectedIndex = this.selectedIndex === index ? -1 : index;
+  }
+
+  searchItem(value: string | null): void {
+    this.filteredMotxilla = this.motxilla.filter(slot =>
+      slot.item.name.toLowerCase().includes(value?.toLowerCase() ?? '')
+    );
   }
 }

@@ -2,7 +2,7 @@
     <div class="search-wrapper">
         <div class="search-bar">
             <img src="search-icon.png" alt="Icono de búsqueda">
-            <input type="text" for="pokemon" placeholder="Cerca un object...">
+            <input type="text" for="pokemon" placeholder="Cerca un object..." [formControl]="searchControl">
         </div>
         <div class="info-container">
             @if (selectedSlot) {
