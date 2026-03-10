@@ -5,7 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Models\User;
+use App\Models\Item;
 use App\Models\Inventory;
+<<<<<<< HEAD
 use App\Models\Xuxemon;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -19,44 +22,52 @@ class InventoryController extends Controller
     /* get api/Inventory 
     devuelve todos los xuxes del usuario registrado */
     public function index(): JsonResponse
-    {
-        $user = JWTAuth::parseToken()->authenticate();
+=======
 
+
+
+class InventoryController extends Controller
+{
+    public function addXuxes(Request $request, User $user)
+>>>>>>> 34efa8466655cb151f8f37b3bf4f73dd981bcc35
+    {
+
+<<<<<<< HEAD
         // Corregido: "width" por "with"
         $inventory = Inventory::with('xuxemon')->where('user_id', $user->id)->get();
+=======
+        //Validación de que existe el objeto antes de darselo al usuario.
+>>>>>>> 34efa8466655cb151f8f37b3bf4f73dd981bcc35
 
-        return response()->json($inventory);
-    }
-
-    //POST /API/INVENTORY/ADD
-    //el bot añade una cantidad de xuxes al inventario de un jugador
-    public function add(Request $request): JsonResponse
-    {
-        $user = JWTAuth::parseToken()->authenticate();
         $request->validate([
-            'xuxe_id' => 'required|integer|exists:xuxes,id',
-            'amount'  => 'sometimes|integer|min:1' 
+            'item_id' => 'required|integer|exists:items,id',
+            'quantity' => 'sometimes|integer|min:1'
         ]);
 
-        $xuxe_id = $request->xuxe_id;
-        $amount = $request->input('amount', 1);
 
-        // Buscamos si el usuario ya tiene esta xuxe en su inventario
-        $slot = Inventory::where('user_id', $user->id)
-                         ->where('xuxe_id', $xuxe_id)
-                         ->first();
+        //Búsqueda de las xuxes en la base de datos
+        $item = Item::findOrFail($request->item_id);
+        $quantity = $request->input('quantity', 1);
 
-        // Lógica muy simple con IF: si ya existe le sumamos la cantidad. Si no, lo creamos.
-        if ($slot) {
-            $slot->increment('quantity', $amount);
-        } else {
-            Inventory::create([
-                'user_id'  => $user->id,
-                'xuxe_id'  => $xuxe_id,
-                'quantity' => $amount,
-            ]);
+
+        //Error si se intenta dar una vacuna
+        if (!$item->stackable) {
+            return response()->json([
+                'error' => 'Objeto no apilable'
+            ], 403);
         }
 
+        $availableSlots = $user->getAvailableSlots();
+        $maxQuantity = $availableSlots * $item->max_capacity;
+        $finalQuantity = min($quantity, $maxQuantity);
+
+        if ($finalQuantity > 0) {
+            $slot = Inventory::firstOrNew([
+                'user_id' => $user->id,
+                'item_id' => $item->id,
+            ]);
+
+<<<<<<< HEAD
         return response()->json([
             'message' => "S'han afegit {$amount} xuxes correctament."
         ], 201);
@@ -126,6 +137,37 @@ class InventoryController extends Controller
         return response()->json([
             'message'      => 'Evolució completada!',
             'evolved_into' => $evolvedXuxemon,
+=======
+            $slot->quantity += $finalQuantity;
+            $slot->save();
+        }
+        return response()->json([
+            'message' => "Se han añadido {$finalQuantity} correctamente",
+            'added' => $finalQuantity,
+        ]);
+    }
+
+    //Devuelve todos los jugadores para añadir xuxes (no admins)
+
+    public function index()
+    {
+        $users = User::where('role', 'user')->get();
+
+        if ($users->isEmpty()) {
+            return response()->json([
+                'error' => 'No hay jugadores registrados.'
+            ], 404);
+        }
+        return response()->json($users);
+    }
+
+    //Devuelve el número de slots disponibles (testing)
+
+    public function getAvailableSlots(User $user)
+    {
+        return response()->json([
+            'available_slots' => $user->getAvailableSlots()
+>>>>>>> 34efa8466655cb151f8f37b3bf4f73dd981bcc35
         ]);
     }
 }

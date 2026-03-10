@@ -1,40 +1,231 @@
+.panel-container,
+.panel-menu,
+.panel-content,
+.panel-menu a,
+.user-info,
+.user-name,
+.dark-text {
+  transition: background-color 0.35s ease, color 0.35s ease, border 0.35s ease;
+}
+
 .panel-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   background-color: #ffaf92;
 }
 
 /* Lado izquierdo */
 .panel-menu {
-  width: 220px;
-  padding: 20px;
-  border-right: 2px solid black;
+  width: 400px;
+  border-right: 2px solid #FF4400;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  background-color: #ff7746;
+  background-color: rgba(255, 68, 0, 0.25);
 }
 
 /* Links */
 .panel-menu a {
   text-decoration: none;
-  padding: 8px;
-  border: 2px solid black;
-  color: #FF4400;
+  width: 100%;
+  padding: 20px;
+  color: #000000;
+  position: relative;
+}
+
+.link-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.link-wrapper .link-nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.link-nav img {
+  width: 32px;
+  height: 32px;
+  margin-left: 10px;
 }
 
 .panel-menu a:hover {
-  border-color: #FF4400;
+  background-color: rgba(255, 68, 0, 0.60);
+  color: #FFFFFF;
   transition: 0.3s;
 }
 
+
+
 .panel-menu a.active {
-  border-left: 5px solid #FF4400;
+  color: #FFFFFF;
+  background-color: rgba(255, 68, 0);
   font-weight: bold;
 }
 
 /* Lado derecho */
 .panel-content {
   flex: 1;
-  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background-color: #FFD9A3;
+  box-sizing: border-box;
+}
+
+.logo-img {
+  width: 300px;
+  height: auto;
+  margin: 20px auto;
+  flex: wrap;
+  content: center;
+}
+
+.logout-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.user-info {
+  margin-top: auto;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* izquierda / derecha */
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.user-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  margin: 0;
+  font-weight: 500;
+}
+
+
+/* Botón modo oscuro */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.dark-toggle {
+  margin-top: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.dark-toggle img {
+  width: 32px;
+  height: 32px;
+  margin-left: 10px;
+}
+
+.dark-text {
+  margin: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: 0.3s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+input:checked+.slider {
+  background-color: #ff4b4b;
+}
+
+input:checked+.slider::before {
+  transform: translateX(24px);
+}
+
+/* ========================= */
+/* DARK MODE */
+/* ========================= */
+
+.dark-mode {
+  background-color: #121212;
+}
+
+/* Panel izquierdo */
+.dark-mode .panel-menu {
+  background-color: #2f2f2f; /* gris suave */
+  border-right: 2px solid #555;
+}
+
+/* Links normales */
+.dark-mode .panel-menu a {
+  color: #e5e5e5;
+}
+
+/* Hover enlaces */
+.dark-mode .panel-menu a:hover {
+  background-color: #000000;
+  color: #ffffff;
+  transition: 0.3s;
+}
+
+/* Ruta activa */
+.dark-mode .panel-menu a.active {
+  background-color: #000000;
+  color: #ffffff;
+  border-left: 4px solid white;
+  font-weight: bold;
+}
+
+/* Router outlet (contenido derecho) */
+.dark-mode .panel-content {
+  background-color: #1a1a1a; /* gris fuerte */
+}
+
+/* Usuario */
+.dark-mode .user-name {
+  color: #e5e5e5;
+}
+
+.dark-mode .dark-text {
+  color: #e5e5e5;
+}
+
+.dark-mode .user-info {
+  border-top: 1px solid #555;
 }

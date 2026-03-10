@@ -2,10 +2,13 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\InventoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
 
+
+//http://localhost:8000/api/
 //Comprobar si el email ya existe
 Route::get('/check-email', [UserController::class, 'checkEmail']);
 
@@ -31,13 +34,14 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::delete('/user', [UserController::class, 'deleteUser']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    //MOXILA
-    Route::get('/inventory', [InventoryController::class, 'index']);
-    Route::post('/inventory/add', [InventoryController::class, 'add']);
-    Route::post('/inventory/{slotId}/evolve', [InventoryController::class, 'evolve']);
+    //MOTXILLA
+    Route::post('/inventory/add-xuxes/{user}', [InventoryController::class, 'addXuxes']);
+    Route::get('/inventory/users', [InventoryController::class, 'index']);
+    Route::post('/inventory/{slot_id}/evolve', [InventoryController::class, 'evolve']);
+    Route::get('/inventory/slots/{user}', [InventoryController::class, 'getAvailableSlots']);
 
     //XUXEDEX
     Route::get('/xuxedex', [XuxedexController::class, 'index']);
     Route::get('/xuxedex/users', [XuxedexController::class, 'users']);
-    Route::post('/xuxedex/add-random/{userId}', [XuxedexController::class, 'addRandom']);
+    Route::post('/xuxedex/add-random/{user_id}', [XuxedexController::class, 'addRandom']);
 });

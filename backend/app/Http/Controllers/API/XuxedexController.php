@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Xuxemon;
 use App\Models\Inventory;
+use App\Models\Xuxemon;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -44,8 +45,13 @@ class XuxedexController extends Controller
         // Buscamos el jugador por su ID. Si no existe, devuelve error 404 automáticamente.
         $target = User::findOrFail($userId);
 
+<<<<<<< HEAD
         // Cogemos un xuxemon al azar de la tabla 'xuxemons'
         $xuxemon = Xuxemon::inRandomOrder()->first();
+=======
+        // Cogemos un xuxe al azar de la tabla 'xuxes'
+        $xuxe = Xuxemon::inRandomOrder()->first();
+>>>>>>> 34efa8466655cb151f8f37b3bf4f73dd981bcc35
 
         // Si no hay ningún xuxemon en la base de datos, salimos con error
         if (!$xuxemon) {

@@ -7,22 +7,26 @@ use App\Models\Xuxemon;
 
 class Inventory extends Model
 {
-    // Usamos la tabla 'user_xuxe' que es mucho más sencilla y no tiene límites de slots obligatorios
-    protected $table = 'user_xuxe';
+    protected $table = 'inventory';
 
-    // Desactivamos los timestamps si tu migración no tiene $table->timestamps()
     public $timestamps = false;
 
-    protected $fillable = ['user_id', 'xuxe_id', 'quantity'];
+    protected $fillable = ['user_id', 'item_id', 'quantity'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+<<<<<<< HEAD
     // Relación con el catálogo de xuxemons
     public function xuxemon()
     {
         return $this->belongsTo(Xuxemon::class, 'xuxe_id');
+=======
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+>>>>>>> 34efa8466655cb151f8f37b3bf4f73dd981bcc35
     }
 }
