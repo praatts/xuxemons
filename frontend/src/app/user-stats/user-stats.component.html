@@ -1,17 +1,56 @@
-<h1>Estado del Usuario</h1>
-<p>Aquí puedes ver los diversos estados del usuario (batallas, modificar información...)</p>
-<div class="link-wrapper">
-    @for(ruta of rutas; track ruta.label){
-        <div class="link-nav">
-            <a [routerLink]="ruta.route" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}"
-                (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
-                {{ruta.label}}
-            </a>
+<div class="profile-container">
+    <div class="profile-header">
+
+        <div class="avatar-wrapper">
+            <img class="avatar" [src]="avatarValue">
+            <span class="online-dot"></span>
         </div>
-    }
+
+        <div class="user-info">
+            <h2>{{nameValue}}</h2>
+            <div class="level-row">
+                <span class="level">{{levelValue}}</span>
+                <div class="xp-bar">
+                    <div class="xp-fill" [style.width.%]="xpValue"></div>
+                </div>
+            </div>
+            <div class="friends">
+                Amics Online: {{friendsOnlineValue}}
+            </div>
+        </div>
+
+        <div class="streak">
+            🔥 {{streakValue}}
+        </div>
+    </div>
+
+    <!-- FAVORITE -->
+    <div class="favorite">
+        <img src="assets/favorite.png">
+        <span>FAVORIT ✏️</span>
+    </div>
+
+    <div class="main-panel">
+        <!-- TABS -->
+        <div class="tabs">
+            @for(ruta of rutas; track ruta.label){
+                <a
+                class="tab"
+                [routerLink]="ruta.route"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact:ruta.exact}"
+                >
+                    {{ruta.label}}
+                </a>
+            }
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+            @if(isRoot){
+                <div class="empty-background"></div>
+            }
+            <router-outlet></router-outlet>
+        </div>
+    </div>
 </div>
-
-
-<section class="panel-content">
-    <router-outlet></router-outlet>
-</section>

@@ -19,11 +19,31 @@ interface rutas {
 })
 export class UserStatsComponent {
 
-  constructor(public theme: ThemeService, private userService: UserService, private router: Router) {}
+  constructor(public theme: ThemeService, private userService: UserService, private router: Router) {
+    this.userService.getUser().subscribe((u: any) => {
+      this.nameValue = u.name || '';
+      this.levelValue = u.level || '0';
+      this.xpValue = u.xp || '0';
+      this.friendsOnlineValue = u.onlineFriends || '0';
+      this.avatarValue = u.pfp || '';
+      this.streakValue = u.streak || '0';
+    });
+  }
+
+  botonInfoHover = false;
+
+  nameValue = '';
+  levelValue = '';
+  xpValue = '';
+  friendsOnlineValue = '';
+  streakValue = '';
+  avatarValue = '';
 
   rutas: rutas[] = [
     { label: 'Modificar Usuario', route: 'userinfo', exact: true}
   ];
 
-  botonInfoHover = false;
+  get isRoot(){
+    return this.router.url.endsWith('/userstats');
+  }
 }
