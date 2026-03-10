@@ -55,6 +55,37 @@ class AuthController extends Controller
                 'required',
                 'in:user,admin'
             ],
+
+            'pfp' => [
+                'string'
+            ],
+
+            'level' => [
+                'integer',
+                'min:0',
+                'max:150'
+            ],
+
+            'xp' => [
+                'integer',
+                'min: 0',
+                'max: 1000'
+            ],
+
+            'active' => [
+                'boolean'
+            ],
+
+            'active_friends' => [
+                'integer',
+                'min:0'
+            ],
+
+            'streak' => [
+                'integer',
+                'min:0'
+            ]
+
         ]);
 
         $user = User::create([
@@ -63,7 +94,13 @@ class AuthController extends Controller
             'surname' => $request->surname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role
+            'role' => $request->role,
+            'pfp' => $request->pfp,
+            'level' => 0,
+            'xp' => 0,
+            'active' => false,
+            'active_friends' => 0,
+            'streak' => 0
         ]);
 
         $token = Auth::guard('api')->login($user);

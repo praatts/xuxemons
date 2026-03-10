@@ -20,6 +20,11 @@ return new class extends Migration {
             $table->string('password');
             $table->enum('role', ['user', 'admin'])->default('user');
             $table->string('pfp');
+            $table->integer('level');
+            $table->integer('xp');
+            $table->boolean('active')->default(false);
+            $table->integer('active_friends');
+            $table->integer('streak');
             $table->rememberToken();
             $table->timestamps();
         });
