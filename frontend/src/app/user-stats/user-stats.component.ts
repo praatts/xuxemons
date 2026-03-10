@@ -22,6 +22,8 @@ export class UserStatsComponent {
   constructor(public theme: ThemeService, private userService: UserService, private router: Router) {
     this.userService.getUser().subscribe((u: any) => {
       this.nameValue = u.name || '';
+      this.idValue = u.player_id || '';
+      this.fullnameValue = `${this.nameValue}${this.idValue}`;
       this.levelValue = u.level || '0';
       this.xpValue = u.xp || '0';
       this.friendsOnlineValue = u.onlineFriends || '0';
@@ -33,6 +35,8 @@ export class UserStatsComponent {
   botonInfoHover = false;
 
   nameValue = '';
+  idValue = '';
+  fullnameValue = '';
   levelValue = '';
   xpValue = '';
   friendsOnlineValue = '';

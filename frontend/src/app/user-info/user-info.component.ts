@@ -137,6 +137,6 @@ export class UserInfoComponent {
   }
 
   goBack() {
-    this.router.navigate(['/main/principal']);
+    this.router.navigate(['/main/principal/userstats']);
   }
 }
