@@ -26,7 +26,7 @@ export class UserStatsComponent {
       this.fullnameValue = `${this.nameValue}${this.idValue}`;
       this.levelValue = u.level || '0';
       this.xpValue = u.xp || '0';
-      this.friendsOnlineValue = u.onlineFriends || '0';
+      this.friendsOnlineValue = u.active_friends || '0';
       this.avatarValue = u.pfp || '';
       this.streakValue = u.streak || '0';
     });
