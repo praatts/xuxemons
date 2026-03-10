@@ -62,6 +62,8 @@ p {
     border: 1px solid black;
     border-radius: 30px;
     background-color: rgba(255, 213, 197, 0.5);
+    justify-content: center;
+    align-items: center;
 }
 
 .object-wrapper {
@@ -140,6 +142,12 @@ p {
     margin-right: 10px;
     border-radius: 15px;
     min-height: 75px;
+    cursor: pointer;
+}
+
+.item-card.active {
+    background-color: #898989 !important;
+    transition: 0.3s;
 }
 
 .item-card:last-child {

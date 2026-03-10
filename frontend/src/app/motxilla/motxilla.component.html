@@ -1,11 +1,16 @@
-
 <div class="motxilla-container">
     <div class="search-wrapper">
         <div class="search-bar">
             <img src="search-icon.png" alt="Icono de búsqueda">
             <input type="text" for="pokemon" placeholder="Cerca un object...">
         </div>
-        <div class="info-container"></div>
+        <div class="info-container">
+            @if (selectedSlot) {
+            <img src="test-item.png" alt="" class="item-icon">
+            <p>{{ selectedSlot.item.name }}</p>
+            <p>Quantitat: X{{ selectedSlot.quantity }}</p>
+            }
+        </div>
     </div>
     <div class="object-wrapper">
         <h2>Objectes</h2>
@@ -16,19 +21,18 @@
                 <button (click)="filterItems('no_stackable')">No Apilables</button>
             </div>
             <div class="items">
-                @for (slot of filteredMotxilla; track $index) {
-                  <div class="item-card">
+                @for (slot of filteredMotxilla; track $index; let i = $index) {
+                <div class="item-card" [ngClass]="{'active': selectedIndex === i}" (click)="selectSlot(slot, i)">
                     <img src="test-item.png" alt="" class="item-icon">
                     <p class="item-name">{{ slot.item.name }}</p>
                     @if (slot.item.stackable) {
-                        <p class="amount-item">X{{ slot.quantity }}</p>
+                    <p class="amount-item">X{{ slot.quantity }}</p>
                     } @else {
-                        <p class="amount-item">X1</p>
+                    <p class="amount-item">X1</p>
                     }
-                  </div>  
-                }  
+                </div>
+                }
             </div>
         </div>
     </div>
 </div>
-

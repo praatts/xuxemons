@@ -1,16 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { MotxillaService } from '../motxilla.service';
+import { NgClass } from '@angular/common';
+
 
 @Component({
   selector: 'app-motxilla',
   standalone: true,
-  imports: [],
+  imports: [NgClass],
   templateUrl: './motxilla.component.html',
   styleUrl: './motxilla.component.css'
 })
 export class MotxillaComponent implements OnInit {
   motxilla: any[] = [];
   filteredMotxilla: any[] = [];
+  selectedSlot: any = null;
+  selectedIndex: number = -1;
 
   constructor(private motxillaService: MotxillaService) { }
 
@@ -18,7 +22,7 @@ export class MotxillaComponent implements OnInit {
     this.motxillaService.getInventory().subscribe({
       next: (data) => {
         this.motxilla = this.expandSlots(data),
-        this.filteredMotxilla = this.motxilla
+          this.filteredMotxilla = this.motxilla
       },
       error: (err) => console.log("Error al càrregar inventari: ", err)
     });
@@ -27,7 +31,8 @@ export class MotxillaComponent implements OnInit {
   expandSlots(motxilla: any[]): any[] {
     return motxilla.flatMap(slot =>
       Array(Math.ceil(slot.quantity / slot.item.max_capacity))
-        .fill({ ...slot, quantity: slot.item.max_capacity })
+        .fill(null)
+        .map(() => ({ ...slot, quantity: slot.item.max_capacity }))
     );
   }
 
@@ -39,5 +44,10 @@ export class MotxillaComponent implements OnInit {
     } else {
       this.filteredMotxilla = this.motxilla.filter(slot => !slot.item.stackable);
     }
+  }
+
+  selectSlot(slot: any, index: number): void {
+    this.selectedSlot = this.selectedIndex === index ? null : slot;
+    this.selectedIndex = this.selectedIndex === index ? -1 : index;
   }
 }
