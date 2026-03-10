@@ -7,7 +7,7 @@
         <div class="info-container">
             @if (selectedSlot) {
             <h2>{{ selectedSlot.item.name }}</h2>
-            <img src="xuxe_verda.png" alt="" class="item-icon">
+            <img [src]="'items/' + selectedSlot.item.id + '.png'" [alt]="selectedSlot.item.name" class="item-icon">
             <span class="item-base"></span>
             <div class="item-stats-wrapper">
                 <div class="item-stats">
@@ -39,7 +39,7 @@
             <div class="items">
                 @for (slot of filteredMotxilla; track $index; let i = $index) {
                 <div class="item-card" [ngClass]="{'active': selectedIndex === i}" (click)="selectSlot(slot, i)">
-                    <img src="xuxe_verda.png" alt="" class="item-icon">
+                    <img [src]="'items/' + slot.item.id + '.png'" [alt]="slot.item.name" class="item-icon">
                     <p class="item-name">{{ slot.item.name }}</p>
                     @if (slot.item.stackable) {
                     <p class="amount-item">X{{ slot.quantity }}</p>
