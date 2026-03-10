@@ -122,6 +122,13 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        //obtener usuario autenticado
+        $user = Auth::guard('api')->user();
+
+        //marcar usuario como activo
+        $user->active = true;
+        $user->save();
+
         return $this->respondWithToken($token);
     }
 
@@ -134,6 +141,13 @@ class AuthController extends Controller
     // Logout user (invalidate token)
     public function logout()
     {
+        $user = Auth::guard('api')->user();
+
+        if ($user) {
+            $user->active = false;
+            $user->save();
+        }
+        
         Auth::guard('api')->logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
