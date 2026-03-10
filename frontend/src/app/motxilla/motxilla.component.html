@@ -6,9 +6,25 @@
         </div>
         <div class="info-container">
             @if (selectedSlot) {
-            <img src="test-item.png" alt="" class="item-icon">
-            <p>{{ selectedSlot.item.name }}</p>
-            <p>Quantitat: X{{ selectedSlot.quantity }}</p>
+            <h2>{{ selectedSlot.item.name }}</h2>
+            <img src="xuxe_verda.png" alt="" class="item-icon">
+            <span class="item-base"></span>
+            <div class="item-stats-wrapper">
+                <div class="item-stats">
+                    <h2>DESCRIPCIÓN</h2>
+                    <p>X{{ selectedSlot.quantity }}</p>
+                </div>
+                <p class="item-description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
+                    printer took a galley of type and scrambled it to make a type specimen book. It has survived not
+                    only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                    It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+                    and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem
+                    Ipsum</p>
+
+            </div>
+
+
             }
         </div>
     </div>
@@ -23,7 +39,7 @@
             <div class="items">
                 @for (slot of filteredMotxilla; track $index; let i = $index) {
                 <div class="item-card" [ngClass]="{'active': selectedIndex === i}" (click)="selectSlot(slot, i)">
-                    <img src="test-item.png" alt="" class="item-icon">
+                    <img src="xuxe_verda.png" alt="" class="item-icon">
                     <p class="item-name">{{ slot.item.name }}</p>
                     @if (slot.item.stackable) {
                     <p class="amount-item">X{{ slot.quantity }}</p>
