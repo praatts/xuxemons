@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ThemeService } from '../services/theme.service';
+import { HostBinding } from '@angular/core';
 
 @Component({
   selector: 'app-xuxedex',
@@ -8,5 +10,9 @@ import { Component } from '@angular/core';
   styleUrl: './xuxedex.component.css'
 })
 export class XuxedexComponent {
-
+  constructor(public theme: ThemeService){}
+  @HostBinding('class.dark-mode')
+  get darkMode(){
+    return this.theme.darkMode;
+  }
 }
