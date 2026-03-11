@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Xuxe;
 use App\Models\Inventory;
+use App\Models\Xuxemon;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -45,7 +46,7 @@ class XuxedexController extends Controller
         $target = User::findOrFail($userId);
 
         // Cogemos un xuxe al azar de la tabla 'xuxes'
-        $xuxe = Xuxe::inRandomOrder()->first();
+        $xuxe = Xuxemon::inRandomOrder()->first();
 
         // Si no hay ningún xuxe en la base de datos, salimos con error
         if (!$xuxe) {

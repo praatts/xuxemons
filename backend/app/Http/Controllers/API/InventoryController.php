@@ -40,6 +40,12 @@ class InventoryController extends Controller
         $maxQuantity = $availableSlots * $item->max_capacity;
         $finalQuantity = min($quantity, $maxQuantity);
 
+        if ($availableSlots == 0) {
+            return response()->json([
+                'error' => 'El inventario del usuario está lleno, no se ha podido añadir los items al inventario',
+            ], 404);
+        }
+
         if ($finalQuantity > 0) {
             $slot = Inventory::firstOrNew([
                 'user_id' => $user->id,
@@ -57,7 +63,8 @@ class InventoryController extends Controller
 
     //Devuelve todos los jugadores para añadir xuxes (no admins)
 
-    public function index() {
+    public function index()
+    {
         $users = User::where('role', 'user')->get();
 
         if ($users->isEmpty()) {
@@ -68,4 +75,19 @@ class InventoryController extends Controller
         return response()->json($users);
     }
 
+    //Devuelve el número de slots disponibles (testing)
+
+    public function getAvailableSlots(User $user)
+    {
+        return response()->json([
+            'available_slots' => $user->getAvailableSlots()
+        ]);
+    }
+
+    //Devuelve el inventario del usuario autenticado
+
+    public function getUserInventory() {
+        $user = auth()->user();
+        return response()->json($user->inventory);
+    }
 }

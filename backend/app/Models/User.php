@@ -74,7 +74,7 @@ class User extends Authenticatable implements JWTSubject
     /* permite obtener tus slots del inventario */
     public function inventory()
     {
-        return $this->hasMany(Inventory::class);
+        return $this->hasMany(Inventory::class)->with('item');
     }
 
     public function getUsedSlots(): int
