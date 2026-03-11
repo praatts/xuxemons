@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\HandleCors;
 use App\Http\Middleware\JwtMiddleware;
+use App\Http\Middleware\AdminMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'JwtMiddleware' => JwtMiddleware::class,
+            'AdminMiddleware' => AdminMiddleware::class,
         ]);
         $middleware->prepend([
             HandleCors::class,

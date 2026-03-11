@@ -87,4 +87,27 @@ class UserController extends Controller
             return response()->json(['error' => 'Failed to delete user'], 500);
         }
     }
+
+
+    public function restoreUser($id)
+    {
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            $user->status = 1;
+            $user->save();
+
+            return response()->json([
+                'message' => 'User restored successfully',
+                'user' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to restore user'], 500);
+        }
+    }
+
 }
