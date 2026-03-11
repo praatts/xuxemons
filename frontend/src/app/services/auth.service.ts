@@ -22,11 +22,8 @@
       );
     }
 
-    logout() : void {
-      this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
-        next: () => localStorage.removeItem('access_token'),
-        error: () => localStorage.removeItem('access_token')
-      });
+    logout() : Observable<any> {
+      return this.http.post(`${this.apiUrl}/logout`, {});
     }
 
     getToken(): string | null {

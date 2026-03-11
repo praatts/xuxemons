@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { ThemeService } from '../services/theme.service';
+import { AuthService } from '../services/auth.service';
 
 interface rutas {
   label: string;
@@ -25,7 +26,7 @@ export class UserPrincipalComponent {
   displayNameVal = '';
   pfpValue = '';
 
-  constructor(private userService: UserService, private router: Router, public theme: ThemeService) {
+  constructor(private userService: UserService, private router: Router, public theme: ThemeService, private authService: AuthService) {
     this.userService.getUser().subscribe((u: any) => {
       this.nameValue = u.name || '';
       this.uidValue = u.player_id || '';
@@ -46,7 +47,12 @@ export class UserPrincipalComponent {
   ];
 
   logout() {
-    this.userService.logOut();
-    this.router.navigate(['/']);
+    this.authService.logout().subscribe({
+      next: () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_id');
+        this.router.navigate(['/']);
+      }
+    });
   }
 }
