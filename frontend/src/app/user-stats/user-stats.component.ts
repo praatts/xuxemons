@@ -3,6 +3,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { UserService } from '../services/user.service';
 import { ThemeService } from '../services/theme.service';
 import { NgClass } from '@angular/common';
+import { HostBinding } from '@angular/core';
 
 interface rutas {
   label: string;
@@ -17,6 +18,7 @@ interface rutas {
   templateUrl: './user-stats.component.html',
   styleUrl: './user-stats.component.css'
 })
+
 export class UserStatsComponent {
 
   constructor(public theme: ThemeService, private userService: UserService, private router: Router) {
@@ -30,6 +32,11 @@ export class UserStatsComponent {
       this.avatarValue = u.pfp || '';
       this.streakValue = u.streak || '0';
     });
+  }
+
+  @HostBinding('class.dark-mode')
+  get darkMode(){
+    return this.theme.darkMode;
   }
 
   botonInfoHover = false;
