@@ -35,7 +35,7 @@
             <div class="sections-wrapper">
                 <button (click)="filterItems('all')">Tots</button>
                 <button (click)="filterItems('stackable')">Apilables</button>
-                <button (click)="filterItems('no_stackable')">No Apilables</button>
+                <button (click)="filterItems('non-stackable')">No Apilables</button>
             </div>
             <div class="items">
                 @for (slot of filteredMotxilla; track $index; let i = $index) {

@@ -13,6 +13,10 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class XuxedexController extends Controller
 {
+
+    public function allXuxemons(): JsonResponse {
+        return response()->json(Xuxemon::all());
+    }
     // GET api/xuxedex
     // Devuelve la colección completa de los xuxemons del usuario actual
     public function index(): JsonResponse
