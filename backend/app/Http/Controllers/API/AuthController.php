@@ -100,7 +100,8 @@ class AuthController extends Controller
             'xp' => 0,
             'active' => false,
             'active_friends' => 0,
-            'streak' => 0
+            'streak' => 0,
+            'status' => 1
         ]);
 
         $token = Auth::guard('api')->login($user);
@@ -122,8 +123,14 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+
         //obtener usuario autenticado
         $user = Auth::guard('api')->user();
+
+        //para usuarios no autorizados (status = 0)
+        if($user->status == 0){
+            return response()->json(['error' => 'This user is not active'], 403);
+        }
 
         //marcar usuario como activo
         $user->active = true;

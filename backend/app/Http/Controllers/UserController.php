@@ -73,7 +73,8 @@ class UserController extends Controller
                 return response()->json(['error' => 'User not found or token invalid'], 404);
             }
 
-            $user->delete();
+            $user->status = 0;
+            $user->save();
 
             return response()->json(['message' => 'User deleted successfully']);
         } catch (JWTException $e) {
