@@ -4,53 +4,53 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use App\Models\Item;
 use App\Models\Inventory;
-<<<<<<< HEAD
 use App\Models\Xuxemon;
-use Illuminate\Http\JsonResponse;
-use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 class InventoryController extends Controller
 {
-    // NO es necesario MAX_SLOTS ni MAX_STACK porque la tabla user_xuxe no tiene límites
-    
-    //GESTIONA LA MOXILA
-
-    /* get api/Inventory 
-    devuelve todos los xuxes del usuario registrado */
+    /**
+     * get api/inventory 
+     * devuelve el inventario del usuario autenticado
+     */
     public function index(): JsonResponse
-=======
-
-
-
-class InventoryController extends Controller
-{
-    public function addXuxes(Request $request, User $user)
->>>>>>> 34efa8466655cb151f8f37b3bf4f73dd981bcc35
     {
+        try {
+            $user = Auth::guard('api')->user();
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
 
-<<<<<<< HEAD
-        // Corregido: "width" por "with"
-        $inventory = Inventory::with('xuxemon')->where('user_id', $user->id)->get();
-=======
-        //Validación de que existe el objeto antes de darselo al usuario.
->>>>>>> 34efa8466655cb151f8f37b3bf4f73dd981bcc35
+            $inventory = Inventory::with(['xuxemon', 'item'])
+                ->where('user_id', $user->id)
+                ->get();
 
+            return response()->json($inventory);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch inventory'], 500);
+        }
+    }
+
+    /**
+     * POST /api/inventory/add-xuxes/{user}
+     * Añade objetos al inventario de un usuario
+     */
+    public function addXuxes(Request $request, User $user)
+    {
         $request->validate([
             'item_id' => 'required|integer|exists:items,id',
             'quantity' => 'sometimes|integer|min:1'
         ]);
 
-
-        //Búsqueda de las xuxes en la base de datos
         $item = Item::findOrFail($request->item_id);
         $quantity = $request->input('quantity', 1);
 
-
-        //Error si se intenta dar una vacuna
         if (!$item->stackable) {
             return response()->json([
                 'error' => 'Objeto no apilable'
@@ -67,27 +67,32 @@ class InventoryController extends Controller
                 'item_id' => $item->id,
             ]);
 
-<<<<<<< HEAD
+            $slot->quantity += $finalQuantity;
+            $slot->save();
+        }
+
         return response()->json([
-            'message' => "S'han afegit {$amount} xuxes correctament."
-        ], 201);
+            'message' => "Se han añadido {$finalQuantity} correctamente",
+            'added' => $finalQuantity,
+        ]);
     }
 
-    // POST /api/inventory/{slotId}/evolve
-    // Evoluciona 3 xuxes del mismo slot al siguiente tamaño
+    /**
+     * POST /api/inventory/{slotId}/evolve
+     * Evoluciona 3 xuxes del mismo slot al siguiente tamaño
+     */
     public function evolve(int $slotId): JsonResponse
     {
-        $user = JWTAuth::parseToken()->authenticate();
+        $user = Auth::guard('api')->user();
 
         $slot = Inventory::with('xuxemon')
             ->where('user_id', $user->id)
             ->find($slotId);
 
-        if (!$slot) {
-            return response()->json(['error' => 'Registro de inventario no trobat.'], 404);
+        if (!$slot || !$slot->xuxemon) {
+            return response()->json(['error' => 'Registro de inventario o xuxemon no trobat.'], 404);
         }
 
-        // Determinar qué tamaño será el siguiente
         $nextSize = match($slot->xuxemon->size) {
             'petit' => 'mitja',
             'mitja' => 'gran',
@@ -102,7 +107,6 @@ class InventoryController extends Controller
             return response()->json(['error' => "Necessites 3 unitats. Tens {$slot->quantity}."], 422);
         }
 
-        // Restar 3 unidades, si llega a 0 borrar la fila del inventario
         $slot->quantity -= 3;
         if ($slot->quantity === 0) {
             $slot->delete();
@@ -110,7 +114,6 @@ class InventoryController extends Controller
             $slot->save();
         }
 
-        // Buscar el xuxe evolucionado: mismo tipo, siguiente tamaño
         $evolvedXuxemon = Xuxemon::where('type', $slot->xuxemon->type)
             ->where('size', $nextSize)
             ->first();
@@ -119,7 +122,6 @@ class InventoryController extends Controller
             return response()->json(['error' => 'No existeix el xuxemon evolucionat a la BD.'], 404);
         }
 
-        // Añadir el xuxemon evolucionado al inventario de forma sencilla
         $slotEvolucionado = Inventory::where('user_id', $user->id)
             ->where('xuxe_id', $evolvedXuxemon->id)
             ->first();
@@ -137,21 +139,16 @@ class InventoryController extends Controller
         return response()->json([
             'message'      => 'Evolució completada!',
             'evolved_into' => $evolvedXuxemon,
-=======
-            $slot->quantity += $finalQuantity;
-            $slot->save();
-        }
-        return response()->json([
-            'message' => "Se han añadido {$finalQuantity} correctamente",
-            'added' => $finalQuantity,
         ]);
     }
 
-    //Devuelve todos los jugadores para añadir xuxes (no admins)
-
-    public function index()
+    /**
+     * GET /api/inventory/users
+     * Devuelve todos los jugadores para añadir xuxes (no admins)
+     */
+    public function listUsers()
     {
-        $users = User::where('role', 'user')->get();
+        $users = User::where('role', 'user')->where('status', 1)->get();
 
         if ($users->isEmpty()) {
             return response()->json([
@@ -161,13 +158,14 @@ class InventoryController extends Controller
         return response()->json($users);
     }
 
-    //Devuelve el número de slots disponibles (testing)
-
+    /**
+     * GET /api/inventory/slots/{user}
+     * Devuelve el número de slots disponibles
+     */
     public function getAvailableSlots(User $user)
     {
         return response()->json([
             'available_slots' => $user->getAvailableSlots()
->>>>>>> 34efa8466655cb151f8f37b3bf4f73dd981bcc35
         ]);
     }
 }
