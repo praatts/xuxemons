@@ -6,36 +6,34 @@ import { Observable, map } from 'rxjs';
 })
 export class AuthService {
 
-    private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = 'http://localhost:8000/api';
 
-    constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-    login(credentials: any) : Observable<any> {
-      return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
-        map(response => {
-          if (response && response.access_token) {
-            localStorage.setItem('access_token', response.access_token);
-          }
-          return response;
-        })
-      );
-    }
+  login(credentials: any) : Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
+      map(response => {
+        if (response && response.access_token) {
+          localStorage.setItem('access_token', response.access_token);
+        }
+        return response;
+      })
+    );
+  }
 
-    logout() : Observable<any> {
-      return this.http.post(`${this.apiUrl}/logout`, {});
-    }
+  logout() : Observable<any> {
+    return this.http.post(`${this.apiUrl}/logout`, {});
+  }
 
-    getToken(): string | null {
-      return localStorage.getItem('access_token');
-    }
+  getToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
 
-    isLogged() : boolean {
-      return this.getToken() !== null;
-    }
+  isLogged() : boolean {
+    return this.getToken() !== null;
+  }
 
-    getProfile() : Observable<any> {
-      return this.http.get<any>(`${this.apiUrl}/profile`);
-    }
-
-
+  getProfile() : Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/profile`);
+  }
 }
