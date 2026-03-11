@@ -14,6 +14,12 @@ class UserController extends Controller
     //mostrar listado usuarios
     public function index()
     {
+        $users = User::where('status', 1)->get();
+        return UserResource::collection($users);
+    }
+
+    public function getAllUsers()
+    {
         $users = User::all();
         return UserResource::collection($users);
     }

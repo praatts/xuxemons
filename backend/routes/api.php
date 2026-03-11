@@ -29,7 +29,8 @@ Route::get('/check-headers', function (Request $request) {
 Route::middleware([JwtMiddleware::class])->group(function () {
     //USUARIO
     Route::get('/profile', [UserController::class, 'getUser']);
-    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users', [UserController::class, 'index']); //mostrar nada mas usuarios status en true
+    Route::get('/users/all', [UserController::class, 'getAllUsers']); //mostrar usuarios en status false y true
     Route::put('/update', [UserController::class, 'updateUser']);
     Route::delete('/user', [UserController::class, 'deleteUser']);
     Route::post('/logout', [AuthController::class, 'logout']);
