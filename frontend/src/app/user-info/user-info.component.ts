@@ -126,7 +126,7 @@ export class UserInfoComponent {
 
   confirmDelete() {
     this.userService.deleteUser().subscribe(() => {
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('access_token');
       this.router.navigate(['/login']);
     });
   }

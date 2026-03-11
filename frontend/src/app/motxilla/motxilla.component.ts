@@ -46,7 +46,7 @@ export class MotxillaComponent implements OnInit {
       this.filteredMotxilla = this.motxilla;
     } else if (filter == 'stackable') {
       this.filteredMotxilla = this.motxilla.filter(slot => slot.item.stackable);
-    } else {
+    } else if (filter == 'non-stackable') {
       this.filteredMotxilla = this.motxilla.filter(slot => !slot.item.stackable);
     }
   }
