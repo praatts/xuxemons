@@ -1,33 +1,26 @@
 <div class="login-container">
   <div class="logo-container">
-    <img src="logo-main.png" class="logo" alt="Logo de Xuxemons">
-  </div>
+  <img src="logo-main.png" class="logo logo-desktop" alt="Logo de Xuxemons">
+  <img src="logo_xuxemons2.png" class="logo logo-responsive" alt="Logo de Xuxemons">
+</div>
 
   <div class="form-container">
     <h1>BENVINGUT/DA A XUXEMONS!</h1>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
       <label for="email">Email:</label>
-      <div class="input-wrapper"
-           [ngClass]="{'valid-input': loginForm.get('email')?.valid}">
-        <input type="email"
-               id="email"
-               formControlName="email"
-               placeholder="Correo electrónico">
+      <div class="input-wrapper" [ngClass]="{'valid-input': loginForm.get('email')?.valid}">
+        <input type="email" id="email" formControlName="email" placeholder="Correo electrónico">
         @if (loginForm.get('email')?.valid) {
-          <span class="check-mark">✓</span>
+        <span class="check-mark">✓</span>
         }
       </div>
 
       <label for="password">Password:</label>
-      <div class="input-wrapper"
-           [ngClass]="{'valid-input': loginForm.get('password')?.valid}">
-        <input type="password"
-               id="password"
-               formControlName="password"
-               placeholder="Contraseña">
+      <div class="input-wrapper" [ngClass]="{'valid-input': loginForm.get('password')?.valid}">
+        <input type="password" id="password" formControlName="password" placeholder="Contraseña">
         @if (loginForm.get('password')?.valid) {
-          <span class="check-mark">✓</span>
+        <span class="check-mark">✓</span>
         }
       </div>
 
@@ -37,9 +30,7 @@
         </a>
       </div>
 
-      <button type="submit"
-              [disabled]="loginForm.invalid"
-              [ngClass]="{'disabled-button': loginForm.invalid}">
+      <button type="submit" [disabled]="loginForm.invalid" [ngClass]="{'disabled-button': loginForm.invalid}">
         Entrar
       </button>
 
@@ -47,12 +38,12 @@
 
     <!--mensajes de error-->
     @if (errorMessage) {
-      <div class="alert alert-danger" role="alert">
-        <strong>Error:</strong>
-        <ul class="mb-0">
-          <li>{{ errorMessage }}</li>
-        </ul>
-      </div>
+    <div class="alert alert-danger" role="alert">
+      <strong>Error:</strong>
+      <ul class="mb-0">
+        <li>{{ errorMessage }}</li>
+      </ul>
+    </div>
     }
 
   </div>

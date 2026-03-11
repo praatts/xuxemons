@@ -9,6 +9,9 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
+    //Moxila del jugador
+
     /* tabla que representa la moxila, cada fila es 1 espacio ocupado */
     public function up(): void
     {
