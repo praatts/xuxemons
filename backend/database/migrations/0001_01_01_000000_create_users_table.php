@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->boolean('active')->default(false);
             $table->integer('active_friends');
             $table->integer('streak');
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });
