@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { XuxemonsService } from '../xuxemons.service';
+import { Xuxemon } from '../../../interfaces/xuxemon';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { XuxemonsService } from '../xuxemons.service';
 })
 export class XuxedexComponent {
 
-  xuxemons: any[] = [];
+  xuxemons: Xuxemon[] = [];
 
   constructor(private xuxemonsService: XuxemonsService) { }
 
@@ -21,9 +22,14 @@ export class XuxedexComponent {
 
   getAllXuxemons(): void {
     this.xuxemonsService.getAllXuxemons().subscribe({
-      next: (data) => this.xuxemons = data as any[],
+      next: (data) => this.xuxemons = data as Xuxemon[],
       error: (err) => console.log("Error al cargar xuxedex: ", err)
     });
+  }
+  
+  alterXuxemonId(id: number): string {
+    return '#' + id.toString().padStart(3, '0');
+
   }
 
 }

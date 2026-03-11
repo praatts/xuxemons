@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Xuxemon } from '../../interfaces/xuxemon';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,6 @@ export class XuxemonsService {
   private apiUrl = 'http://localhost:8000/api';
 
   getAllXuxemons() {
-    return this.http.get(`${this.apiUrl}/xuxedex/all`);
+    return this.http.get<Xuxemon[]>(`${this.apiUrl}/xuxedex/all`);
   }
 }

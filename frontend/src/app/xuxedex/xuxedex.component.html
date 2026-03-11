@@ -13,28 +13,14 @@
         </div>
     </div>
     <div class="xuxedex-wrapper">
+        @for (xuxemon of xuxemons; track xuxemon.id) {
         <div class="xuxemon-card">
+            <h2>{{ xuxemon.name }}</h2>
+            <p>{{ alterXuxemonId(xuxemon.id) }}</p>
+            <img src="test-item.png" alt="{{ xuxemon.name }}">
+            <div class=""></div>
             
         </div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
-        <div class="xuxemon-card"></div>
+    }
     </div>
 </div>

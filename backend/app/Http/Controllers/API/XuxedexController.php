@@ -10,11 +10,13 @@ use App\Models\Inventory;
 use App\Models\Xuxemon;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\OwnedXuxemon;
 
 class XuxedexController extends Controller
 {
 
-    public function allXuxemons(): JsonResponse {
+    public function allXuxemons(): JsonResponse
+    {
         return response()->json(Xuxemon::all());
     }
     // GET api/xuxedex
@@ -23,14 +25,10 @@ class XuxedexController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        // Forma más sencilla y fácil de entender usando Eloquent (Modelos):
-        // Buscamos en el inventario todos los registros de este usuario,
-        // y le pedimos que "cargue" la información del Xuxe ('with xuxe').
-        $collection = Inventory::with('xuxe')
+        $collection = OwnedXuxemon::with('xuxemon')
             ->where('user_id', $user->id)
             ->get();
 
-        // Por último, devolvemos la colección al usuario en formato JSON
         return response()->json($collection);
     }
 
@@ -59,8 +57,8 @@ class XuxedexController extends Controller
 
         // Comprobamos si el jugador ya tiene este xuxe en su inventario
         $existing = Inventory::where('user_id', $target->id)
-                              ->where('xuxe_id', $xuxe->id)
-                              ->first();
+            ->where('xuxe_id', $xuxe->id)
+            ->first();
 
         // Si ya lo tiene, sumamos 1. Si no, creamos un registro nuevo.
         if ($existing) {
