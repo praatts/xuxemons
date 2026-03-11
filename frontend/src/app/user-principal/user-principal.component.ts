@@ -1,8 +1,8 @@
 import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { UserService } from '../user.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { UserService } from '../services/user.service';
+import { ThemeService } from '../services/theme.service';
 
 interface rutas {
   label: string;
@@ -25,7 +25,7 @@ export class UserPrincipalComponent {
   displayNameVal = '';
   pfpValue = '';
 
-  constructor(private userService: UserService, private router: Router) {
+  constructor(private userService: UserService, private router: Router, public theme: ThemeService) {
     this.userService.getUser().subscribe((u: any) => {
       this.nameValue = u.name || '';
       this.uidValue = u.player_id || '';
@@ -33,14 +33,13 @@ export class UserPrincipalComponent {
       this.pfpValue = u.pfp || '';
     });
   }
-
-  public darkMode = false;
+  
   botonInfoHover = false;
 
   rutas: rutas[] = [
     //{ label: 'Inicio', route: 'inicio', exact: true, img: 'inicio.png' },
     { label: 'Pàgina principal', route: 'principal', exact: true, img: 'Home.png'},
-    { label: 'Usuario', route: 'principal/userstats', exact: true, img: 'user.png' },
+    { label: 'Usuario', route: 'principal/userstats', exact: false, img: 'user.png' },
     { label: 'xuxedex', route: 'principal/xuxedex', exact: true, img: 'xuxedex.png' },
     { label: 'Motxilla', route: 'principal/motxilla', exact: true, img: 'inventari.png' },
     
@@ -50,9 +49,4 @@ export class UserPrincipalComponent {
     this.userService.logOut();
     this.router.navigate(['/']);
   }
-
-  toggleDarkMode() {
-    this.darkMode = !this.darkMode;
-  }
-
 }

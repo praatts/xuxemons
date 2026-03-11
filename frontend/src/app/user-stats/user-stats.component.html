@@ -1,2 +1,56 @@
-<p>user-stats works!</p>
-<router-outlet></router-outlet>
+<div class="profile-container">
+    <div class="profile-header">
+
+        <div class="avatar-wrapper">
+            <img class="avatar" [src]="avatarValue">
+            <span class="online-dot"></span>
+        </div>
+
+        <div class="user-info">
+            <h2>{{fullnameValue}}</h2>
+            <div class="level-row">
+                <span class="level">{{levelValue}}</span>
+                <div class="xp-bar">
+                    <div class="xp-fill" [style.width.%]="xpValue"></div>
+                </div>
+            </div>
+            <div class="friends">
+                Amics Online: {{friendsOnlineValue}}
+            </div>
+        </div>
+
+        <div class="streak">
+            🔥 {{streakValue}}
+        </div>
+    </div>
+
+    <!-- FAVORITE -->
+    <div class="favorite">
+        <img src="assets/favorite.png">
+        <span>FAVORIT ✏️</span>
+    </div>
+
+    <div class="main-panel">
+        <!-- TABS -->
+        <div class="tabs">
+            @for(ruta of rutas; track ruta.label){
+                <a
+                class="tab"
+                [routerLink]="ruta.route"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact:ruta.exact}"
+                >
+                    {{ruta.label}}
+                </a>
+            }
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+            @if(isRoot){
+                <div class="empty-background"></div>
+            }
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

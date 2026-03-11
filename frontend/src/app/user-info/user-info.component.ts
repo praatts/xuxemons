@@ -1,7 +1,7 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserService } from '../user.service';
+import { UserService } from '../services/user.service';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
 interface Pictures {
@@ -137,6 +137,6 @@ export class UserInfoComponent {
   }
 
   goBack() {
-    this.router.navigate(['/main/principal']);
+    this.router.navigate(['/main/principal/userstats']);
   }
 }

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { UserService } from '../user.service';
+import { UserService } from '../services/user.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-user-login',
@@ -18,6 +18,7 @@ export class UserLoginComponent {
   submitted = false;
   loading = false;
   errorMessage = '';
+  activeValue = false;
   
   constructor(
     private fb: FormBuilder,

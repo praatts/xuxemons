@@ -25,6 +25,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@xuxemons.com',
             'role' => 'admin',
             'pfp' => 'https://images.freeimages.com/fic/images/icons/2526/bloggers/256/admin.png',
+            'level' => 0,
+            'xp' => 0,
+            'active' => false,
+            'active_friends' => 0,
             'password' => bcrypt(123456),
         ]); */
 
