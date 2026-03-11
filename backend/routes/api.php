@@ -3,6 +3,8 @@
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\InventoryController;
+use App\Http\Controllers\API\XuxedexController;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
@@ -29,7 +31,8 @@ Route::get('/check-headers', function (Request $request) {
 Route::middleware([JwtMiddleware::class])->group(function () {
     //USUARIO
     Route::get('/profile', [UserController::class, 'getUser']);
-    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users', [UserController::class, 'index']); //mostrar nada mas usuarios status en true
+    Route::get('/users/all', [UserController::class, 'getAllUsers']); //mostrar usuarios en status false y true
     Route::put('/update', [UserController::class, 'updateUser']);
     Route::delete('/user', [UserController::class, 'deleteUser']);
     Route::post('/logout', [AuthController::class, 'logout']);

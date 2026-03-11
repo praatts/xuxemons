@@ -14,6 +14,12 @@ class UserController extends Controller
     //mostrar listado usuarios
     public function index()
     {
+        $users = User::where('status', 1)->get();
+        return UserResource::collection($users);
+    }
+
+    public function getAllUsers()
+    {
         $users = User::all();
         return UserResource::collection($users);
     }
@@ -73,7 +79,8 @@ class UserController extends Controller
                 return response()->json(['error' => 'User not found or token invalid'], 404);
             }
 
-            $user->delete();
+            $user->status = 0;
+            $user->save();
 
             return response()->json(['message' => 'User deleted successfully']);
         } catch (JWTException $e) {

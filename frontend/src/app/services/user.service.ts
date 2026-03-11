@@ -2,9 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserInterface } from '../user-interface';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Observable } from 'rxjs/internal/Observable';
-import { map } from 'rxjs/internal/operators/map';
-import { catchError, debounceTime, first, of } from 'rxjs';
+import { Observable, map, debounceTime, first, of, catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

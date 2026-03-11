@@ -23,7 +23,7 @@ class AuthController extends Controller
                 'string',
                 'max:255',
                 'unique:users,player_id',
-                'regex:/^#[A-Za-z]+[0-9]{4}$/'
+                'regex:/^#[A-Za-z0-9]+[0-9]{4}$/'
             ],
 
             'name' => [
@@ -57,7 +57,8 @@ class AuthController extends Controller
             ],
 
             'pfp' => [
-                'string'
+                'string',
+                'nullable'
             ],
 
             'level' => [
@@ -95,12 +96,13 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
-            'pfp' => $request->pfp,
+            'pfp' => $request->pfp ?? 'https://img.freepik.com/vector-premium/icono-perfil-usuario-estilo-plano-ilustracion-vector-avatar-miembro-sobre-fondo-aislado-concepto-negocio-signo-permiso-usuario_157943-15752.jpg?semt=ais_hybrid', //cargar imagen de usuario por defecto
             'level' => 0,
             'xp' => 0,
             'active' => false,
             'active_friends' => 0,
-            'streak' => 0
+            'streak' => 0,
+            'status' => 1
         ]);
 
         $token = Auth::guard('api')->login($user);
@@ -122,8 +124,14 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+
         //obtener usuario autenticado
         $user = Auth::guard('api')->user();
+
+        //para usuarios no autorizados (status = 0)
+        if($user->status == 0){
+            return response()->json(['error' => 'This user is not active'], 403);
+        }
 
         //marcar usuario como activo
         $user->active = true;
