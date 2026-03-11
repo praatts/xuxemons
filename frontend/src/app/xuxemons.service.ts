@@ -11,7 +11,7 @@ export class XuxemonsService {
 
   private apiUrl = 'http://localhost:8000/api';
 
-  getAllXuxemons() {
-    return this.http.get<Xuxemon[]>(`${this.apiUrl}/xuxedex/all`);
+  getUserXuxemons() {
+    return this.http.get<Xuxemon[]>(`${this.apiUrl}/xuxedex`);
   }
 }

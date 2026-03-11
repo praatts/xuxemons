@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Xuxe;
-use App\Models\Inventory;
 use App\Models\Xuxemon;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -25,11 +22,15 @@ class XuxedexController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $collection = OwnedXuxemon::with('xuxemon')
-            ->where('user_id', $user->id)
-            ->get();
+        $xuxemons = Xuxemon::all()->map(function ($xuxemon) use ($user) {
+            $data = $xuxemon->toArray();
+            $data['owned'] = OwnedXuxemon::where('user_id', $user->id)
+                ->where('xuxemon_id', $xuxemon->id)
+                ->exists();
+            return $data;
+        });
 
-        return response()->json($collection);
+        return response()->json($xuxemons);
     }
 
     //GET /api/xuxedex/users
@@ -40,39 +41,25 @@ class XuxedexController extends Controller
         return response()->json($users);
     }
 
-    // POST /api/xuxedex/add-random/{userId}
+    // POST /api/xuxedex/add-random/{user_id}
     // Añade un xuxemon aleatorio al inventario de un jugador concreto
-    public function addRandom(int $userId): JsonResponse
+    public function addRandom($user_id): JsonResponse
     {
-        // Buscamos el jugador por su ID. Si no existe, devuelve error 404 automáticamente.
-        $target = User::findOrFail($userId);
+        $user = User::findOrFail($user_id);
 
-        // Cogemos un xuxe al azar de la tabla 'xuxes'
-        $xuxe = Xuxemon::inRandomOrder()->first();
+        $xuxemon = Xuxemon::inRandomOrder()->first();
 
-        // Si no hay ningún xuxe en la base de datos, salimos con error
-        if (!$xuxe) {
-            return response()->json(['error' => 'No hi ha xuxes a la base de datos.'], 404);
+        if (!$xuxemon) {
+            return response()->json(['error' => 'No hi ha xuxemons a la base de datos.'], 404);
         }
 
-        // Comprobamos si el jugador ya tiene este xuxe en su inventario
-        $existing = Inventory::where('user_id', $target->id)
-            ->where('xuxe_id', $xuxe->id)
-            ->first();
+        OwnedXuxemon::create([
+            'user_id'      => $user->id,
+            'xuxemon_id'   => $xuxemon->id,
+            'number_xuxes' => 0,
+            'size'         => $xuxemon->size,
+        ]);
 
-        // Si ya lo tiene, sumamos 1. Si no, creamos un registro nuevo.
-        if ($existing) {
-            $existing->increment('quantity');
-            $message = 'Ja tenia aquest xuxemon, quantitat incrementada.';
-        } else {
-            Inventory::create([
-                'user_id'  => $target->id,
-                'xuxe_id'  => $xuxe->id,
-                'quantity' => 1,
-            ]);
-            $message = 'Nou xuxemon afegit!';
-        }
-
-        return response()->json(['message' => $message, 'xuxe' => $xuxe], 201);
+        return response()->json(['message' => 'Nou xuxemon afegit!', 'xuxemon' => $xuxemon], 201);
     }
 }

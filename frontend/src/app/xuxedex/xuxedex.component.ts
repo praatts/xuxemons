@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { XuxemonsService } from '../xuxemons.service';
 import { Xuxemon } from '../../../interfaces/xuxemon';
+import { NgClass } from '@angular/common';
 
 
 @Component({
   selector: 'app-xuxedex',
   standalone: true,
-  imports: [],
+  imports: [NgClass],
   templateUrl: './xuxedex.component.html',
   styleUrl: './xuxedex.component.css'
 })
@@ -21,12 +22,15 @@ export class XuxedexComponent {
   }
 
   getAllXuxemons(): void {
-    this.xuxemonsService.getAllXuxemons().subscribe({
-      next: (data) => this.xuxemons = data as Xuxemon[],
+    this.xuxemonsService.getUserXuxemons().subscribe({
+      next: (data) => {
+        this.xuxemons = data as Xuxemon[],
+        console.log("Xuxedex cargado: ", data);
+      }, 
       error: (err) => console.log("Error al cargar xuxedex: ", err)
     });
   }
-  
+
   alterXuxemonId(id: number): string {
     return '#' + id.toString().padStart(3, '0');
 

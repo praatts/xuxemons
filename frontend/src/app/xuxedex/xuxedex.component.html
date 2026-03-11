@@ -14,13 +14,17 @@
     </div>
     <div class="xuxedex-wrapper">
         @for (xuxemon of xuxemons; track xuxemon.id) {
-        <div class="xuxemon-card">
-            <h2>{{ xuxemon.name }}</h2>
+        <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}">
+            @if(!xuxemon.owned) {
+                <h2>???</h2>
+            } @else {
+                <h2>{{ xuxemon.name }}</h2>
+            }
             <p>{{ alterXuxemonId(xuxemon.id) }}</p>
-            <img src="test-item.png" alt="{{ xuxemon.name }}">
-            <div class=""></div>
+            <img src="test-item.png" [alt]="xuxemon.name">
+            <span class="xuxemon-base"></span>
             
         </div>
-    }
+        }
     </div>
 </div>

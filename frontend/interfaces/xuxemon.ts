@@ -3,4 +3,5 @@ export interface Xuxemon {
     name: string,
     type: string,
     size: string,
+    owned: boolean
 }

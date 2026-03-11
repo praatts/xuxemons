@@ -93,4 +93,39 @@
 .xuxedex-wrapper .xuxemon-card {
     background-color: #E6CCCC;
     border-radius: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+}
+
+.xuxemon-card h2 {
+    text-transform: uppercase;
+}
+
+.xuxemon-card p {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 20px;
+}
+
+.xuxemon-card img {
+    height: 100px;
+    width: 100px;
+    filter: brightness(0);
+}
+
+.xuxemon-card .xuxemon-base {
+    width: 100px;
+    height: 50px;
+    background-color: #898989;
+    border-radius: 50%;
+}
+
+.xuxemon-card.owned .xuxemon-base {
+    background-color: rgba(255, 68, 0, 0.25);
+}
+
+.xuxemon-card.owned img {
+    filter: none;
 }
