@@ -23,7 +23,7 @@ class AuthController extends Controller
                 'string',
                 'max:255',
                 'unique:users,player_id',
-                'regex:/^#[A-Za-z]+[0-9]{4}$/'
+                'regex:/^#[A-Za-z0-9]+[0-9]{4}$/'
             ],
 
             'name' => [
@@ -57,7 +57,8 @@ class AuthController extends Controller
             ],
 
             'pfp' => [
-                'string'
+                'string',
+                'nullable'
             ],
 
             'level' => [
@@ -95,7 +96,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
-            'pfp' => $request->pfp,
+            'pfp' => $request->pfp ?? 'https://img.freepik.com/vector-premium/icono-perfil-usuario-estilo-plano-ilustracion-vector-avatar-miembro-sobre-fondo-aislado-concepto-negocio-signo-permiso-usuario_157943-15752.jpg?semt=ais_hybrid', //cargar imagen de usuario por defecto
             'level' => 0,
             'xp' => 0,
             'active' => false,

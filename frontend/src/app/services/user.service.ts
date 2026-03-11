@@ -2,9 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserInterface } from '../user-interface';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Observable } from 'rxjs/internal/Observable';
-import { map } from 'rxjs/internal/operators/map';
-import { catchError, debounceTime, first, of } from 'rxjs';
+import { Observable, map, debounceTime, first, of, catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +43,7 @@ export class UserService {
   }
 
   getToken() {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('access_token');
   }
 
   isAutentificated(): boolean {
@@ -55,7 +53,7 @@ export class UserService {
   logIn(email: string, password: string) {
     return this.http.post<{ token: string, user_id: number }>(`${this.url}/login`, { email, password }).pipe(
       map(response => {
-        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('access_token', response.token);
         localStorage.setItem('user_id', response.user_id.toString());
         return response;
       })
@@ -63,7 +61,7 @@ export class UserService {
   }
 
   logOut() {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('access_token');
     localStorage.removeItem('user_id');
   }
 

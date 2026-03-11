@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/internal/operators/map';
+import { Observable, map } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,8 +13,8 @@ export class AuthService {
   login(credentials: any) : Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       map(response => {
-        if (response && response.access_token) {
-          localStorage.setItem('access_token', response.access_token);
+        if (response && response.token) {
+          localStorage.setItem('access_token', response.token);
         }
         return response;
       })

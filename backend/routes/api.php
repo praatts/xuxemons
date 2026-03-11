@@ -3,6 +3,8 @@
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\InventoryController;
+use App\Http\Controllers\API\XuxedexController;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
