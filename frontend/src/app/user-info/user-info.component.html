@@ -81,9 +81,11 @@
 </button>
 
 <div>
-  @if(showDeleteDialog){
+@if(showDeleteDialog){
+<div class="delete-dialog-container">
   <p>Estàs segur que vols donar-te de baixa? No podràs tornar a entrar amb aquest usuari.</p>
-  <button (click)="confirmDelete()" (click)="logout()">Sí, donar-me de baixa</button>
-  <button (click)="showDeleteDialog = false">Cancel·lar</button>
-  }
+  <button (click)="confirmDelete()" (click)="logout()" class="btn-confirm-delete">Sí, donar-me de baixa</button>
+  <button (click)="showDeleteDialog = false" class="btn-cancel-delete">Cancel·lar</button>
+</div>
+}
 </div>
