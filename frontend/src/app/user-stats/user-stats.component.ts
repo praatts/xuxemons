@@ -3,11 +3,13 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { UserService } from '../services/user.service';
 import { ThemeService } from '../services/theme.service';
 import { NgClass } from '@angular/common';
+import { HostBinding } from '@angular/core';
 
 interface rutas {
   label: string;
   route: string;
   exact: boolean;
+  admin: boolean;
 }
 
 @Component({
@@ -17,6 +19,7 @@ interface rutas {
   templateUrl: './user-stats.component.html',
   styleUrl: './user-stats.component.css'
 })
+
 export class UserStatsComponent {
 
   constructor(public theme: ThemeService, private userService: UserService, private router: Router) {
@@ -32,6 +35,11 @@ export class UserStatsComponent {
     });
   }
 
+  @HostBinding('class.dark-mode')
+  get darkMode(){
+    return this.theme.darkMode;
+  }
+
   botonInfoHover = false;
 
   nameValue = '';
@@ -44,7 +52,7 @@ export class UserStatsComponent {
   avatarValue = '';
 
   rutas: rutas[] = [
-    { label: 'Modificar Usuario', route: 'userinfo', exact: true}
+    { label: 'Modificar Usuario', route: 'userinfo', exact: true, admin: false},
   ];
 
   get isRoot(){

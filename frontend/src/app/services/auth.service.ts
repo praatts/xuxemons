@@ -13,19 +13,16 @@ export class AuthService {
   login(credentials: any) : Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       map(response => {
-        if (response && response.token) {
-          localStorage.setItem('access_token', response.token);
+        if (response && response.access_token) {
+          localStorage.setItem('access_token', response.access_token);
         }
         return response;
       })
     );
   }
 
-  logout() : void {
-    this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
-      next: () => localStorage.removeItem('access_token'),
-      error: () => localStorage.removeItem('access_token')
-    });
+  logout() : Observable<any> {
+    return this.http.post(`${this.apiUrl}/logout`, {});
   }
 
   getToken(): string | null {
@@ -39,6 +36,4 @@ export class AuthService {
   getProfile() : Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/profile`);
   }
-
-
 }

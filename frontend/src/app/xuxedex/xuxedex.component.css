@@ -1,7 +1,36 @@
+:host {
+    --bg-container: #FFD9A3;
+    --bg-search: #FFFFFF;
+    --border-search: #C1BBBB;
+    --bg-select: #C1BBBB;
+    --bg-card: #E6CCCC;
+    --text-main: #000000;
+    --text-secondary: #495057;
+    --scrollbar-bg: #e0e0e0;
+    --scrollbar-thumb: #b0b0b0;
 
+
+    background-color: var(--bg-container);
+    color: var(--text-main);
+}
+
+:host(.dark-mode){
+    --bg-container: #121212;
+    --bg-search: #FFFFFF;
+    --border-search: #333333;
+    --bg-select: #C1BBBB;
+    --bg-card: #2e2e2e;
+    --text-main: #ffffff;
+    --text-secondary: #ced4da;
+    --scrollbar-bg: #1e1e1e;
+    --scrollbar-thumb: #555555;
+
+    background-color: var(--bg-container);
+    color: var(--text-main);
+}
 .container {
     padding: 50px;
-    background-color: #FFD9A3;
+    background-color: var(--bg-container);
     display: flex;
     flex-direction: column;
     gap: 26px;
@@ -14,11 +43,11 @@
 
 .container .search-wrapper {
     width: 100%;
-    background-color: #FFFFFF;
+    background-color: var(--bg-search);
     border-radius: 40px;
     height: 62px;
     min-height: 62px;
-    border: 1px solid #C1BBBB;
+    border: 1px solid var(--border-search);
     display: flex;
     align-items: center;
     gap: 20px;
@@ -50,7 +79,7 @@
 .search-wrapper select {
     margin-left: auto;
     margin-right: 20px;
-    background-color: #C1BBBB;
+    background-color: var(--bg-select);
     border-radius: 24px;
     padding: 8px;
 }
@@ -58,6 +87,24 @@
 .search-wrapper select:focus {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+}
+
+.xuxemon-filter {
+    display: flex;
+    gap: 10px;
+    margin-right: 15px; 
+}
+
+.xuxemon-filter .action-btn {
+    border-radius: 24px; 
+    border: none;
+    background-color: var(--bg-select);
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
 }
 
 .container .xuxedex-wrapper {
@@ -75,6 +122,70 @@
 }
 
 .xuxedex-wrapper .xuxemon-card {
-    background-color: #E6CCCC;
+    background-color: var(--bg-card);
     border-radius: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+}
+
+.xuxemon-card h2 {
+    text-transform: uppercase;
+}
+
+.xuxemon-card p {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 20px;
+}
+
+.xuxemon-card img {
+    height: 100px;
+    width: 100px;
+    filter: brightness(0);
+}
+
+.xuxemon-card .xuxemon-base {
+    width: 100px;
+    height: 50px;
+    background-color: #898989;
+    border-radius: 50%;
+}
+
+.xuxemon-card.owned .xuxemon-base {
+    background-color: rgba(255, 68, 0, 0.25);
+}
+
+.xuxemon-card.owned img {
+    filter: none;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+/* Scrollbar */
+.xuxedex-wrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+.xuxedex-wrapper::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+    border-radius: 10px;
+}
+
+.xuxedex-wrapper::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.xuxedex-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/*Scrollbar firefox*/
+.xuxedex-wrapper {
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+    scrollbar-width: thin;
 }

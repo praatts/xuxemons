@@ -214,7 +214,7 @@ input:checked+.slider::before {
 
 /* Router outlet (contenido derecho) */
 .dark-mode .panel-content {
-  background-color: #1a1a1a; /* gris fuerte */
+  background-color: #121212; /* gris fuerte */
 }
 
 /* Usuario */

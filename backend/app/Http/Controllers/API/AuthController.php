@@ -155,7 +155,7 @@ class AuthController extends Controller
             $user->active = false;
             $user->save();
         }
-        
+
         Auth::guard('api')->logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
