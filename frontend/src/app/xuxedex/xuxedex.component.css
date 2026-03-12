@@ -1,25 +1,32 @@
 :host {
-  --bg-container: #FFD9A3; /* fondo principal */
-  --bg-search: #FFFFFF; /* fondo del input de búsqueda */
-  --border-search: #C1BBBB; /* borde del input/select */
-  --bg-select: #C1BBBB; /* fondo del select */
-  --bg-card: #E6CCCC; /* fondo de las tarjetas */
-  --text-main: #000000; /* texto principal */
+    --bg-container: #FFD9A3; /* fondo principal */
+    --bg-search: #FFFFFF; /* fondo del input de búsqueda */
+    --border-search: #C1BBBB; /* borde del input/select */
+    --bg-select: #C1BBBB; /* fondo del select */
+    --bg-card: #E6CCCC; /* fondo de las tarjetas */
+    --text-main: #000000; /* texto principal */
+    --text-secondary: #495057; /* Texto secundario */
+    --scrollbar-bg: #e0e0e0;
+    --scrollbar-thumb: #b0b0b0;
 
-  background-color: var(--bg-container);
-  color: var(--text-main);
+
+    background-color: var(--bg-container);
+    color: var(--text-main);
 }
 
 :host(.dark-mode){
-      --bg-container: #121212; /* fondo principal */
-  --bg-search: #1e1e1e; /* fondo del input de búsqueda */
-  --border-search: #333333; /* borde del input/select */
-  --bg-select: #2a2a2a; /* fondo del select */
-  --bg-card: #2e2e2e; /* fondo de las tarjetas */
-  --text-main: #ffffff; /* texto principal */
+    --bg-container: #121212; /* fondo principal */
+    --bg-search: #FFFFFF; /* fondo del input de búsqueda */
+    --border-search: #333333; /* borde del input/select */
+    --bg-select: #C1BBBB; /* fondo del select */
+    --bg-card: #2e2e2e; /* fondo de las tarjetas */
+    --text-main: #ffffff; /* texto principal */
+    --text-secondary: #ced4da; /* Texto secundario */
+    --scrollbar-bg: #1e1e1e;
+    --scrollbar-thumb: #555555;
 
-  background-color: var(--bg-container);
-  color: var(--text-main);
+    background-color: var(--bg-container);
+    color: var(--text-main);
 }
 .container {
     padding: 50px;
@@ -91,7 +98,7 @@
 .xuxemon-filter .action-btn {
     border-radius: 24px; 
     border: none;
-    background-color: #FFD9A3;
+    background-color: var(--bg-select);
     cursor: pointer;
     transition: transform 0.2s, background-color 0.2s;
     display: flex;
@@ -152,4 +159,33 @@
 
 .xuxemon-card.owned img {
     filter: none;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+/* Scrollbar */
+.xuxedex-wrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+.xuxedex-wrapper::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+    border-radius: 10px;
+}
+
+.xuxedex-wrapper::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.xuxedex-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/*Scrollbar firefox*/
+.xuxedex-wrapper {
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+    scrollbar-width: thin;
 }
