@@ -31,4 +31,12 @@ export class UserAdminComponent implements OnInit {
       this.loadUsers();
     });
   }
+
+  deleteUser(id: number) {
+    if (confirm('Estàs segur que vols desactivar aquest usuari?')) {
+      this.userService.deleteUsers(id).subscribe(() => {
+        this.loadUsers();
+      });
+    }
+  }
 }

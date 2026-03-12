@@ -110,4 +110,22 @@ class UserController extends Controller
         }
     }
 
+    public function adminDelete($id)
+    {
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            $user->status = 0;
+            $user->save();
+
+            return response()->json(['message' => 'User deactivated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to deactivate user'], 500);
+        }
+    }
+
 }

@@ -23,7 +23,7 @@
                         @if(user.status === 0){
                             <button (click)="restoreUser(user.id)" class="btn-restore">Restablir</button>
                         } @else {
-                            <span class="active-status">Actiu</span>
+                            <button (click)="deleteUser(user.id)" class="btn-delete">Desactivar</button>
                         }
                     </td>
                 </tr>
