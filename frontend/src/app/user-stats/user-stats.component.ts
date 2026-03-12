@@ -32,6 +32,7 @@ export class UserStatsComponent {
       this.friendsOnlineValue = u.active_friends || '0';
       this.avatarValue = u.pfp || '';
       this.streakValue = u.streak || '0';
+      this.isAdmin = u.role === 'admin';
     });
   }
 
@@ -50,6 +51,7 @@ export class UserStatsComponent {
   friendsOnlineValue = '';
   streakValue = '';
   avatarValue = '';
+  isAdmin = false;
 
   rutas: rutas[] = [
     { label: 'Modificar Usuario', route: 'userinfo', exact: true, admin: false},
