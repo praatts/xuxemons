@@ -4,7 +4,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\InventoryController;
 use App\Http\Controllers\API\XuxedexController;
-use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
@@ -51,7 +50,8 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/inventory', [InventoryController::class, 'getUserInventory']);
 
     //XUXEDEX
-    Route::get('/xuxedex', [XuxedexController::class, 'index']);
+    Route::get('/xuxedex/all', [XuxedexController::class, 'allXuxemons']);
+    Route::get('/xuxedex/', [XuxedexController::class, 'index']);
     Route::get('/xuxedex/users', [XuxedexController::class, 'users']);
     Route::post('/xuxedex/add-random/{user_id}', [XuxedexController::class, 'addRandom']);
 });

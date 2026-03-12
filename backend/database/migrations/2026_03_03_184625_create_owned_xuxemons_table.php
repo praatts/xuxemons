@@ -17,8 +17,8 @@ return new class extends Migration
     {
         Schema::create('owned_xuxemons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('xuxemon_id')->constrained('xuxemons')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('xuxemon_id')->constrained('xuxemons');
             $table->integer('number_xuxes')->default(0);
             $table->unsignedInteger('quantity')->default(1);
             $table->enum('size', ['petit', 'mitja', 'gran']);

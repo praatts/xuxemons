@@ -74,7 +74,7 @@ class InventoryController extends Controller
             ]);
 
             $slot->quantity += $finalQuantity;
-            $slot->save();
+            $slot->save();  
         }
 
         return response()->json([
