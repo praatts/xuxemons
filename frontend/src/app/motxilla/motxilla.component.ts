@@ -83,15 +83,16 @@ export class MotxillaComponent implements OnInit {
     );
   }
 
-  loadUsers(){
-    this.userService.getAllUsers().subscribe({
-      next:(users:any)=>{
-        this.users = users;
-      },
-      error:(err)=>{
-        console.log("Error cargando usuarios",err);
-      }
-    });
+  loadUsers() {
+    if (this.isAdmin) {
+      this.userService.getAllUsers().subscribe({
+        next: (data: any) => {
+          this.users = data.data || data || [];
+          console.log('Usuarios cargados para admin:', this.users);
+        },
+        error: (err) => console.log('Error cargando usuarios admin', err)
+      });
+    }
   }
 
   setView(view: 'items' | 'users'){

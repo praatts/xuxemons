@@ -28,6 +28,10 @@ export class UserService {
     return this.http.get(`${this.url}/profile`, { headers: this.authHeaders() });
   }
 
+  getUsers() {
+    return this.http.get(`${this.url}/users`, { headers: this.authHeaders() });
+  }
+
   //modificar Usuarios
   updateUser(user: any) {
     return this.http.put(`${this.url}/update`, user, { headers: this.authHeaders() });

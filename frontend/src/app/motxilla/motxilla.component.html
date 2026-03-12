@@ -100,7 +100,8 @@
                         <div class="user-card"
                             [class.active]="selectedUser?.id === user.id"
                             (click)="selectUser(user)">
-                            <p>{{user.username}}</p>
+                            <p>{{user.name}} {{user.surename}}</p>
+                            <small>{{user.email}}</small>
                         </div>
                     }
                 </div>
