@@ -33,6 +33,7 @@ export class UserInfoComponent {
   emailValue = '';
   passwordValue = '';
   pfpValue = '';
+  isAdmin = false;
 
   selectPersonalizedPfp = false;
   togglePfpMode() {
@@ -91,7 +92,7 @@ export class UserInfoComponent {
       this.infoForm.controls['surname'].setValue(this.surnameValue);
       this.infoForm.controls['email'].setValue(this.emailValue);
       this.infoForm.controls['pfp'].setValue(this.pfpValue);
-
+      this.isAdmin = u.role === 'admin';
     });
   }
 

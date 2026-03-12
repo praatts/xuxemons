@@ -71,7 +71,9 @@
 </div>
 
 <hr>
-<button (click)="showDeleteDialog = true">Donar-se de baixa</button>
+@if (!isAdmin) {
+  <button (click)="showDeleteDialog = true">Donar-se de baixa</button>
+}
 <!-- <button (click)="showLogoutDialog = true">Tancar sessió</button> -->
 <button (click)="goBack()" [ngClass]="{'active': botonInfoHover}" (mouseenter)="botonInfoHover = true"
   (mouseleave)="botonInfoHover = false">

@@ -79,6 +79,10 @@ class UserController extends Controller
                 return response()->json(['error' => 'User not found or token invalid'], 404);
             }
 
+            if ($user->role === 'admin') {
+                return response()->json(['error' => 'An admin user cannot be deleted'], 403);
+            }
+
             $user->status = 0;
             $user->save();
 
@@ -117,6 +121,10 @@ class UserController extends Controller
 
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
+            }
+
+            if ($user->role === 'admin') {
+                return response()->json(['error' => 'An admin user cannot be deactivated'], 403);
             }
 
             $user->status = 0;

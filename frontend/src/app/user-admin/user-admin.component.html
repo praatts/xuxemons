@@ -22,7 +22,7 @@
                 <td>
                     @if(user.status === 0){
                     <button (click)="restoreUser(user.id)" class="btn-restore">Restablir</button>
-                    } @else {
+                    } @else if(user.role !== 'admin'){
                     <button (click)="deleteUser(user.id)" class="btn-delete">Desactivar</button>
                     }
                 </td>
