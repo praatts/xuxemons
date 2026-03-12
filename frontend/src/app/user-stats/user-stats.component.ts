@@ -9,6 +9,7 @@ interface rutas {
   label: string;
   route: string;
   exact: boolean;
+  admin: boolean;
 }
 
 @Component({
@@ -51,7 +52,7 @@ export class UserStatsComponent {
   avatarValue = '';
 
   rutas: rutas[] = [
-    { label: 'Modificar Usuario', route: 'userinfo', exact: true}
+    { label: 'Modificar Usuario', route: 'userinfo', exact: true, admin: false},
   ];
 
   get isRoot(){
