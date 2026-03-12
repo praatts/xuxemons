@@ -38,6 +38,16 @@ export class UserService {
     return this.http.delete(`${this.url}/user`, { headers: this.authHeaders() });
   }
 
+  //obtener todos los usuarios
+  getAllUsers() {
+    return this.http.get(`${this.url}/users/all`, { headers: this.authHeaders() });
+  }
+
+  //restaurar usuarios
+  restoreUsers(id: number) {
+    return this.http.post(`${this.url}/users/${id}/restore`, {}, { headers: this.authHeaders() });
+  }
+
   postUser(user: UserInterface) {
     return this.http.post(`${this.url}/register`, user);
   }
