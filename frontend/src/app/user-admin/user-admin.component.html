@@ -1,33 +1,25 @@
 <div class="admin-container">
     <h2>Gestió d'Usuaris</h2>
-    <table class="user-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Cognoms</th>
-                <th>Email</th>
-                <th>Rol</th>
-                <th>Accions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for(user of users; track user.id){
-                <tr>
-                    <td>{{user.player_id}}</td>
-                    <td>{{user.name}}</td>
-                    <td>{{user.surname}}</td>
-                    <td>{{user.email}}</td>
-                    <td>{{user.role}}</td>
-                    <td>
-                        @if(user.status === 0){
-                            <button (click)="restoreUser(user.id)" class="btn-restore">Restablir</button>
-                        } @else {
-                            <span class="active-status">Actiu</span>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+    <div class="users-grid">
+        @for(user of users; track user.id){
+        <div class="user-card">
+            <div class="user-info">
+                <span><strong>ID:</strong> {{user.player_id}}</span>
+                <span><strong>Nom:</strong> {{user.name}}</span>
+                <span><strong>Cognoms:</strong> {{user.surname}}</span>
+                <span><strong>Email:</strong> {{user.email}}</span>
+                <span><strong>Rol:</strong> {{user.role}}</span>
+            </div>
+
+            <div class="user-actions">
+                @if(user.status === 0){
+                <button (click)="restoreUser(user.id)" class="btn-restore">Restablir</button>
+                } @else if(user.role !== 'admin'){
+                <button (click)="deleteUser(user.id)" class="btn-delete">Desactivar</button>
+                }
+            </div>
+        </div>
+        }
+    </div>
 </div>

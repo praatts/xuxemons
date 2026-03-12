@@ -36,6 +36,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::middleware(['AdminMiddleware'])->group(function () {
         Route::get('/users/all', [UserController::class, 'getAllUsers']); //mostrar usuarios en status false y true
         Route::post('/users/{id}/restore', [UserController::class, 'restoreUser']); //restore users status 0
+        Route::delete('/users/{id}/delete', [UserController::class, 'adminDelete']); //delete users status 0
     });
 
     Route::put('/update', [UserController::class, 'updateUser']);

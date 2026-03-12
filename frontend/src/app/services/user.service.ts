@@ -38,6 +38,11 @@ export class UserService {
     return this.http.delete(`${this.url}/user`, { headers: this.authHeaders() });
   }
 
+  //funcion para eliminar usuarios "nada mas lo usa el admin"
+  deleteUsers(id: number) {
+    return this.http.delete(`${this.url}/users/${id}/delete`, { headers: this.authHeaders() });
+  }
+
   //obtener todos los usuarios
   getAllUsers() {
     return this.http.get(`${this.url}/users/all`, { headers: this.authHeaders() });
