@@ -31,7 +31,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     //USUARIO
     Route::get('/profile', [UserController::class, 'getUser']);
     Route::get('/users', [UserController::class, 'index']); //mostrar nada mas usuarios status en true
-    
+
     // ADMIN ONLY ROUTES
     Route::middleware(['AdminMiddleware'])->group(function () {
         Route::get('/users/all', [UserController::class, 'getAllUsers']); //mostrar usuarios en status false y true
@@ -54,4 +54,5 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/xuxedex', [XuxedexController::class, 'index']);
     Route::get('/xuxedex/users', [XuxedexController::class, 'users']);
     Route::post('/xuxedex/add-random/{user_id}', [XuxedexController::class, 'addRandom']);
+    Route::get('/xuxedex/owned', [XuxedexController::class, 'ownedXuxemons']);
 });

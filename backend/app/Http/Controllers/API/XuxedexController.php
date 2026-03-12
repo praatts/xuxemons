@@ -64,4 +64,21 @@ class XuxedexController extends Controller
 
         return response()->json(['message' => 'Nou xuxemon afegit!', 'xuxemon' => $xuxemon], 201);
     }
+
+    public function ownedXuxemons() : JsonResponse {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $owned = OwnedXuxemon::where('user_id', $user->id)->with('xuxemon')->get()
+        ->map(function ($owned) {
+            return [
+                'id' => $owned->id,
+                'name' => $owned->xuxemon->name,
+                'xuxemon_id' => $owned->xuxemon_id,
+                'number_xuxes' => $owned->number_xuxes,
+                'size' => $owned->size,
+                'xuxemon' => true
+            ];
+        });
+        return response()->json($owned);
+    }
 }

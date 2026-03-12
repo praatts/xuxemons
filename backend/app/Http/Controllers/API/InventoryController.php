@@ -61,6 +61,12 @@ class InventoryController extends Controller
         $maxQuantity = $availableSlots * $item->max_capacity;
         $finalQuantity = min($quantity, $maxQuantity);
 
+        if ($finalQuantity < $quantity) {
+            return response()->json([
+                'error' => "Solo se han podido añadir {$finalQuantity} items debido a la capacidad del inventario, los {$quantity - $finalQuantity} restantes no se han descartado",
+            ], 403);
+        }
+
         if ($availableSlots == 0) {
             return response()->json([
                 'error' => 'El inventario del usuario está lleno, no se ha podido añadir los items al inventario',
