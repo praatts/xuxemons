@@ -1,19 +1,26 @@
 <div class="motxilla-container">
     <div class="search-wrapper">
+
         <div class="search-bar">
             <img src="search-icon.png" alt="Icono de búsqueda">
             <input type="text" for="pokemon" placeholder="Cerca un object..." [formControl]="searchControl">
         </div>
+
         <div class="info-container">
-            @if (selectedSlot) {
+
+            <!-- INFO ITEM -->
+            @if (activeView === 'items' && selectedSlot) {
             <h2>{{ selectedSlot.item.name }}</h2>
             <img [src]="'items/' + selectedSlot.item.id + '.png'" [alt]="selectedSlot.item.name" class="item-icon">
             <span class="item-base"></span>
+
             <div class="item-stats-wrapper">
+
                 <div class="item-stats">
                     <h2>DESCRIPCIÓN</h2>
                     <p>X{{ selectedSlot.quantity }}</p>
                 </div>
+
                 <p class="item-description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.
                     Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
                     printer took a galley of type and scrambled it to make a type specimen book. It has survived not
@@ -22,10 +29,31 @@
                     and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem
                     Ipsum</p>
             </div>
+
             <div class="item-actions">
                 <button class="delete-item"></button>
                 <button class="use-item"></button>
             </div>
+
+            }
+
+            <!-- INFO USER (ADMIN) -->
+            @if (activeView === 'users' && selectedUser) {
+                <h2>{{selectedUser.username}}</h2>
+                <img src="test-item.png" alt="{{selectedUser.username}}" class="item-icon">
+                <span class="item-base"></span>
+
+                <div class="item-stats-wrapper">
+
+                    <div class="item-stats">
+                        <h2>ID: {{selectedUser.id}}</h2>
+                        <p>Rol: {{selectedUser.role}}</p>
+                    </div>
+
+                    <div class="item-actions">
+                        <button (click)="giveItem()" [disabled]="!selectedSlot">Donar Xuxe</button>
+                    </div>
+                </div>
             }
         </div>
     </div>
@@ -43,24 +71,40 @@
             </a>
         }
         <div class="object-list">
-            <div class="sections-wrapper">
-                <button (click)="filterItems('all')">Tots</button>
-                <button (click)="filterItems('stackable')">Apilables</button>
-                <button (click)="filterItems('non-stackable')">No Apilables</button>
-            </div>
-            <div class="items">
-                @for (slot of filteredMotxilla; track $index; let i = $index) {
-                <div class="item-card" [ngClass]="{'active': selectedIndex === i}" (click)="selectSlot(slot, i)">
-                    <img [src]="'items/' + slot.item.id + '.png'" [alt]="slot.item.name" class="item-icon">
-                    <p class="item-name">{{ slot.item.name }}</p>
-                    @if (slot.item.stackable) {
-                    <p class="amount-item">X{{ slot.quantity }}</p>
-                    } @else {
-                    <p class="amount-item">X1</p>
+
+            <!-- INVENTARIO -->
+             @if(activeView === 'items') {
+                <div class="sections-wrapper">
+                    <button (click)="filterItems('all')">Tots</button>
+                    <button (click)="filterItems('stackable')">Apilables</button>
+                    <button (click)="filterItems('non-stackable')">No Apilables</button>
+                </div>
+                <div class="items">
+                    @for (slot of filteredMotxilla; track $index; let i = $index) {
+                    <div class="item-card" [ngClass]="{'active': selectedIndex === i}" (click)="selectSlot(slot, i)">
+                        <img [src]="'items/' + slot.item.id + '.png'" [alt]="slot.item.name" class="item-icon">
+                        <p class="item-name">{{ slot.item.name }}</p>
+                        @if (slot.item.stackable) {
+                            <p class="amount-item">X{{ slot.quantity }}</p>
+                        } @else {
+                            <p class="amount-item">X1</p>
+                        }
+                    </div>
                     }
                 </div>
-                }
-            </div>
+            }
+
+            @if(activeView === 'users') {
+                <div class="items">
+                    @for(user of users; track user.id){
+                        <div class="user-card"
+                            [class.active]="selectedUser?.id === user.id"
+                            (click)="selectUser(user)">
+                            <p>{{user.username}}</p>
+                        </div>
+                    }
+                </div>
+            }
         </div>
     </div>
 </div>
