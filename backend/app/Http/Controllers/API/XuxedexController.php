@@ -71,12 +71,12 @@ class XuxedexController extends Controller
         $owned = OwnedXuxemon::where('user_id', $user->id)->with('xuxemon')->get()
         ->map(function ($owned) {
             return [
-                'id' => $owned->id,
+                'id' => $owned->xuxemon->id,
                 'name' => $owned->xuxemon->name,
                 'xuxemon_id' => $owned->xuxemon_id,
                 'number_xuxes' => $owned->number_xuxes,
                 'size' => $owned->size,
-                'xuxemon' => true
+                'owned' => true
             ];
         });
         return response()->json($owned);

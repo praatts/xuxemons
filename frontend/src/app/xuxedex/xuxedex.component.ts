@@ -15,13 +15,14 @@ import { NgClass } from '@angular/common';
 })
 export class XuxedexComponent {
   xuxemons: Xuxemon[] = [];
+  filteredXuxemons: Xuxemon[] = [];
 
   constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService) { }
   @HostBinding('class.dark-mode')
-  get darkMode(){
+  get darkMode() {
     return this.theme.darkMode;
   }
-  
+
   ngOnInit(): void {
     this.getAllXuxemons();
   }
@@ -30,8 +31,9 @@ export class XuxedexComponent {
     this.xuxemonsService.getUserXuxemons().subscribe({
       next: (data) => {
         this.xuxemons = data as Xuxemon[],
+        this.filteredXuxemons = this.xuxemons,
         console.log("Xuxedex cargado: ", data);
-      }, 
+      },
       error: (err) => console.log("Error al cargar xuxedex: ", err)
     });
   }
@@ -40,4 +42,17 @@ export class XuxedexComponent {
     return '#' + id.toString().padStart(3, '0');
   }
 
+  filterXuxemonsByType(type: string): void {
+    if (type === 'all') {
+      this.filteredXuxemons = this.xuxemons;
+    } else {
+      this.xuxemonsService.getOwnedXuxemons().subscribe({
+        next: (data) => {
+          this.filteredXuxemons = data,
+            console.log("Xuxemons capturats: ", data);
+        },
+        error: (err) => console.log("Error al cargar xuxemons capturats: ", err)
+      });
+    }
+  }
 }

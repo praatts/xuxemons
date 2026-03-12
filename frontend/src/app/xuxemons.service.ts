@@ -14,4 +14,8 @@ export class XuxemonsService {
   getUserXuxemons() {
     return this.http.get<Xuxemon[]>(`${this.apiUrl}/xuxedex`);
   }
+
+  getOwnedXuxemons() {
+    return this.http.get<Xuxemon[]>(`${this.apiUrl}/xuxedex/owned`);
+  }
 }

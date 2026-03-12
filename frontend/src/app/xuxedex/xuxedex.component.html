@@ -8,12 +8,12 @@
             <option value="el3">Element 3</option>
         </select>
         <div class="xuxemon-filter">
-            <button class="action-btn">Tots</button>
-            <button class="action-btn">Capturat</button>
+            <button class="action-btn" (click)="filterXuxemonsByType('all')">Tots</button>
+            <button class="action-btn" (click)="filterXuxemonsByType('owned')">Capturat</button>
         </div>
     </div>
     <div class="xuxedex-wrapper">
-        @for (xuxemon of xuxemons; track xuxemon.id) {
+        @for (xuxemon of filteredXuxemons; track xuxemon.id) {
         <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}">
             @if(!xuxemon.owned) {
                 <h2>???</h2>
