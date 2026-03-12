@@ -1,11 +1,11 @@
 :host {
-    --bg-container: #FFD9A3; /* fondo principal */
-    --bg-search: #FFFFFF; /* fondo del input de búsqueda */
-    --border-search: #C1BBBB; /* borde del input/select */
-    --bg-select: #C1BBBB; /* fondo del select */
-    --bg-card: #E6CCCC; /* fondo de las tarjetas */
-    --text-main: #000000; /* texto principal */
-    --text-secondary: #495057; /* Texto secundario */
+    --bg-container: #FFD9A3;
+    --bg-search: #FFFFFF;
+    --border-search: #C1BBBB;
+    --bg-select: #C1BBBB;
+    --bg-card: #E6CCCC;
+    --text-main: #000000;
+    --text-secondary: #495057;
     --scrollbar-bg: #e0e0e0;
     --scrollbar-thumb: #b0b0b0;
 
@@ -15,13 +15,13 @@
 }
 
 :host(.dark-mode){
-    --bg-container: #121212; /* fondo principal */
-    --bg-search: #FFFFFF; /* fondo del input de búsqueda */
-    --border-search: #333333; /* borde del input/select */
-    --bg-select: #C1BBBB; /* fondo del select */
-    --bg-card: #2e2e2e; /* fondo de las tarjetas */
-    --text-main: #ffffff; /* texto principal */
-    --text-secondary: #ced4da; /* Texto secundario */
+    --bg-container: #121212;
+    --bg-search: #FFFFFF;
+    --border-search: #333333;
+    --bg-select: #C1BBBB;
+    --bg-card: #2e2e2e;
+    --text-main: #ffffff;
+    --text-secondary: #ced4da;
     --scrollbar-bg: #1e1e1e;
     --scrollbar-thumb: #555555;
 

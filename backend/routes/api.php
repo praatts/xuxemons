@@ -51,7 +51,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
 
     //XUXEDEX
     Route::get('/xuxedex/all', [XuxedexController::class, 'allXuxemons']);
-    Route::get('/xuxedex/', [XuxedexController::class, 'index']);
+    Route::get('/xuxedex', [XuxedexController::class, 'index']);
     Route::get('/xuxedex/users', [XuxedexController::class, 'users']);
     Route::post('/xuxedex/add-random/{user_id}', [XuxedexController::class, 'addRandom']);
 });

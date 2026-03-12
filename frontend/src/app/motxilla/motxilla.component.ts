@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MotxillaService } from '../motxilla.service';
 import { NgClass } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-
+import { HostBinding } from '@angular/core';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-motxilla',
@@ -18,7 +19,11 @@ export class MotxillaComponent implements OnInit {
   selectedIndex: number = -1;
   searchControl = new FormControl('');
 
-  constructor(private motxillaService: MotxillaService) { }
+  constructor(private motxillaService: MotxillaService, public theme: ThemeService) { }
+  @HostBinding('class.dark-mode')
+  get darkMode(){
+    return this.theme.darkMode;
+  }
 
   ngOnInit(): void {
     this.motxillaService.getInventory().subscribe({
