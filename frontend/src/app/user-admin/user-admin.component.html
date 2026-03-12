@@ -13,20 +13,20 @@
         </thead>
         <tbody>
             @for(user of users; track user.id){
-                <tr>
-                    <td>{{user.player_id}}</td>
-                    <td>{{user.name}}</td>
-                    <td>{{user.surname}}</td>
-                    <td>{{user.email}}</td>
-                    <td>{{user.role}}</td>
-                    <td>
-                        @if(user.status === 0){
-                            <button (click)="restoreUser(user.id)" class="btn-restore">Restablir</button>
-                        } @else {
-                            <button (click)="deleteUser(user.id)" class="btn-delete">Desactivar</button>
-                        }
-                    </td>
-                </tr>
+            <tr>
+                <td>{{user.player_id}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.surname}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.role}}</td>
+                <td>
+                    @if(user.status === 0){
+                    <button (click)="restoreUser(user.id)" class="btn-restore">Restablir</button>
+                    } @else {
+                    <button (click)="deleteUser(user.id)" class="btn-delete">Desactivar</button>
+                    }
+                </td>
+            </tr>
             }
         </tbody>
     </table>
