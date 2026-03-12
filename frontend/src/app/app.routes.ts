@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './auth.guard';
+import { authGuard } from './guards/auth.guard';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { UserRegister } from './user-register/user-register';
 import { UserPrincipalComponent } from './user-principal/user-principal.component';
@@ -51,7 +51,7 @@ export const routes: Routes = [
                                 path: 'useradmin',
                                 title: 'user_admin',
                                 component: UserAdminComponent,
-                                canActivate: [authGuard]
+                                canActivate: [authGuard],
                             }
                         ]
                     },
