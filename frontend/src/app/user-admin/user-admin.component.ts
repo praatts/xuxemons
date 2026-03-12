@@ -21,7 +21,8 @@ export class UserAdminComponent implements OnInit {
 
   loadUsers() {
     this.userService.getAllUsers().subscribe((data: any) => {
-      this.users = data;
+      console.log('Datos recibidos:', data);
+      this.users = data.data || data;
     });
   }
 
