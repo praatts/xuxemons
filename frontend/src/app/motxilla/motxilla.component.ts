@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MotxillaService } from '../motxilla.service';
+import { MotxillaService } from '../services/motxilla.service';
 import { NgClass } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { HostBinding } from '@angular/core';
 import { ThemeService } from '../services/theme.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-motxilla',
@@ -15,17 +16,26 @@ import { ThemeService } from '../services/theme.service';
 export class MotxillaComponent implements OnInit {
   motxilla: any[] = [];
   filteredMotxilla: any[] = [];
+
   selectedSlot: any = null;
+  selectedUser: any = null;
+
   selectedIndex: number = -1;
   searchControl = new FormControl('');
 
-  constructor(private motxillaService: MotxillaService, public theme: ThemeService) { }
+  isAdmin = false;
+  users: any[] = [];
+  
+  activeView: 'items' | 'users' = 'items';
+
+  constructor(private motxillaService: MotxillaService, public theme: ThemeService, private userService: UserService) { }
   @HostBinding('class.dark-mode')
   get darkMode(){
     return this.theme.darkMode;
   }
 
   ngOnInit(): void {
+    //inventario
     this.motxillaService.getInventory().subscribe({
       next: (data) => {
         this.motxilla = this.expandSlots(data),
@@ -36,6 +46,12 @@ export class MotxillaComponent implements OnInit {
 
     this.searchControl.valueChanges.subscribe(value => this.searchItem(value));
 
+    //usuario actual
+    this.userService.getUser().subscribe((user:any) => {
+      if(user?.role === 'admin'){
+        this.isAdmin = true;
+      }
+    });
   }
 
   expandSlots(motxilla: any[]): any[] {
@@ -65,5 +81,42 @@ export class MotxillaComponent implements OnInit {
     this.filteredMotxilla = this.motxilla.filter(slot =>
       slot.item.name.toLowerCase().includes(value?.toLowerCase() ?? '')
     );
+  }
+
+  loadUsers(){
+    this.userService.getAllUsers().subscribe({
+      next:(users:any)=>{
+        this.users = users;
+      },
+      error:(err)=>{
+        console.log("Error cargando usuarios",err);
+      }
+    });
+  }
+
+  setView(view: 'items' | 'users'){
+    this.activeView = view;
+
+    if(view === 'users' && this.isAdmin && this.users.length === 0){
+      this.loadUsers();
+    }
+  }
+
+  giveItem(){
+
+    if(!this.selectedUser || !this.selectedSlot) return;
+
+    this.motxillaService.giveItemToUser(
+      this.selectedUser.id,
+      this.selectedSlot.item.id,
+      1
+    ).subscribe(()=>{
+      alert("Xuxe entregada");
+    });
+
+  }
+
+  selectUser(user:any){
+    this.selectedUser = user;
   }
 }

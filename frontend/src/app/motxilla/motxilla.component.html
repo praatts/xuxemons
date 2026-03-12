@@ -30,7 +30,18 @@
         </div>
     </div>
     <div class="object-wrapper">
-        <h2>Objectes</h2>
+        @if(!isAdmin){
+            <h2>Objectes</h2>
+        } @else {
+            <a (click)="setView('items')"
+                [class.active-tab]="activeView === 'items'">
+                <h2>Objectes</h2>
+            </a>
+            <a (click)="setView('users')"
+                [class.active-tab]="activeView === 'users'">
+                <h2>Usuaris</h2>
+            </a>
+        }
         <div class="object-list">
             <div class="sections-wrapper">
                 <button (click)="filterItems('all')">Tots</button>
