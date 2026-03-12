@@ -53,6 +53,7 @@ export class UserStatsComponent {
 
   rutas: rutas[] = [
     { label: 'Modificar Usuario', route: 'userinfo', exact: true, admin: false},
+    { label: 'Usuarios', route: 'useradmin', exact: true, admin: true}
   ];
 
   get isRoot(){
