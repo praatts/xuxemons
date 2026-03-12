@@ -15,12 +15,13 @@
     justify-content: space-between;
     align-items: center;
 
-    border: 2px solid black;
+    border: 2px solid var(--text-main);
     border-left: 6px solid var(--accent-color, #FF4400);
     border-radius: 8px;
 
     padding: 12px 16px;
-    background: white;
+    background: var(--content-bg);
+    color: var(--text-main);
 }
 
 /* info en horizontal */
@@ -29,6 +30,7 @@
     gap: 25px;
     flex-wrap: wrap;
     font-size: 14px;
+    color: var(--text-main);
 }
 
 /* acciones */
