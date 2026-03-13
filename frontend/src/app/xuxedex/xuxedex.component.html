@@ -3,9 +3,9 @@
         <img src="search-icon.png" alt="Icono de búsqueda">
         <input type="text" for="pokemon" placeholder="Cerca un xuxemon...">
         <select name="" id="elements" for="xuxemons-elements">
-            <option value="el1">Element 1</option>
-            <option value="el2">Element 2</option>
-            <option value="el3">Element 3</option>
+            @for (element of elements; track element.id) {
+            <option value="{{ element.id }}">{{ element.name }}</option>
+            }
         </select>
         <div class="xuxemon-filter">
             <button class="action-btn" (click)="filterXuxemonsByType('all')">Tots</button>
@@ -21,7 +21,7 @@
                 <h2>{{ xuxemon.name }}</h2>
             }
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
-            <img src="test-item.png" [alt]="xuxemon.name">
+            <img [src]="'xuxemons/' + xuxemon.id + '.png'" [alt]="xuxemon.name">
             <span class="xuxemon-base"></span>
             
         </div>

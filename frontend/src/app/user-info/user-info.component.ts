@@ -120,7 +120,7 @@ export class UserInfoComponent {
         this.msg = 'Informació actualitzada correctament.';
         this.infoForm.controls['password'].setValue('');
       },
-      error: () => this.msg = 'Error en actualitzar la informació.'
+      error: () => this.msg = 'Error al actualitzar la informació.'
     });
   }
 

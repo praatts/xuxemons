@@ -16,6 +16,13 @@ import { NgClass } from '@angular/common';
 export class XuxedexComponent {
   xuxemons: Xuxemon[] = [];
   filteredXuxemons: Xuxemon[] = [];
+  elements = [
+    { id: 'all', name: 'Tots' },
+    { id: 'tierra', name: 'Tierra' },
+    { id: 'agua', name: 'Agua' },
+    { id: 'aire', name: 'Aire' }
+  ];
+
 
   constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService) { }
   @HostBinding('class.dark-mode')
@@ -53,6 +60,14 @@ export class XuxedexComponent {
         },
         error: (err) => console.log("Error al cargar xuxemons capturats: ", err)
       });
+    }
+  }
+
+  filterXuxemonsByElement(element: string): void {
+    if (element === 'all') {
+      this.filteredXuxemons = this.xuxemons;
+    } else {
+      this.filteredXuxemons = this.xuxemons.filter(xuxemon => xuxemon.type === element);
     }
   }
 }
