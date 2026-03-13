@@ -79,6 +79,10 @@ class UserController extends Controller
                 return response()->json(['error' => 'User not found or token invalid'], 404);
             }
 
+            if ($user->role === 'admin') {
+                return response()->json(['error' => 'An admin user cannot be deleted'], 403);
+            }
+
             $user->status = 0;
             $user->save();
 
@@ -107,6 +111,28 @@ class UserController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to restore user'], 500);
+        }
+    }
+
+    public function adminDelete($id)
+    {
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            if ($user->role === 'admin') {
+                return response()->json(['error' => 'An admin user cannot be deactivated'], 403);
+            }
+
+            $user->status = 0;
+            $user->save();
+
+            return response()->json(['message' => 'User deactivated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to deactivate user'], 500);
         }
     }
 

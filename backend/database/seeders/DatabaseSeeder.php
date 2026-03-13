@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
     
 
-          User::factory()->create([
+         User::factory()->create([
             'player_id' => '#admin0001',
             'name' => 'admin',
             'surname' => 'administrador',
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             'xp' => 0,
             'active' => false,
             'active_friends' => 0,
-            'status' => 1,
+            'streak' => 0,
             'password' => bcrypt(123456),
         ]);
 

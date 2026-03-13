@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './auth.guard';
+import { authGuard } from './guards/auth.guard';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { UserRegister } from './user-register/user-register';
 import { UserPrincipalComponent } from './user-principal/user-principal.component';
@@ -8,6 +8,8 @@ import { XuxedexComponent } from './xuxedex/xuxedex.component';
 import { PaginaPrincipalComponent } from './pagina-principal/pagina-principal.component';
 import { UserStatsComponent } from './user-stats/user-stats.component';
 import { MotxillaComponent } from './motxilla/motxilla.component';
+import { UserAdminComponent } from './user-admin/user-admin.component';
+import { adminGuardGuard } from './guards/admin-guard.guard';
 
 
 export const routes: Routes = [
@@ -45,6 +47,12 @@ export const routes: Routes = [
                                 title: 'user-info',
                                 component: UserInfoComponent,
                                 canActivate: [authGuard]
+                            },
+                            {
+                                path: 'useradmin',
+                                title: 'user_admin',
+                                component: UserAdminComponent,
+                                canActivate: [authGuard, adminGuardGuard]
                             }
                         ]
                     },

@@ -1,0 +1,25 @@
+<div class="admin-container">
+    <h2>Gestió d'Usuaris</h2>
+
+    <div class="users-grid">
+        @for(user of users; track user.id){
+        <div class="user-card">
+            <div class="user-info">
+                <span><strong>ID:</strong> {{user.player_id}}</span>
+                <span><strong>Nom:</strong> {{user.name}}</span>
+                <span><strong>Cognoms:</strong> {{user.surname}}</span>
+                <span><strong>Email:</strong> {{user.email}}</span>
+                <span><strong>Rol:</strong> {{user.role}}</span>
+            </div>
+
+            <div class="user-actions">
+                @if(user.status === 0){
+                <button (click)="restoreUser(user.id)" class="btn-restore">Restablir</button>
+                } @else if(user.role !== 'admin'){
+                <button (click)="deleteUser(user.id)" class="btn-delete">Desactivar</button>
+                }
+            </div>
+        </div>
+        }
+    </div>
+</div>

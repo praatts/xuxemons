@@ -28,6 +28,10 @@ export class UserService {
     return this.http.get(`${this.url}/profile`, { headers: this.authHeaders() });
   }
 
+  getUsers() {
+    return this.http.get(`${this.url}/users`, { headers: this.authHeaders() });
+  }
+
   //modificar Usuarios
   updateUser(user: any) {
     return this.http.put(`${this.url}/update`, user, { headers: this.authHeaders() });
@@ -36,6 +40,21 @@ export class UserService {
   //eliminar Usuarios (endpoint pendiente en backend)
   deleteUser() {
     return this.http.delete(`${this.url}/user`, { headers: this.authHeaders() });
+  }
+
+  //funcion para eliminar usuarios "nada mas lo usa el admin"
+  deleteUsers(id: number) {
+    return this.http.delete(`${this.url}/users/${id}/delete`, { headers: this.authHeaders() });
+  }
+
+  //obtener todos los usuarios
+  getAllUsers() {
+    return this.http.get(`${this.url}/users/all`, { headers: this.authHeaders() });
+  }
+
+  //restaurar usuarios
+  restoreUsers(id: number) {
+    return this.http.post(`${this.url}/users/${id}/restore`, {}, { headers: this.authHeaders() });
   }
 
   postUser(user: UserInterface) {
