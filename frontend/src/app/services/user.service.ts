@@ -25,36 +25,36 @@ export class UserService {
 
   //conseguir usuario
   getUser() {
-    return this.http.get(`${this.url}/profile`, { headers: this.authHeaders() });
+    return this.http.get(`${this.url}/profile`);
   }
 
   getUsers() {
-    return this.http.get(`${this.url}/users`, { headers: this.authHeaders() });
+    return this.http.get(`${this.url}/users`);
   }
 
   //modificar Usuarios
   updateUser(user: any) {
-    return this.http.put(`${this.url}/update`, user, { headers: this.authHeaders() });
+    return this.http.put(`${this.url}/update`, user);
   }
 
   //eliminar Usuarios (endpoint pendiente en backend)
   deleteUser() {
-    return this.http.delete(`${this.url}/user`, { headers: this.authHeaders() });
+    return this.http.delete(`${this.url}/user`);
   }
 
   //funcion para eliminar usuarios "nada mas lo usa el admin"
   deleteUsers(id: number) {
-    return this.http.delete(`${this.url}/users/${id}/delete`, { headers: this.authHeaders() });
+    return this.http.delete(`${this.url}/users/${id}/delete`);
   }
 
   //obtener todos los usuarios
   getAllUsers() {
-    return this.http.get(`${this.url}/users/all`, { headers: this.authHeaders() });
+    return this.http.get(`${this.url}/users/all`);
   }
 
   //restaurar usuarios
   restoreUsers(id: number) {
-    return this.http.post(`${this.url}/users/${id}/restore`, {}, { headers: this.authHeaders() });
+    return this.http.post(`${this.url}/users/${id}/restore`, {});
   }
 
   postUser(user: UserInterface) {
