@@ -31,7 +31,7 @@
       </div>
 
       <label class="checkbox-label">
-        Alternar tipo imagen
+        Imatge de perfil personalizada:
         <input type="checkbox" [checked]="selectPersonalizedPfp" (change)="togglePfpMode()">
       </label>
       <label for="pfp">Foto Perfil:</label>
@@ -57,7 +57,13 @@
           <span class="check-mark">✓</span>
         }
       </div>
-
+      <label for="confirmPassword">Confirmar contrasenya:</label>
+      <div class="input-wrapper" [ngClass]="{'valid-input': infoForm.get('confirmPassword')?.valid}">
+        <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="Confirma la nova contrasenya">
+        @if (infoForm.get('confirmPassword')?.valid) {
+          <span class="check-mark">✓</span>
+        }
+      </div>
       <br>
 
       <button type="submit" [disabled]="infoForm.invalid" [ngClass]="{'disabeled-button': infoForm.invalid}">
@@ -83,7 +89,7 @@
 <div>
 @if(showDeleteDialog){
 <div class="delete-dialog-container">
-  <p>Estàs segur que vols donar-te de baixa? No podràs tornar a entrar amb aquest usuari.</p>
+  <p>Estàs segur que vols donar-te de baixa? No podràs tornar a entrar amb aquest usuari fins que un administrador et torni a donar d'alta.</p>
   <button (click)="confirmDelete()" (click)="logout()" class="btn-confirm-delete">Sí, donar-me de baixa</button>
   <button (click)="showDeleteDialog = false" class="btn-cancel-delete">Cancel·lar</button>
 </div>

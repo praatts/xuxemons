@@ -1,6 +1,6 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
@@ -54,9 +54,13 @@ export class UserInfoComponent {
       name: new FormControl('', Validators.minLength(3)),
       surname: new FormControl('', Validators.minLength(3)),
       email: new FormControl('', Validators.email),
-      password: new FormControl('', Validators.minLength(6)),
+      password: new FormControl('', [Validators.minLength(6)]),
+      confirmPassword: new FormControl('', [Validators.minLength(6)]),
       pfp: new FormControl('', Validators.required)
-    })
+    },
+   {
+      validators: this.passwordMatchValidator
+   })
   }
 
 
@@ -140,4 +144,17 @@ export class UserInfoComponent {
   goBack() {
     this.router.navigate(['/main/principal/userstats']);
   }
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+      const p1 = control.get('password')?.value;
+      const p2 = control.get('confirmPassword')?.value;
+  
+      if (!p1 || !p2) return null;
+  
+      if (p1 === p2) {
+        return null;
+      } else {
+        return { PasswdNoMatch: 'Las contraseñas no coinciden' };
+      }
+    }
 }
