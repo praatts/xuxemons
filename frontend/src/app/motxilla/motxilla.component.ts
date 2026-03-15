@@ -64,7 +64,13 @@ export class MotxillaComponent implements OnInit {
     for (let slot of motxilla) {
       let remaining = slot.quantity;
       while (remaining > 0) {
-        const quantity = Math.min(remaining, slot.item.max_capacity);
+        let quantity;
+
+        if (remaining > slot.item.max_capacity) {
+          quantity = slot.item.max_capacity;
+        } else {
+          quantity = remaining;
+        }
         result.push({ ...slot, quantity });
         remaining -= quantity;
       }
