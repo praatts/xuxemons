@@ -36,4 +36,10 @@ export class AuthService {
   getProfile() : Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/profile`);
   }
+
+  isAdmin() : Observable<boolean> {
+    return this.getProfile().pipe(
+      map(user => user.role === 'admin')
+    );
+  }
 }

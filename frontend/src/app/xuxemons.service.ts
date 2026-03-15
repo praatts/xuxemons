@@ -18,4 +18,8 @@ export class XuxemonsService {
   getOwnedXuxemons() {
     return this.http.get<Xuxemon[]>(`${this.apiUrl}/xuxedex/owned`);
   }
+
+  addRandomXuxemon(player_id: number) {
+    return this.http.post(`${this.apiUrl}/xuxedex/add-random/${player_id}`, {});
+  }
 }
