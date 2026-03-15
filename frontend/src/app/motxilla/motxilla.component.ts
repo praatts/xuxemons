@@ -60,11 +60,17 @@ export class MotxillaComponent implements OnInit {
   }
 
   expandSlots(motxilla: any[]): any[] {
-    return motxilla.flatMap(slot =>
-      Array(Math.ceil(slot.quantity / slot.item.max_capacity))
-        .fill(null)
-        .map(() => ({ ...slot, quantity: slot.item.max_capacity }))
-    );
+   const result: any[] = [];
+    for (let slot of motxilla) {
+      let remaining = slot.quantity;
+      while (remaining > 0) {
+        const quantity = Math.min(remaining, slot.item.max_capacity);
+        result.push({ ...slot, quantity });
+        remaining -= quantity;
+      }
+    }
+
+    return result;
   }
 
   filterItems(filter: string): void {
