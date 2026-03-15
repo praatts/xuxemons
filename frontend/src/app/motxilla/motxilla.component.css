@@ -303,27 +303,5 @@ p {
     margin-right: 10px;
 }
 
-/*Scrollbar*/
-.xuxedex-wrapper::-webkit-scrollbar {
-    width: 10px;
-}
 
-.xuxedex-wrapper::-webkit-scrollbar-track {
-    background: var(--scrollbar-bg);
-    border-radius: 10px;
-}
 
-.xuxedex-wrapper::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: 10px;
-}
-
-.xuxedex-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #777;
-}
-
-/*Scrollbar firefox*/
-.xuxedex-wrapper {
-    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
-    scrollbar-width: thin;
-}

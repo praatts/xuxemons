@@ -61,9 +61,11 @@ class InventoryController extends Controller
         $maxQuantity = $availableSlots * $item->max_capacity;
         $finalQuantity = min($quantity, $maxQuantity);
 
+        $remaining = $quantity - $finalQuantity;
+
         if ($finalQuantity < $quantity) {
             return response()->json([
-                'error' => "Solo se han podido añadir {$finalQuantity} items debido a la capacidad del inventario, los {$quantity - $finalQuantity} restantes no se han descartado",
+                'error' => "Solo se han podido añadir {$finalQuantity} items debido a la capacidad del inventario, los {$remaining} restantes no se han descartado",
             ], 403);
         }
 
@@ -80,7 +82,7 @@ class InventoryController extends Controller
             ]);
 
             $slot->quantity += $finalQuantity;
-            $slot->save();  
+            $slot->save();
         }
 
         return response()->json([
@@ -105,7 +107,7 @@ class InventoryController extends Controller
             return response()->json(['error' => 'Registro de inventario o xuxemon no trobat.'], 404);
         }
 
-        $nextSize = match($slot->xuxemon->size) {
+        $nextSize = match ($slot->xuxemon->size) {
             'petit' => 'mitja',
             'mitja' => 'gran',
             default => null,
@@ -183,7 +185,8 @@ class InventoryController extends Controller
 
     //Devuelve el inventario del usuario autenticado
 
-    public function getUserInventory() {
+    public function getUserInventory()
+    {
         $user = auth()->user();
         return response()->json($user->inventory);
     }
