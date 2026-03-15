@@ -43,6 +43,12 @@ class InventoryController extends Controller
      */
     public function addXuxes(Request $request, User $user)
     {
+
+        $authUser = Auth::guard('api')->user();
+
+        if (!$authUser || $authUser->role !== 'admin') {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
         $request->validate([
             'item_id' => 'required|integer|exists:items,id',
             'quantity' => 'sometimes|integer|min:1'
