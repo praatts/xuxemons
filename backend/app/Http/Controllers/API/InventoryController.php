@@ -196,4 +196,23 @@ class InventoryController extends Controller
         $user = auth()->user();
         return response()->json($user->inventory);
     }
+
+    // Devuelve todos los items disponibles en la base de datos
+
+    public function getAllItems()
+    {
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no autenticado'], 401);
+        }
+
+        if ($user->role !== 'admin') {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+        
+        $items = Item::all();
+        return response()->json($items);
+    }
 }

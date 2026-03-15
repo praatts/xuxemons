@@ -25,12 +25,17 @@ export class MotxillaComponent implements OnInit {
 
   isAdmin = false;
   users: any[] = [];
-  
+
   activeView: 'items' | 'users' = 'items';
+
+  showModal = false;
+  availableItems: any[] = [];
+  selectedItem: any = null;
+  itemQuantity: number = 1;
 
   constructor(private motxillaService: MotxillaService, public theme: ThemeService, private userService: UserService) { }
   @HostBinding('class.dark-mode')
-  get darkMode(){
+  get darkMode() {
     return this.theme.darkMode;
   }
 
@@ -47,8 +52,8 @@ export class MotxillaComponent implements OnInit {
     this.searchControl.valueChanges.subscribe(value => this.searchItem(value));
 
     //usuario actual
-    this.userService.getUser().subscribe((user:any) => {
-      if(user?.role === 'admin'){
+    this.userService.getUser().subscribe((user: any) => {
+      if (user?.role === 'admin') {
         this.isAdmin = true;
       }
     });
@@ -95,29 +100,69 @@ export class MotxillaComponent implements OnInit {
     }
   }
 
-  setView(view: 'items' | 'users'){
+  setView(view: 'items' | 'users') {
     this.activeView = view;
 
-    if(view === 'users' && this.isAdmin && this.users.length === 0){
+    if (view === 'users' && this.isAdmin && this.users.length === 0) {
       this.loadUsers();
     }
   }
 
-  giveItem(){
+  giveItem() {
 
-    if(!this.selectedUser || !this.selectedSlot) return;
+    if (!this.selectedUser || !this.selectedSlot) return;
 
     this.motxillaService.giveItemToUser(
       this.selectedUser.id,
       this.selectedSlot.item.id,
       1
-    ).subscribe(()=>{
+    ).subscribe(() => {
       alert("Xuxe entregada");
     });
 
   }
 
-  selectUser(user:any){
+  selectUser(user: any) {
     this.selectedUser = user;
+    this.openModal();
+  }
+
+  //Modal para añadir items a un usuario desde la vista admin
+
+  openModal() {
+    this.motxillaService.getAllItems().subscribe({
+      next: (items) => {
+        this.availableItems = items;
+          this.showModal = true;
+      },
+      error: (err) => console.log("Error al cargar items disponibles: ", err)
+    });
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.selectedItem = null;
+    this.itemQuantity = 1;
+  }
+
+  selectedItemOnModal(item: any) {
+    if (this.selectedItem?.id === item.id) {
+      this.selectedItem = null;
+    } else {
+      this.selectedItem = item;
+      this.itemQuantity = 1;
+    }
+  }
+
+  giveConfirmation() {
+    if (!this.selectedUser || !this.selectedItem || this.itemQuantity < 0) return;
+
+    this.motxillaService.giveItemToUser(this.selectedUser.id, this.selectedItem.id, this.itemQuantity).subscribe({
+      next: () => {
+        alert('Item añadido correctamente al usuario ' + this.selectedUser.player_id);
+        this.closeModal();
+      },
+      error: (err) => console.log('Error añadiendo item:', err)
+    });
   }
 }

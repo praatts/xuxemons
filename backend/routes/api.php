@@ -49,6 +49,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::post('/inventory/{slot_id}/evolve', [InventoryController::class, 'evolve']);
     Route::get('/inventory/slots/{user}', [InventoryController::class, 'getAvailableSlots']);
     Route::get('/inventory', [InventoryController::class, 'getUserInventory']);
+    Route::get('/inventory/items', [InventoryController::class, 'getAllItems']);
 
     //XUXEDEX
     Route::get('/xuxedex/all', [XuxedexController::class, 'allXuxemons']);

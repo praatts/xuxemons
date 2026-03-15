@@ -15,11 +15,14 @@ export class MotxillaService {
     return this.http.get<any[]>(`${this.apiUrl}/inventory`);
   }
 
-  giveItemToUser(userId: number, itemId: number, quantity: number){
-    return this.http.post('/api/admin/give-item', {
-      userId,
-      itemId,
-      quantity
-    });
+  giveItemToUser(user_id: number, item_id: number, quantity: number) {
+  return this.http.post(`${this.apiUrl}/inventory/add-xuxes/${user_id}`, {
+    item_id: item_id,
+    quantity: quantity
+  });
+}
+
+  getAllItems(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/inventory/items`);
   }
 }
