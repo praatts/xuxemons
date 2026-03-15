@@ -44,7 +44,7 @@
         <h2>Afegir Xuxemon Aleatori</h2>
 
         <div class="modal-search">
-            <input type="text" placeholder="Cerca per player_id..." [formControl]="searchUser">
+            <input type="text" placeholder="Cerca per l'identificador de l'usuari..." [formControl]="searchUser">
         </div>
 
         <div class="modal-users">
@@ -57,8 +57,7 @@
                     <p class="user-name">{{ user.name }}</p>
                     <p class="user-player-id">{{ user.player_id }}</p>
                 </div>
-                <button class="action-btn" [class.success]="successUserId === user.id"
-                    [disabled]="loadingUserId === user.id" (click)="addRandomXuxemon(user.id!)">
+                <button class="action-btn" [ngClass]="{ 'success': successUserId === user.id, 'disabled': loadingUserId === user.id}" [disabled]="loadingUserId === user.id" (click)="addRandomXuxemon(user.id!)">
                     @if (loadingUserId === user.id) {
                     Afegint...
                     } @else if (successUserId === user.id) {
