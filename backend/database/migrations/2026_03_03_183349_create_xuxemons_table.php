@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('name');
             $table->enum('type', ['agua', 'tierra', 'aire']);
             $table->enum('size', ['petit', 'mitja', 'gran']);
+            $table->integer('xuxes')->default(0);
         });
     }
 
