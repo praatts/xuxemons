@@ -2,7 +2,7 @@
     <div class="search-wrapper">
         <img src="search-icon.png" alt="Icono de búsqueda">
         <input type="text" for="pokemon" placeholder="Cerca un xuxemon...">
-        <select name="" id="elements" for="xuxemons-elements">
+        <select id="elements" #elementSelect (change)="filterXuxemonsByElement(elementSelect.value)"  for="xuxemons-elements">
             @for (element of elements; track element.id) {
             <option value="{{ element.id }}">{{ element.name }}</option>
             }
@@ -20,22 +20,20 @@
         </div>
         }
     </div>
-    <div class="xuxedex-wrapper">
+     <div class="xuxedex-wrapper">
         @for (xuxemon of filteredXuxemons; track xuxemon.id) {
-        <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}">
-            @if(!xuxemon.owned) {
-            <h2>???</h2>
-            } @else {
-            <h2>{{ xuxemon.name }}</h2>
-            }
-            <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
-            <img [src]="'xuxemons/' + xuxemon.id + '.png'" [alt]="xuxemon.name">
-            <span class="xuxemon-base"></span>
-
-        </div>
+            <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}">
+                @if (!xuxemon.owned) {
+                    <h2>???</h2>
+                } @else {
+                    <h2>{{ xuxemon.name }}</h2>
+                }
+                <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
+                <img [src]="'xuxemons/' + xuxemon.id + '.png'" [alt]="xuxemon.name">
+                <span class="xuxemon-base"></span>
+            </div>
         }
     </div>
-
 </div>
 
 @if (showModal) {

@@ -18,8 +18,11 @@ import { UserInterface } from '../user-interface';
   styleUrl: './xuxedex.component.css'
 })
 export class XuxedexComponent {
-  xuxemons: Xuxemon[] = [];
+
   filteredXuxemons: Xuxemon[] = [];
+  showOwnedXuxemons: boolean = false;
+  userXuxemon$;
+  ownedXuxemon$;
   elements = [
     { id: 'all', name: 'Tots' },
     { id: 'tierra', name: 'Tierra' },
@@ -30,7 +33,7 @@ export class XuxedexComponent {
   isAdmin: boolean = false;
 
   //Variables para el modal de usuarios
-  showModal : boolean = false;
+  showModal: boolean = false;
   users: UserInterface[] = [];
   filteredUsers: UserInterface[] = [];
   loadingUserId: number | null = null;
@@ -38,27 +41,32 @@ export class XuxedexComponent {
   searchUser = new FormControl('');
 
 
-  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService) { }
+  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService) {
+    this.userXuxemon$ = this.xuxemonsService.userXuxemons$;
+    this.ownedXuxemon$ = this.xuxemonsService.ownedXuxemons$;
+  }
+
   @HostBinding('class.dark-mode')
   get darkMode() {
     return this.theme.darkMode;
   }
 
-  
+
 
   ngOnInit(): void {
     this.getAllXuxemons();
+
     this.authService.isAdmin().subscribe((value) => {
-    this.isAdmin = value;
+      this.isAdmin = value;
     });
   }
 
   getAllXuxemons(): void {
     this.xuxemonsService.getUserXuxemons().subscribe({
       next: (data) => {
-        this.xuxemons = data as Xuxemon[],
-        this.filteredXuxemons = this.xuxemons,
-        console.log("Xuxedex cargado: ", data);
+        this.xuxemonsService.setUserXuxemons(data);
+        this.filteredXuxemons = data;
+        console.log("Xuxedex cargada: ", data);
       },
       error: (err) => console.log("Error al cargar xuxedex: ", err)
     });
@@ -70,12 +78,13 @@ export class XuxedexComponent {
 
   filterXuxemonsByType(type: string): void {
     if (type === 'all') {
-      this.filteredXuxemons = this.xuxemons;
+      this.filteredXuxemons = this.xuxemonsService.getCurrentUserXuxemons();
     } else {
       this.xuxemonsService.getOwnedXuxemons().subscribe({
         next: (data) => {
-          this.filteredXuxemons = data,
-            console.log("Xuxemons capturats: ", data);
+          this.xuxemonsService.setOwnedXuxemons(data);
+          this.filteredXuxemons = data;
+          console.log("Xuxemons capturats: ", data);
         },
         error: (err) => console.log("Error al cargar xuxemons capturats: ", err)
       });
@@ -83,12 +92,12 @@ export class XuxedexComponent {
   }
 
   filterXuxemonsByElement(element: string): void {
-    if (element === 'all') {
-      this.filteredXuxemons = this.xuxemons;
-    } else {
-      this.filteredXuxemons = this.xuxemons.filter(xuxemon => xuxemon.type === element);
-    }
+  if (element === 'all') {
+    this.filteredXuxemons = this.xuxemonsService.getCurrentUserXuxemons();
+  } else {
+    this.filteredXuxemons = this.xuxemonsService.getCurrentUserXuxemons().filter(x => x.type === element);
   }
+}
 
   loadUsers(): void {
     this.userService.getAllUsers().subscribe({
@@ -121,6 +130,7 @@ export class XuxedexComponent {
     this.successUserId = null;
     this.xuxemonsService.addRandomXuxemon(user_id).subscribe({
       next: (data) => {
+        this.xuxemonsService.addToOwnedXuxemons(data);
         console.log("Xuxemon añadido: ", data);
         this.loadingUserId = null;
         this.successUserId = user_id;
@@ -135,5 +145,5 @@ export class XuxedexComponent {
     });
   }
 
-  
+
 }
