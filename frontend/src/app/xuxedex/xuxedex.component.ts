@@ -8,6 +8,8 @@ import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserInterface } from '../user-interface';
+import { XuxemonService } from '../services/xuxemon.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -38,7 +40,7 @@ export class XuxedexComponent {
   searchUser = new FormControl('');
 
 
-  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService) { }
+  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService, private xuxemonService: XuxemonService, private router: Router) { }
   @HostBinding('class.dark-mode')
   get darkMode() {
     return this.theme.darkMode;
@@ -135,5 +137,11 @@ export class XuxedexComponent {
     });
   }
 
+  openXuxemon(xuxemon: Xuxemon){
+    if(!xuxemon.owned){
+      return;
+    }
+    this.router.navigate(['/xuxemon', xuxemon.id]);
+  }
   
 }

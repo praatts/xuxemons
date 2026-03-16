@@ -22,7 +22,7 @@
     </div>
     <div class="xuxedex-wrapper">
         @for (xuxemon of filteredXuxemons; track xuxemon.id) {
-        <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}">
+        <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)">
             @if(!xuxemon.owned) {
             <h2>???</h2>
             } @else {
