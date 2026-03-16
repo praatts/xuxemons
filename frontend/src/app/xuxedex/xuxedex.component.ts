@@ -39,6 +39,7 @@ export class XuxedexComponent {
   loadingUserId: number | null = null;
   successUserId: number | null = null;
   searchUser = new FormControl('');
+  activeElement: string = 'all';
 
 
   constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService) {
@@ -55,10 +56,23 @@ export class XuxedexComponent {
 
   ngOnInit(): void {
     this.getAllXuxemons();
+    this.getOwnedXuxemons();
 
     this.authService.isAdmin().subscribe((value) => {
       this.isAdmin = value;
     });
+
+    this.xuxemonsService.userXuxemons$.subscribe(data => {
+    if (this.activeElement === 'all') {
+      this.filteredXuxemons = data;
+    }
+  });
+
+  this.xuxemonsService.ownedXuxemons$.subscribe(data => {
+    if (this.activeElement !== 'all') {
+      this.filteredXuxemons = data.filter(x => x.type === this.activeElement);
+    }
+  });
   }
 
   getAllXuxemons(): void {
@@ -71,6 +85,16 @@ export class XuxedexComponent {
       error: (err) => console.log("Error al cargar xuxedex: ", err)
     });
   }
+
+  getOwnedXuxemons(): void {
+  this.xuxemonsService.getOwnedXuxemons().subscribe({
+    next: (data) => {
+      this.xuxemonsService.setOwnedXuxemons(data);
+      console.log("Xuxemons capturats: ", data);
+    },
+    error: (err) => console.log("Error al cargar xuxemons capturats: ", err)
+  });
+}
 
   alterXuxemonId(id: number): string {
     return '#' + id.toString().padStart(3, '0');
