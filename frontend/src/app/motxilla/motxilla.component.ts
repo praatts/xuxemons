@@ -40,11 +40,12 @@ export class MotxillaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //inventario
+
     this.motxillaService.getInventory().subscribe({
       next: (data) => {
-        this.motxilla = this.expandSlots(data),
-          this.filteredMotxilla = this.motxilla
+        const expanded = this.expandSlots(data);
+        this.motxillaService.setInventory(expanded);
+        this.filteredMotxilla = expanded;
       },
       error: (err) => console.log("Error al càrregar inventari: ", err)
     });
@@ -80,12 +81,13 @@ export class MotxillaComponent implements OnInit {
   }
 
   filterItems(filter: string): void {
+    const currentInventory = this.motxillaService.getCurrentInventory();
     if (filter == 'all') {
-      this.filteredMotxilla = this.motxilla;
+      this.filteredMotxilla = currentInventory;
     } else if (filter == 'stackable') {
-      this.filteredMotxilla = this.motxilla.filter(slot => slot.item.stackable);
+      this.filteredMotxilla = currentInventory.filter(slot => slot.item.stackable);
     } else if (filter == 'non-stackable') {
-      this.filteredMotxilla = this.motxilla.filter(slot => !slot.item.stackable);
+      this.filteredMotxilla = currentInventory.filter(slot => !slot.item.stackable);
     }
   }
 
@@ -95,7 +97,8 @@ export class MotxillaComponent implements OnInit {
   }
 
   searchItem(value: string | null): void {
-    this.filteredMotxilla = this.motxilla.filter(slot =>
+    const currentInventory = this.motxillaService.getCurrentInventory();
+    this.filteredMotxilla = currentInventory.filter(slot =>
       slot.item.name.toLowerCase().includes(value?.toLowerCase() ?? '')
     );
   }
@@ -144,10 +147,11 @@ export class MotxillaComponent implements OnInit {
   openModal() {
     this.motxillaService.getAllItems().subscribe({
       next: (items) => {
+        this.motxillaService.setAllItems(items);
         this.availableItems = items;
-          this.showModal = true;
+        this.showModal = true;
       },
-      error: (err) => console.log("Error al cargar items disponibles: ", err)
+      error: (err) => console.log("Error al cargar los items disponibles", err)
     });
   }
 
@@ -170,11 +174,18 @@ export class MotxillaComponent implements OnInit {
     if (!this.selectedUser || !this.selectedItem || this.itemQuantity < 0) return;
 
     this.motxillaService.giveItemToUser(this.selectedUser.id, this.selectedItem.id, this.itemQuantity).subscribe({
-      next: () => {
-        alert('Item añadido correctamente al usuario ' + this.selectedUser.player_id);
-        this.closeModal();
-      },
-      error: (err) => console.log('Error añadiendo item:', err)
-    });
+    next: () => {
+      this.motxillaService.getInventory().subscribe({
+        next: (data) => {
+          const expanded = this.expandSlots(data);
+          this.motxillaService.setInventory(expanded);
+          this.filteredMotxilla = expanded;
+        }
+      });
+      alert('Item añadido correctamente al usuario ' + this.selectedUser.player_id);
+      this.closeModal();
+    },
+    error: (err) => console.log('Error añadiendo item:', err)
+  });
   }
 }
