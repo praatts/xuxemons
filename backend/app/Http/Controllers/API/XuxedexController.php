@@ -47,8 +47,6 @@ class XuxedexController extends Controller
     {
         $user = User::findOrFail($user_id);
 
-        // Cogemos un xuxe al azar de la tabla 'xuxes'
-        $xuxe = Xuxemon::inRandomOrder()->first();
         $xuxemon = Xuxemon::inRandomOrder()->first();
 
         if (!$xuxemon) {
@@ -62,23 +60,33 @@ class XuxedexController extends Controller
             'size'         => $xuxemon->size,
         ]);
 
-        return response()->json(['message' => 'Nou xuxemon afegit!', 'xuxemon' => $xuxemon], 201);
+        return response()->json([
+            'id'           => $xuxemon->id,
+            'name'         => $xuxemon->name,
+            'xuxemon_id'   => $xuxemon->id,
+            'number_xuxes' => 0,
+            'size'         => $xuxemon->size,
+            'owned'        => true,
+            'type'         => $xuxemon->type
+        ], 201);
     }
 
-    public function ownedXuxemons() : JsonResponse {
+    public function ownedXuxemons(): JsonResponse
+    {
         $user = JWTAuth::parseToken()->authenticate();
 
         $owned = OwnedXuxemon::where('user_id', $user->id)->with('xuxemon')->get()
-        ->map(function ($owned) {
-            return [
-                'id' => $owned->xuxemon->id,
-                'name' => $owned->xuxemon->name,
-                'xuxemon_id' => $owned->xuxemon_id,
-                'number_xuxes' => $owned->number_xuxes,
-                'size' => $owned->size,
-                'owned' => true
-            ];
-        });
+            ->map(function ($owned) {
+                return [
+                    'id' => $owned->xuxemon->id,
+                    'name' => $owned->xuxemon->name,
+                    'xuxemon_id' => $owned->xuxemon_id,
+                    'number_xuxes' => $owned->number_xuxes,
+                    'size' => $owned->size,
+                    'owned' => true,
+                    'type' => $owned->xuxemon->type
+                ];
+            });
         return response()->json($owned);
     }
 }

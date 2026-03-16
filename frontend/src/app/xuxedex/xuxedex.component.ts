@@ -52,8 +52,6 @@ export class XuxedexComponent {
     return this.theme.darkMode;
   }
 
-
-
   ngOnInit(): void {
     this.getAllXuxemons();
     this.getOwnedXuxemons();
@@ -63,16 +61,18 @@ export class XuxedexComponent {
     });
 
     this.xuxemonsService.userXuxemons$.subscribe(data => {
-    if (this.activeElement === 'all') {
-      this.filteredXuxemons = data;
-    }
-  });
+      if (this.activeElement === 'all') {
+        this.filteredXuxemons = data;
+      }
+    });
 
-  this.xuxemonsService.ownedXuxemons$.subscribe(data => {
-    if (this.activeElement !== 'all') {
-      this.filteredXuxemons = data.filter(x => x.type === this.activeElement);
-    }
-  });
+    this.xuxemonsService.ownedXuxemons$.subscribe(data => {
+      if (this.activeElement === 'owned') {
+        this.filteredXuxemons = data;
+      } else if (this.activeElement !== 'all') {
+        this.filteredXuxemons = data.filter(x => x.type === this.activeElement);
+      }
+    });
   }
 
   getAllXuxemons(): void {
@@ -87,14 +87,14 @@ export class XuxedexComponent {
   }
 
   getOwnedXuxemons(): void {
-  this.xuxemonsService.getOwnedXuxemons().subscribe({
-    next: (data) => {
-      this.xuxemonsService.setOwnedXuxemons(data);
-      console.log("Xuxemons capturats: ", data);
-    },
-    error: (err) => console.log("Error al cargar xuxemons capturats: ", err)
-  });
-}
+    this.xuxemonsService.getOwnedXuxemons().subscribe({
+      next: (data) => {
+        this.xuxemonsService.setOwnedXuxemons(data);
+        console.log("Xuxemons capturats: ", data);
+      },
+      error: (err) => console.log("Error al cargar xuxemons capturats: ", err)
+    });
+  }
 
   alterXuxemonId(id: number): string {
     return '#' + id.toString().padStart(3, '0');
@@ -102,26 +102,22 @@ export class XuxedexComponent {
 
   filterXuxemonsByType(type: string): void {
     if (type === 'all') {
+      this.activeElement = 'all';
       this.filteredXuxemons = this.xuxemonsService.getCurrentUserXuxemons();
     } else {
-      this.xuxemonsService.getOwnedXuxemons().subscribe({
-        next: (data) => {
-          this.xuxemonsService.setOwnedXuxemons(data);
-          this.filteredXuxemons = data;
-          console.log("Xuxemons capturats: ", data);
-        },
-        error: (err) => console.log("Error al cargar xuxemons capturats: ", err)
-      });
+      this.activeElement = 'owned';
+      this.filteredXuxemons = this.xuxemonsService.getCurrentOwnedXuxemons();
     }
   }
 
   filterXuxemonsByElement(element: string): void {
-  if (element === 'all') {
-    this.filteredXuxemons = this.xuxemonsService.getCurrentUserXuxemons();
-  } else {
-    this.filteredXuxemons = this.xuxemonsService.getCurrentUserXuxemons().filter(x => x.type === element);
+    this.activeElement = element;
+    if (element === 'all') {
+      this.filteredXuxemons = this.xuxemonsService.getCurrentOwnedXuxemons();
+    } else {
+      this.filteredXuxemons = this.xuxemonsService.getCurrentOwnedXuxemons().filter(x => x.type === element);
+    }
   }
-}
 
   loadUsers(): void {
     this.userService.getAllUsers().subscribe({
