@@ -3,5 +3,6 @@ export interface Xuxemon {
     name: string,
     type: string,
     size: string,
+    xuxes: number,
     owned: boolean
 }

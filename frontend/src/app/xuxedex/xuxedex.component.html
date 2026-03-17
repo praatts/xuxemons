@@ -1,78 +1,111 @@
-<div class="container">
-    <div class="search-wrapper">
-        <img src="search-icon.png" alt="Icono de búsqueda">
-        <input type="text" for="pokemon" placeholder="Cerca un xuxemon...">
-        <select name="" id="elements" for="xuxemons-elements">
-            @for (element of elements; track element.id) {
-            <option value="{{ element.id }}">{{ element.name }}</option>
-            }
-        </select>
-        <div class="xuxemon-filter">
-            <button class="action-btn" (click)="filterXuxemonsByType('all')">Tots</button>
-            <button class="action-btn" (click)="filterXuxemonsByType('owned')">Capturat</button>
-        </div>
-
-        @if (isAdmin) {
-        <div class="admin-controls">
-            <button class="action-btn" (click)="openModal()">
-                + Afegir xuxemon aleatori
-            </button>
-        </div>
-        }
-    </div>
-    <div class="xuxedex-wrapper">
-        @for (xuxemon of filteredXuxemons; track xuxemon.id) {
-        <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)">
-            @if(!xuxemon.owned) {
-            <h2>???</h2>
-            } @else {
-            <h2>{{ xuxemon.name }}</h2>
-            }
-            <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
-            <img [src]="'xuxemons/' + xuxemon.id + '.png'" [alt]="xuxemon.name">
-            <span class="xuxemon-base"></span>
-
-        </div>
-        }
-    </div>
-
-</div>
-
-@if (showModal) {
-<div class="modal-overlay" (click)="closeModal()">
-    <div class="modal" (click)="$event.stopPropagation()">
-        <h2>Afegir Xuxemon Aleatori</h2>
-
-        <div class="modal-search">
-            <input type="text" placeholder="Cerca per l'identificador de l'usuari..." [formControl]="searchUser">
-        </div>
-
-        <div class="modal-users">
-            @if (filteredUsers.length === 0) {
-            <p class="no-results">No s'han trobat usuaris</p>
-            }
-            @for (user of filteredUsers; track user.id) {
-            <div class="modal-user-card">
-                <div class="user-info">
-                    <p class="user-name">{{ user.name }}</p>
-                    <p class="user-player-id">{{ user.player_id }}</p>
-                </div>
-                <button class="action-btn" [ngClass]="{ 'success': successUserId === user.id, 'disabled': loadingUserId === user.id}" [disabled]="loadingUserId === user.id" (click)="addRandomXuxemon(user.id!)">
-                    @if (loadingUserId === user.id) {
-                    Afegint...
-                    } @else if (successUserId === user.id) {
-                    ✓ Afegit!
-                    } @else {
-                    + Xuxemon
-                    }
-                </button>
+@if (!selectedXuxemon) {
+    <div class="container">
+        <div class="search-wrapper">
+            <img src="search-icon.png" alt="Icono de búsqueda">
+            <input type="text" for="pokemon" placeholder="Cerca un xuxemon...">
+            <select name="" id="elements" for="xuxemons-elements">
+                @for (element of elements; track element.id) {
+                <option value="{{ element.id }}">{{ element.name }}</option>
+                }
+            </select>
+            <div class="xuxemon-filter">
+                <button class="action-btn" (click)="filterXuxemonsByType('all')">Tots</button>
+                <button class="action-btn" (click)="filterXuxemonsByType('owned')">Capturat</button>
             </div>
+
+            @if (isAdmin) {
+                <div class="admin-controls">
+                    <button class="action-btn" (click)="openModal()">
+                        + Afegir xuxemon aleatori
+                    </button>
+                </div>
             }
         </div>
 
-        <div class="modal-actions">
-            <button class="cancel-btn" (click)="closeModal()">Tancar</button>
+        <div class="xuxedex-wrapper">
+            @for (xuxemon of filteredXuxemons; track xuxemon.id) {
+                <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)">
+                    @if(!xuxemon.owned) {
+                        <h2>???</h2>
+                    } @else {
+                        <h2>{{ xuxemon.name }}</h2>
+                    }
+                    <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
+                    <img [src]="'xuxemons/' + xuxemon.id + '.png'" [alt]="xuxemon.name">
+                    <span class="xuxemon-base"></span>
+                </div>
+            }
         </div>
     </div>
-</div>
+
+    @if (showModal) {
+        <div class="modal-overlay" (click)="closeModal()">
+            <div class="modal" (click)="$event.stopPropagation()">
+                <h2>Afegir Xuxemon Aleatori</h2>
+
+                <div class="modal-search">
+                    <input type="text" placeholder="Cerca per l'identificador de l'usuari..." [formControl]="searchUser">
+                </div>
+
+                <div class="modal-users">
+                    @if (filteredUsers.length === 0) {
+                        <p class="no-results">No s'han trobat usuaris</p>
+                    }
+                    @for (user of filteredUsers; track user.id) {
+                        <div class="modal-user-card">
+                            <div class="user-info">
+                                <p class="user-name">{{ user.name }}</p>
+                                <p class="user-player-id">{{ user.player_id }}</p>
+                            </div>
+                            <button class="action-btn" [ngClass]="{ 'success': successUserId === user.id, 'disabled': loadingUserId === user.id}" [disabled]="loadingUserId === user.id" (click)="addRandomXuxemon(user.id!)">
+                                @if (loadingUserId === user.id) {
+                                    Afegint...
+                                } @else if (successUserId === user.id) {
+                                    ✓ Afegit!
+                                } @else {
+                                    + Xuxemon
+                                }
+                            </button>
+                        </div>
+                    }
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn" (click)="closeModal()">Tancar</button>
+                </div>
+            </div>
+        </div>
+    }
+}@else {
+    <div class="detail-container">
+        <button class="action-btn" (click)="closeDetail()">
+            Tornar
+        </button>
+        <h1>{{ selectedXuxemon.name }}</h1>
+        <img 
+        [src]="'xuxemons/' + selectedXuxemon.id + '.png'"
+        class="detail-img"
+        >
+        <p><strong>Tipus:</strong> {{ selectedXuxemon.type }}</p>
+        <p><strong>Mida:</strong> {{ selectedXuxemon.size }}</p>
+        <p>
+            <strong>Xuxes:</strong>
+            {{ selectedXuxemon.xuxes }} /
+            {{
+                selectedXuxemon.size === 'petit' ? 3 :
+                selectedXuxemon.size === 'mitja' ? 5 : 0
+            }}
+        </p>
+        <button 
+        class="action-btn"
+        (click)="giveXuxe(selectedXuxemon)"
+        [disabled]="selectedXuxemon.size === 'gran'"
+        >
+            Donar Xuxe
+        </button>
+        
+        @if (selectedXuxemon.size === 'gran') {
+            <p>Forma final assolida</p>
+        }
+    </div>
+
 }

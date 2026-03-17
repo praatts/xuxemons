@@ -147,7 +147,7 @@ export class XuxedexComponent {
     this.selectedXuxemon = xuxemon;
   }
 
-  closeDetali(){
+  closeDetail(){
     this.selectedXuxemon = null;
   }
 
@@ -158,6 +158,19 @@ export class XuxedexComponent {
 
     const oldSize = xuxemon.size;
 
+    this.xuxemonService.giveXuxe(xuxemon.id).subscribe({
+      next: (updated: any) => {
+        Object.assign(xuxemon, updated);
+
+        if (oldSize !== updated.size) {
+          alert('El xuxemon ha evolucionat!');
+        }
+      },
+
+      error: (err) => {
+        console.log(err);
+      }
+    });
 
   }
   
