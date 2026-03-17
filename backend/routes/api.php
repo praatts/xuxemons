@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
 use App\Models\Inventory;
+use App\Models\OwnedXuxemonIllness;
+use App\Models\OwnedXuxemon;
 
 //http://localhost:8000/api/
 //Comprobar si el email ya existe
