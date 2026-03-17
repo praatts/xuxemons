@@ -1,15 +1,13 @@
 import { Component } from '@angular/core';
 import { ThemeService } from '../services/theme.service';
 import { HostBinding } from '@angular/core';
-import { XuxemonsService } from '../xuxemons.service';
+import { XuxemonsService } from '../services/xuxemons.service';
 import { Xuxemon } from '../../../interfaces/xuxemon';
 import { NgClass } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserInterface } from '../user-interface';
-import { XuxemonService } from '../services/xuxemon.service';
-import { Router } from '@angular/router';
 
 
 @Component({
@@ -43,7 +41,7 @@ export class XuxedexComponent {
   searchUser = new FormControl('');
 
 
-  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService, private xuxemonService: XuxemonService, private router: Router) { }
+  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService) { }
   @HostBinding('class.dark-mode')
   get darkMode() {
     return this.theme.darkMode;
@@ -158,7 +156,7 @@ export class XuxedexComponent {
 
     const oldSize = xuxemon.size;
 
-    this.xuxemonService.giveXuxe(xuxemon.id).subscribe({
+    this.xuxemonsService.giveXuxe(xuxemon.id).subscribe({
       next: (updated: any) => {
         Object.assign(xuxemon, updated);
 

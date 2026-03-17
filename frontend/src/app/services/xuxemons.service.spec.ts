@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { XuxemonService } from './xuxemon.service';
+import { XuxemonsService } from '../services/xuxemons.service';
 
-describe('XuxemonService', () => {
-  let service: XuxemonService;
+describe('XuxemonsService', () => {
+  let service: XuxemonsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(XuxemonService);
+    service = TestBed.inject(XuxemonsService);
   });
 
   it('should be created', () => {

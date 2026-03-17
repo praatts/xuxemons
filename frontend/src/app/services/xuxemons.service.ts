@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Xuxemon } from '../../interfaces/xuxemon';
+import { Xuxemon } from '../../../interfaces/xuxemon';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +21,10 @@ export class XuxemonsService {
 
   addRandomXuxemon(player_id: number) {
     return this.http.post(`${this.apiUrl}/xuxedex/add-random/${player_id}`, {});
+  }
+
+  //método para dar xuxes
+  giveXuxe(id: number) {
+    return this.http.post(`${this.apiUrl}/xuxemons/${id}/xuxe`, {});
   }
 }
