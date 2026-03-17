@@ -20,8 +20,11 @@ import { Router } from '@angular/router';
   styleUrl: './xuxedex.component.css'
 })
 export class XuxedexComponent {
+
+  selectedXuxemon: Xuxemon | null = null;
   xuxemons: Xuxemon[] = [];
   filteredXuxemons: Xuxemon[] = [];
+
   elements = [
     { id: 'all', name: 'Tots' },
     { id: 'tierra', name: 'Tierra' },
@@ -141,7 +144,21 @@ export class XuxedexComponent {
     if(!xuxemon.owned){
       return;
     }
-    this.router.navigate(['/xuxemon', xuxemon.id]);
+    this.selectedXuxemon = xuxemon;
+  }
+
+  closeDetali(){
+    this.selectedXuxemon = null;
+  }
+
+  giveXuxe(xuxemon: Xuxemon){
+    if(xuxemon.size === 'gran') {
+      return;
+    }
+
+    const oldSize = xuxemon.size;
+
+
   }
   
 }
