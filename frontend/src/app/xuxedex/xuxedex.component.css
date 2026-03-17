@@ -124,6 +124,10 @@
 
 }
 
+.xuxemon-card.owned {
+    cursor: pointer;
+}
+
 .xuxedex-wrapper .xuxemon-card {
     background-color: var(--bg-card);
     border-radius: 56px;
