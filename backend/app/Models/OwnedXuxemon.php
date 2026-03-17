@@ -14,4 +14,10 @@ class OwnedXuxemon extends Model
     {
         return $this->belongsTo(Xuxemon::class);
     }
+
+    //funcion para xuxemons con enfermedades
+    public function illnesses()
+    {
+        return $this->hasMany(OwnedXuxemonIllness::class);
+    }
 }

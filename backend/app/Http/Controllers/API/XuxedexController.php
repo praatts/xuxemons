@@ -81,4 +81,33 @@ class XuxedexController extends Controller
         });
         return response()->json($owned);
     }
+
+    // POST /api/xuxedex/{owned_id}/illness
+    // Afegeix una malaltia a un xuxemon capturat (només admin)
+    public function addIllness(Request $request, $owned_id): JsonResponse
+    {
+        $request->validate([
+            'illness' => 'required|in:bajon_azucar,atracon'
+        ]);
+
+        $owned = OwnedXuxemon::findOrFail($owned_id);
+
+        OwnedXuxemonIllness::firstOrCreate([
+            'owned_xuxemon_id' => $owned->id,
+            'illness'          => $request->illness,
+        ]);
+
+        return response()->json(['message' => 'Malaltia afegida correctament']);
+    }
+
+    // DELETE /api/xuxedex/{owned_id}/illness/{illness}
+    // Elimina una malaltia d'un xuxemon capturat (només admin)
+    public function removeIllness($owned_id, $illness): JsonResponse
+    {
+        OwnedXuxemonIllness::where('owned_xuxemon_id', $owned_id)
+            ->where('illness', $illness)
+            ->delete();
+
+        return response()->json(['message' => 'Malaltia eliminada correctament']);
+    }
 }
