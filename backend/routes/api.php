@@ -37,6 +37,8 @@ Route::middleware([JwtMiddleware::class])->group(function () {
         Route::get('/users/all', [UserController::class, 'getAllUsers']); //mostrar usuarios en status false y true
         Route::post('/users/{id}/restore', [UserController::class, 'restoreUser']); //restore users status 0
         Route::delete('/users/{id}/delete', [UserController::class, 'adminDelete']); //delete users status 0
+        Route::post('/xuxedex/{owned_id}/illness', [XuxedexController::class, 'addIllness']);
+        Route::delete('/xuxedex/{owned_id}/illness/{illness}', [XuxedexController::class, 'removeIllness']);
     });
 
     Route::put('/update', [UserController::class, 'updateUser']);
