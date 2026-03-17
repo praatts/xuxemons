@@ -10,7 +10,6 @@ import { UserStatsComponent } from './user-stats/user-stats.component';
 import { MotxillaComponent } from './motxilla/motxilla.component';
 import { UserAdminComponent } from './user-admin/user-admin.component';
 import { adminGuardGuard } from './guards/admin-guard.guard';
-import { XuxemonDetailComponent } from './xuxemon-detail/xuxemon-detail.component';
 
 
 export const routes: Routes = [
@@ -61,12 +60,6 @@ export const routes: Routes = [
                         path: 'xuxedex',
                         title: 'xuxedex',
                         component: XuxedexComponent,
-                        canActivate: [authGuard]
-                    },
-                    {
-                        path: 'xuxemon/:id',
-                        title: 'xuxemon-detail',
-                        component: XuxemonDetailComponent,
                         canActivate: [authGuard]
                     },
                     {
