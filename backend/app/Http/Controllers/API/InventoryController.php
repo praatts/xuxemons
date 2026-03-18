@@ -69,6 +69,7 @@ class InventoryController extends Controller
 
         $remaining = $quantity - $finalQuantity;
 
+        //Arreglar
         if ($finalQuantity < $quantity) {
             return response()->json([
                 'error' => "Solo se han podido añadir {$finalQuantity} items debido a la capacidad del inventario, los {$remaining} restantes no se han descartado",
