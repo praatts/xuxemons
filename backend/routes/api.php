@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
 use App\Models\Inventory;
+use App\Models\OwnedXuxemonIllness;
+use App\Models\OwnedXuxemon;
 
 //http://localhost:8000/api/
 //Comprobar si el email ya existe
@@ -38,6 +40,8 @@ Route::middleware([JwtMiddleware::class])->group(function () {
         Route::get('/users/all', [UserController::class, 'getAllUsers']); //mostrar usuarios en status false y true
         Route::post('/users/{id}/restore', [UserController::class, 'restoreUser']); //restore users status 0
         Route::delete('/users/{id}/delete', [UserController::class, 'adminDelete']); //delete users status 0
+        Route::post('/xuxedex/{owned_id}/illness', [XuxedexController::class, 'addIllness']);
+        Route::delete('/xuxedex/{owned_id}/illness/{illness}', [XuxedexController::class, 'removeIllness']);
     });
 
     Route::put('/update', [UserController::class, 'updateUser']);
