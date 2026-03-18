@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\OwnedXuxemon;
+use App\Models\OwnedXuxemonIllness;
 use App\Models\User;
 use App\Models\Xuxemon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Models\OwnedXuxemon;
 
 class XuxedexController extends Controller
 {
@@ -68,15 +70,17 @@ class XuxedexController extends Controller
     public function ownedXuxemons() : JsonResponse {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $owned = OwnedXuxemon::where('user_id', $user->id)->with('xuxemon')->get()
+        $owned = OwnedXuxemon::where('user_id', $user->id)->with(['xuxemon', 'illnesses'])->get()
         ->map(function ($owned) {
             return [
+                'owned_xuxemon_id' => $owned->id,
                 'id' => $owned->xuxemon->id,
                 'name' => $owned->xuxemon->name,
                 'xuxemon_id' => $owned->xuxemon_id,
                 'number_xuxes' => $owned->number_xuxes,
                 'size' => $owned->size,
-                'owned' => true
+                'owned' => true,
+                'illnesses' => $owned->illnesses->pluck('illness'),
             ];
         });
         return response()->json($owned);
