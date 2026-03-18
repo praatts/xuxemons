@@ -8,6 +8,7 @@ import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserInterface } from '../user-interface';
+import { MotxillaService } from '../services/motxilla.service';
 
 
 @Component({
@@ -20,6 +21,7 @@ import { UserInterface } from '../user-interface';
 export class XuxedexComponent {
 
   selectedXuxemon: Xuxemon | null = null;
+  selectedXuxeType: string = 'verda';
   xuxemons: Xuxemon[] = [];
   filteredXuxemons: Xuxemon[] = [];
 
@@ -29,6 +31,12 @@ export class XuxedexComponent {
     { id: 'agua', name: 'Agua' },
     { id: 'aire', name: 'Aire' }
   ];
+
+  userXuxes: { [key: string]: number } = {
+    verda: 0,
+    blava: 0,
+    vermella: 0
+  };
 
   isAdmin: boolean = false;
 
@@ -41,7 +49,7 @@ export class XuxedexComponent {
   searchUser = new FormControl('');
 
 
-  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService) { }
+  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService, private motxillaService: MotxillaService) { }
   @HostBinding('class.dark-mode')
   get darkMode() {
     return this.theme.darkMode;
@@ -144,6 +152,8 @@ export class XuxedexComponent {
     }
     this.showModal = false;
     this.selectedXuxemon = xuxemon;
+    this.selectedXuxeType = 'verda';
+    this.loadInventory();
   }
 
   closeDetail(){
@@ -151,26 +161,40 @@ export class XuxedexComponent {
   }
 
   giveXuxe(xuxemon: Xuxemon){
-    if(xuxemon.size === 'gran') {
-      return;
-    }
+  if(xuxemon.size === 'gran') return;
 
-    const oldSize = xuxemon.size;
+  const oldSize = xuxemon.size;
 
-    this.xuxemonsService.giveXuxe(xuxemon.id).subscribe({
-      next: (updated: any) => {
-        Object.assign(xuxemon, updated);
+  this.xuxemonsService.giveXuxe(xuxemon.id, this.selectedXuxeType).subscribe({
+    next: (updated: any) => {
 
-        if (oldSize !== updated.size) {
-          alert('El xuxemon ha evolucionat!');
-        }
-      },
+      Object.assign(xuxemon, updated);
 
-      error: (err) => {
-        console.log(err);
+      this.userXuxes[this.selectedXuxeType]--;
+
+      if (oldSize !== updated.size) {
+        alert('El xuxemon ha evolucionat!');
       }
-    });
+    },
+    error: (err) => {
+      alert(err.error.message);
+    }
+  });
+}
 
-  }
+loadInventory() {
+  this.motxillaService.getInventory().subscribe((data: any[]) => {
+    // Reset
+    this.userXuxes = { verda: 0, blava: 0, vermella: 0 };
+
+    data.forEach(item => {
+      const name = item.item.name.toLowerCase();
+
+      if (name.includes('verda')) this.userXuxes['verda'] = item.quantity;
+      if (name.includes('blava')) this.userXuxes['blava'] = item.quantity;
+      if (name.includes('vermella')) this.userXuxes['vermella'] = item.quantity;
+    });
+  });
+}
   
 }

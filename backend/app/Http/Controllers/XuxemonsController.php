@@ -7,24 +7,66 @@ use Illuminate\Http\Request;
 
 class XuxemonsController extends Controller
 {
-    public function giveXuxe($id){
-        $xuxemon = Xuxemon::findOrFail($id);
+    public function giveXuxe(Request $request, $ownedId){
+        $request->validate([
+            'type' => 'required|string'
+        ]);
 
-        //sumar xuxe
-        $xuxemon->xuxes++;
+        $user = Auth::guard('api')->user();
 
-        //reglas de evolución
-        if ($xuxemon->size === 'petit' && $xuxemon->xuxes >= 3) {
-            $xuxemon->size = 'mitja';
-            $xuxemon->xuxes = 0;
+        //obtener tipos
+        $map = [
+            'verda' => 'Xuxe verda',
+            'blava' => 'Xuxe blava',
+            'vermella' => 'Xuxe vermella'  
+        ];
+
+        if (!isset($map[$request->type])) {
+            return response()->json([
+                'message' => 'Tipus de xuxe no vàlid'
+            ], 400);
         }
 
-        if ($xuxemon->size === 'mitja' && $xuxemon->xuxes >= 5) {
-            $xuxemon->size = 'gran';
-            $xuxemon->xuxes = 0;
+        $itemName = $map[$request->type];
+
+        //buscar item
+        $item = Item::where('name', $itemName)->first();
+
+        if(!$item){
+            return response()->json([
+                'message' => 'Item no trobat'
+            ], 400);
         }
 
-        $xuxemon->save();
-        return response()->json($xuxemon);
+        //inventario
+        $inventory = Inventory::where('user_id', $user->id)->where('item_id', $item->id)->first();
+
+        if (!$inventory || $inventory->quantity <= 0) {
+            return response()->json([
+                'message' => "No tens $itemName"
+            ], 400);
+        }
+
+        //xuxemon del user
+        $owned = OwnedXuxemon::where('id', $ownedId)->where('user_id', $user->id)->firstOrFail();
+
+        //restar del inventario
+        $inventory->quantity -= 1;
+        $inventory->save();
+
+        //sumar progreso
+        $owned->number_xuxes += 1;
+
+        //evolución
+        if ($owned->size === 'petit' && $owned->number_xuxes >= 3) {
+            $owned->size = 'mitja';
+            $owned->number_xuxes = 0;
+        } elseif ($owned->size === 'mitja' && $owned->number_xuxes >= 5) {
+            $owned->size = 'gran';
+            $owned->number_xuxes = 0;
+        }
+
+        $owned->save();
+        return response()->json($owned);
     }
 }
