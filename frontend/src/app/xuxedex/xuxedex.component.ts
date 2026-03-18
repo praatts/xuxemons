@@ -142,6 +142,7 @@ export class XuxedexComponent {
     if(!xuxemon.owned){
       return;
     }
+    this.showModal = false;
     this.selectedXuxemon = xuxemon;
   }
 
