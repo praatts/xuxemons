@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { XuxemonsService } from './xuxemons.service';
+import { XuxemonsService } from '../services/xuxemons.service';
 
 describe('XuxemonsService', () => {
   let service: XuxemonsService;

@@ -16,7 +16,12 @@ class Xuxemon extends Model
     public $timestamps = false;
     protected $table = 'xuxemons';
 
-    protected $fillable = ['name', 'type', 'size'];
+    protected $fillable = [
+        'name',
+        'type',
+        'size',
+        'xuxes'
+    ];
 
     public function inventories()
     {

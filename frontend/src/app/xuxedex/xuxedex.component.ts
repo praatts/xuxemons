@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { ThemeService } from '../services/theme.service';
 import { HostBinding } from '@angular/core';
-import { XuxemonsService } from '../xuxemons.service';
+import { XuxemonsService } from '../services/xuxemons.service';
 import { Xuxemon } from '../../../interfaces/xuxemon';
 import { NgClass } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserInterface } from '../user-interface';
+import { MotxillaService } from '../services/motxilla.service';
 
 
 @Component({
@@ -19,6 +20,10 @@ import { UserInterface } from '../user-interface';
 })
 export class XuxedexComponent {
 
+  selectedXuxemon: Xuxemon | null = null;
+  selectedXuxeType: string = 'verda';
+  xuxemons: Xuxemon[] = [];
+
   filteredXuxemons: Xuxemon[] = [];
   showOwnedXuxemons: boolean = false;
   userXuxemon$;
@@ -29,6 +34,12 @@ export class XuxedexComponent {
     { id: 'agua', name: 'Agua' },
     { id: 'aire', name: 'Aire' }
   ];
+
+  userXuxes: { [key: string]: number } = {
+    verda: 0,
+    blava: 0,
+    vermella: 0
+  };
 
   isAdmin: boolean = false;
 
@@ -42,7 +53,8 @@ export class XuxedexComponent {
   activeElement: string = 'all';
 
 
-  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService) {
+
+  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService, private motxillaService: MotxillaService) {
     this.userXuxemon$ = this.xuxemonsService.userXuxemons$;
     this.ownedXuxemon$ = this.xuxemonsService.ownedXuxemons$;
   }
@@ -166,4 +178,54 @@ export class XuxedexComponent {
   }
 
 
+  openXuxemon(xuxemon: Xuxemon) {
+    if (!xuxemon.owned) {
+      return;
+    }
+    this.showModal = false;
+    this.selectedXuxemon = xuxemon;
+    this.selectedXuxeType = 'verda';
+    this.loadInventory();
+  }
+
+  closeDetail() {
+    this.selectedXuxemon = null;
+  }
+
+  giveXuxe(xuxemon: Xuxemon) {
+    if (xuxemon.size === 'gran') return;
+
+    const oldSize = xuxemon.size;
+
+    this.xuxemonsService.giveXuxe(xuxemon.id, this.selectedXuxeType).subscribe({
+      next: (updated: any) => {
+
+        Object.assign(xuxemon, updated);
+
+        this.userXuxes[this.selectedXuxeType]--;
+
+        if (oldSize !== updated.size) {
+          alert('El xuxemon ha evolucionat!');
+        }
+      },
+      error: (err) => {
+        alert(err.error.message);
+      }
+    });
+  }
+
+  loadInventory() {
+    this.motxillaService.getInventory().subscribe((data: any[]) => {
+      // Reset
+      this.userXuxes = { verda: 0, blava: 0, vermella: 0 };
+
+      data.forEach(item => {
+        const name = item.item.name.toLowerCase();
+
+        if (name.includes('verda')) this.userXuxes['verda'] = item.quantity;
+        if (name.includes('blava')) this.userXuxes['blava'] = item.quantity;
+        if (name.includes('vermella')) this.userXuxes['vermella'] = item.quantity;
+      });
+    });
+  }
 }

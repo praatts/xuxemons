@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Xuxemon } from '../../interfaces/xuxemon';
+import { Xuxemon } from '../../../interfaces/xuxemon';
 import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({
@@ -30,6 +30,11 @@ export class XuxemonsService {
 
   addRandomXuxemon(player_id: number): Observable<Xuxemon> {
     return this.http.post<Xuxemon>(`${this.apiUrl}/xuxedex/add-random/${player_id}`, {});
+  }
+
+  //método para dar xuxes
+  giveXuxe(id: number, type: string) {
+    return this.http.post(`${this.apiUrl}/xuxemons/${id}/xuxe`, {type});
   }
 
   setUserXuxemons(xuxemons: Xuxemon[]): void {
