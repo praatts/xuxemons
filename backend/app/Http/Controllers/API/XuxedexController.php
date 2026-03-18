@@ -92,16 +92,24 @@ class XuxedexController extends Controller
     {
         $request->validate([
             'illness' => 'required|in:bajon_azucar,atracon'
+        ], [
+            'illness.in' => 'La enfermedad debe ser: bajon_azucar o atracon'
         ]);
 
-        $owned = OwnedXuxemon::findOrFail($owned_id);
+        // Usamos find() en lugar de findOrFail() para controlar el error y evitar redirecciones a HTML
+        $owned = OwnedXuxemon::find($owned_id);
+
+        if (!$owned) {
+            return response()->json([
+                'error' => 'No se ha encontrado el Xuxemon con ID: ' . $owned_id
+            ]);
 
         OwnedXuxemonIllness::firstOrCreate([
             'owned_xuxemon_id' => $owned->id,
             'illness'          => $request->illness,
         ]);
 
-        return response()->json(['message' => 'Malaltia afegida correctament']);
+        return response()->json(['message' => 'Enfermedad añadida correctamente']);
     }
 
     // DELETE /api/xuxedex/{owned_id}/illness/{illness}
