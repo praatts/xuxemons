@@ -2,7 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\API\inventoryController;
+use App\Http\Controllers\UserController;
+
 use App\Models\Xuxemon;
+use App\Models\Item;
+use App\Models\Inventory;
+use App\Models\OwnedXuxemon;
 use Illuminate\Http\Request;
 
 class XuxemonsController extends Controller
