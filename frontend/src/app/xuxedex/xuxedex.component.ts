@@ -152,16 +152,38 @@ export class XuxedexComponent {
   }
 
   addIllnessToUser(user_id: number): void {
-    this.xuxemonsService.getOwnedXuxemonsByUser(user_id).subscribe((owned: any[]) => {
-      if (owned.length === 0) return;
+    this.loadingUserId = user_id;
+    this.successUserId = null;
+    this.xuxemonsService.getOwnedXuxemonsByUser(user_id).subscribe({
+      next: (owned: any[]) => {
+        if (owned.length === 0) {
+          this.loadingUserId = null;
+          alert('Aquest usuari no té xuxemons!');
+          return;
+        }
 
-      const xuxemon = owned[Math.floor(Math.random() * owned.length)];
-      const illness = ['bajon_azucar', 'atracon'][Math.floor(Math.random() * 2)];
+        const xuxemon = owned[Math.floor(Math.random() * owned.length)];
+        const illness = ['bajon_azucar', 'atracon'][Math.floor(Math.random() * 2)];
 
-      this.xuxemonsService.addIllness(xuxemon.owned_xuxemon_id, illness).subscribe(() => {
-        alert('Enfermetat afegida!');
-        this.cerrarModalEnfermedad();
-      });
+        this.xuxemonsService.addIllness(xuxemon.owned_xuxemon_id, illness).subscribe({
+          next: () => {
+            this.loadingUserId = null;
+            this.successUserId = user_id;
+            setTimeout(() => {
+              this.successUserId = null;
+              this.cerrarModalEnfermedad();
+            }, 1000);
+          },
+          error: (err) => {
+            console.error("Error al añadir enfermedad:", err);
+            this.loadingUserId = null;
+          }
+        });
+      },
+      error: (err) => {
+        console.error("Error al obtener xuxemons del usuario:", err);
+        this.loadingUserId = null;
+      }
     });
   }
 }
