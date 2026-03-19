@@ -200,7 +200,10 @@ export class XuxedexComponent {
     this.xuxemonsService.giveXuxe(xuxemon.id, this.selectedXuxeType).subscribe({
       next: (updated: any) => {
 
+        xuxemon.xuxes = updated.number_xuxes;
+
         Object.assign(xuxemon, updated);
+        this.selectedXuxemon = { ...xuxemon };
 
         this.userXuxes[this.selectedXuxeType]--;
 

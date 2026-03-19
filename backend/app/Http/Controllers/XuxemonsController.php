@@ -68,13 +68,16 @@ class XuxemonsController extends Controller
         //evolución
         if ($owned->size === 'petit' && $owned->number_xuxes >= 3) {
             $owned->size = 'mitja';
-            $owned->number_xuxes = 0;
+            $owned->number_xuxes -= 3;
         } elseif ($owned->size === 'mitja' && $owned->number_xuxes >= 5) {
             $owned->size = 'gran';
-            $owned->number_xuxes = 0;
+            $owned->number_xuxes -= 5;
         }
 
         $owned->save();
-        return response()->json($owned);
+        return response()->json([
+            'xuxes' => $owned->number_xuxes,
+            'size' => $owned->size
+        ]);
     }
 }
