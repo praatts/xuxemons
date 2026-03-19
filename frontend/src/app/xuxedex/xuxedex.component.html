@@ -17,6 +17,8 @@
             <button class="action-btn" (click)="openModal()">
                 + Afegir xuxemon aleatori
             </button>
+            
+            <button class="action-btn" (click)="abrirModalEnfermedad()">+ Afegir enfermetat</button>
         </div>
         }
     </div>
@@ -37,6 +39,21 @@
 
 </div>
 
+@if (showIllnessModal) {
+<div class="modal-overlay" (click)="cerrarModalEnfermedad()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <h2>Afegir Enfermetat</h2>
+        @for (user of illnessUsers; track user.id) {
+        <div class="modal-user-card">
+            <p>{{ user.name }} - {{ user.player_id }}</p>
+            <button (click)="addIllnessToUser(user.id!)">+ Enfermetat</button>
+        </div>
+        }
+        <button (click)="cerrarModalEnfermedad()">Tancar</button>
+    </div>
+</div>
+}
+
 @if (showModal) {
 <div class="modal-overlay" (click)="closeModal()">
     <div class="modal" (click)="$event.stopPropagation()">
@@ -56,7 +73,9 @@
                     <p class="user-name">{{ user.name }}</p>
                     <p class="user-player-id">{{ user.player_id }}</p>
                 </div>
-                <button class="action-btn" [ngClass]="{ 'success': successUserId === user.id, 'disabled': loadingUserId === user.id}" [disabled]="loadingUserId === user.id" (click)="addRandomXuxemon(user.id!)">
+                <button class="action-btn"
+                    [ngClass]="{ 'success': successUserId === user.id, 'disabled': loadingUserId === user.id}"
+                    [disabled]="loadingUserId === user.id" (click)="addRandomXuxemon(user.id!)">
                     @if (loadingUserId === user.id) {
                     Afegint...
                     } @else if (successUserId === user.id) {

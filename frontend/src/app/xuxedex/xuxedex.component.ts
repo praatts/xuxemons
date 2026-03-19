@@ -27,6 +27,10 @@ export class XuxedexComponent {
     { id: 'aire', name: 'Aire' }
   ];
 
+  //Parametros para Ilnesses
+  showIllnessModal = false;
+  illnessUsers: UserInterface[] = [];
+
   isAdmin: boolean = false;
 
   //Variables para el modal de usuarios
@@ -135,5 +139,29 @@ export class XuxedexComponent {
     });
   }
 
-  
+  //Bloque de logica para enfermedades "admin"
+  abrirModalEnfermedad(): void {
+    this.showIllnessModal = true;
+    this.userService.getAllUsers().subscribe((response: any) => {
+      this.illnessUsers = response.data;
+    });
+  }
+
+  cerrarModalEnfermedad(): void {
+    this.showIllnessModal = false;
+  }
+
+  addIllnessToUser(user_id: number): void {
+    this.xuxemonsService.getOwnedXuxemonsByUser(user_id).subscribe((owned: any[]) => {
+      if (owned.length === 0) return;
+
+      const xuxemon = owned[Math.floor(Math.random() * owned.length)];
+      const illness = ['bajon_azucar', 'atracon'][Math.floor(Math.random() * 2)];
+
+      this.xuxemonsService.addIllness(xuxemon.owned_xuxemon_id, illness).subscribe(() => {
+        alert('Enfermetat afegida!');
+        this.cerrarModalEnfermedad();
+      });
+    });
+  }
 }
