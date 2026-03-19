@@ -101,7 +101,7 @@
 
             <div class="xuxe-selector">
                 <button 
-                    class="action-btn"
+                    class="action-btn verda"
                     [class.active]="selectedXuxeType === 'verda'"
                     [disabled]="userXuxes['verda'] === 0"
                     (click)="selectedXuxeType = 'verda'">
@@ -109,7 +109,7 @@
                 </button>
 
                 <button 
-                    class="action-btn"
+                    class="action-btn blava"
                     [class.active]="selectedXuxeType === 'blava'"
                     [disabled]="userXuxes['blava'] === 0"
                     (click)="selectedXuxeType = 'blava'">
@@ -117,7 +117,7 @@
                 </button>
 
                 <button 
-                    class="action-btn"
+                    class="action-btn vermella"
                     [class.active]="selectedXuxeType === 'vermella'"
                     [disabled]="userXuxes['vermella'] === 0"
                     (click)="selectedXuxeType = 'vermella'">
@@ -126,7 +126,7 @@
             </div>
 
             <button 
-                class="action-btn"
+                class="xuxe-btn"
                 (click)="giveXuxe(selectedXuxemon)"
                 [disabled]="selectedXuxemon.size === 'gran' || userXuxes[selectedXuxeType] === 0"
             >
