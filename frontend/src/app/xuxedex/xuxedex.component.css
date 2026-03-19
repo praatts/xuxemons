@@ -96,6 +96,8 @@
 
 .admin-controls {
     margin-right: 15px;
+    display: flex;
+    gap: 10px;
 }
 
 .xuxemon-filter .action-btn, .admin-controls .action-btn {
