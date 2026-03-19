@@ -22,4 +22,12 @@ export class XuxemonsService {
   addRandomXuxemon(player_id: number) {
     return this.http.post(`${this.apiUrl}/xuxedex/add-random/${player_id}`, {});
   }
+
+  addIllness(owned_id: number, illness: string) {
+    return this.http.post(`${this.apiUrl}/xuxedex/${owned_id}/illness`, { illness });
+  }
+
+  removeIllness(owned_id: number, illness: string) {
+    return this.http.delete(`${this.apiUrl}/xuxedex/${owned_id}/illness/${illness}`);
+  }
 }
