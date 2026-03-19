@@ -123,4 +123,19 @@ class XuxedexController extends Controller
 
         return response()->json(['message' => 'Malaltia eliminada correctament']);
     }
+
+    // GET /api/xuxedex/owned/{user_id}
+    public function ownedXuxemonsByUser($user_id): JsonResponse
+    {
+        $owned = OwnedXuxemon::where('user_id', $user_id)->with(['xuxemon', 'illnesses'])->get()
+        ->map(function ($owned) {
+            return [
+                'owned_xuxemon_id' => $owned->id,
+                'id' => $owned->xuxemon->id,
+                'name' => $owned->xuxemon->name,
+                'illnesses' => $owned->illnesses->pluck('illness'),
+            ];
+        });
+        return response()->json($owned);
+    }
 }

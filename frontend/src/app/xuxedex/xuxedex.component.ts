@@ -30,7 +30,7 @@ export class XuxedexComponent {
   isAdmin: boolean = false;
 
   //Variables para el modal de usuarios
-  showModal : boolean = false;
+  showModal: boolean = false;
   users: UserInterface[] = [];
   filteredUsers: UserInterface[] = [];
   loadingUserId: number | null = null;
@@ -44,12 +44,12 @@ export class XuxedexComponent {
     return this.theme.darkMode;
   }
 
-  
+
 
   ngOnInit(): void {
     this.getAllXuxemons();
     this.authService.isAdmin().subscribe((value) => {
-    this.isAdmin = value;
+      this.isAdmin = value;
     });
   }
 
@@ -57,8 +57,8 @@ export class XuxedexComponent {
     this.xuxemonsService.getUserXuxemons().subscribe({
       next: (data) => {
         this.xuxemons = data as Xuxemon[],
-        this.filteredXuxemons = this.xuxemons,
-        console.log("Xuxedex cargado: ", data);
+          this.filteredXuxemons = this.xuxemons,
+          console.log("Xuxedex cargado: ", data);
       },
       error: (err) => console.log("Error al cargar xuxedex: ", err)
     });
