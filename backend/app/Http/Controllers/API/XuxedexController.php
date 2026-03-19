@@ -103,6 +103,7 @@ class XuxedexController extends Controller
             return response()->json([
                 'error' => 'No se ha encontrado el Xuxemon con ID: ' . $owned_id
             ]);
+        }
 
         OwnedXuxemonIllness::firstOrCreate([
             'owned_xuxemon_id' => $owned->id,
