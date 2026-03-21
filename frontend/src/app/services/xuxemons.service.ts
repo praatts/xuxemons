@@ -60,4 +60,12 @@ export class XuxemonsService {
     return this.ownedXuxemonsSubject.value;
   }
 
+  addIllness(owned_id: number, illness: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/xuxedex/${owned_id}/illness`, { illness });
+  }
+
+  getOwnedXuxemonsByUser(user_id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/xuxedex/owned/${user_id}`);
+  }
+
 }
