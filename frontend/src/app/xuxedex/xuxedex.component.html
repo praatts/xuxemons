@@ -13,11 +13,13 @@
         </div>
 
         @if (isAdmin) {
-            <div class="admin-controls">
-                <button class="action-btn" (click)="openModal()">
-                    + Afegir xuxemon aleatori
-                </button>
-            </div>
+        <div class="admin-controls">
+            <button class="action-btn" (click)="openModal()">
+                + Afegir xuxemon aleatori
+            </button>
+            
+            <button class="action-btn" (click)="abrirModalEnfermedad()">+ Afegir enfermetat</button>
+        </div>
         }
     </div>
 
@@ -25,7 +27,6 @@
         @for (xuxemon of filteredXuxemons; track xuxemon.id) {
             <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)">
                 @if(!xuxemon.owned) {
-
                     <h2>???</h2>
                 } @else {
                     <h2>{{ xuxemon.name }}</h2>
@@ -37,6 +38,43 @@
         }
     </div>
 </div>
+
+@if (showIllnessModal) {
+<div class="modal-overlay" (click)="cerrarModalEnfermedad()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <h2>Afegir Enfermetat</h2>
+
+        <div class="modal-users">
+            @if (illnessUsers.length === 0) {
+            <p class="no-results">No s'han trobat usuaris</p>
+            }
+            @for (user of illnessUsers; track user.id) {
+            <div class="modal-user-card">
+                <div class="user-info">
+                    <p class="user-name">{{ user.name }}</p>
+                    <p class="user-player-id">{{ user.player_id }}</p>
+                </div>
+                <button class="action-btn"
+                    [ngClass]="{ 'success': successUserId === user.id, 'disabled': loadingUserId === user.id}"
+                    [disabled]="loadingUserId === user.id" (click)="addIllnessToUser(user.id!)">
+                    @if (loadingUserId === user.id) {
+                    Afegint...
+                    } @else if (successUserId === user.id) {
+                    ✓ Afegit!
+                    } @else {
+                    + Enfermetat
+                    }
+                </button>
+            </div>
+            }
+        </div>
+
+        <div class="modal-actions">
+            <button class="cancel-btn" (click)="cerrarModalEnfermedad()">Tancar</button>
+        </div>
+    </div>
+</div>
+}
 
 @if (showModal) {
     <div class="modal-overlay" (click)="closeModal()">

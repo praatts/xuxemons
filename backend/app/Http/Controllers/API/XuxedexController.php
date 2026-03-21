@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\OwnedXuxemon;
+use App\Models\OwnedXuxemonIllness;
 use App\Models\User;
 use App\Models\Xuxemon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Models\OwnedXuxemon;
 
 class XuxedexController extends Controller
 {
@@ -75,7 +77,7 @@ class XuxedexController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $owned = OwnedXuxemon::where('user_id', $user->id)->with('xuxemon')->get()
+        $owned = OwnedXuxemon::where('user_id', $user->id)->with(['xuxemon', 'illnesses'])->get()
             ->map(function ($owned) {
                 return [
                     'id' => $owned->xuxemon->id,
@@ -84,7 +86,8 @@ class XuxedexController extends Controller
                     'number_xuxes' => $owned->number_xuxes,
                     'size' => $owned->size,
                     'owned' => true,
-                    'type' => $owned->xuxemon->type
+                    'type' => $owned->xuxemon->type,
+                    'illnesses' => $owned->illnesses->pluck('illness'),
                 ];
             });
         return response()->json($owned);
@@ -96,16 +99,25 @@ class XuxedexController extends Controller
     {
         $request->validate([
             'illness' => 'required|in:bajon_azucar,atracon'
+        ], [
+            'illness.in' => 'La enfermedad debe ser: bajon_azucar o atracon'
         ]);
 
-        $owned = OwnedXuxemon::findOrFail($owned_id);
+        // Usamos find() en lugar de findOrFail() para controlar el error y evitar redirecciones a HTML
+        $owned = OwnedXuxemon::find($owned_id);
+
+        if (!$owned) {
+            return response()->json([
+                'error' => 'No se ha encontrado el Xuxemon con ID: ' . $owned_id
+            ]);
+        }
 
         OwnedXuxemonIllness::firstOrCreate([
             'owned_xuxemon_id' => $owned->id,
             'illness'          => $request->illness,
         ]);
 
-        return response()->json(['message' => 'Malaltia afegida correctament']);
+        return response()->json(['message' => 'Enfermedad añadida correctamente']);
     }
 
     // DELETE /api/xuxedex/{owned_id}/illness/{illness}
@@ -117,5 +129,20 @@ class XuxedexController extends Controller
             ->delete();
 
         return response()->json(['message' => 'Malaltia eliminada correctament']);
+    }
+
+    // GET /api/xuxedex/owned/{user_id}
+    public function ownedXuxemonsByUser($user_id): JsonResponse
+    {
+        $owned = OwnedXuxemon::where('user_id', $user_id)->with(['xuxemon', 'illnesses'])->get()
+        ->map(function ($owned) {
+            return [
+                'owned_xuxemon_id' => $owned->id,
+                'id' => $owned->xuxemon->id,
+                'name' => $owned->xuxemon->name,
+                'illnesses' => $owned->illnesses->pluck('illness'),
+            ];
+        });
+        return response()->json($owned);
     }
 }

@@ -5,4 +5,6 @@ export interface Xuxemon {
     size: string,
     xuxes: number,
     owned: boolean
+    owned_xuxemon_id?: number,
+    illnesses?: string[]
 }
