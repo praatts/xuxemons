@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('owned_xuxemon_illnesses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('owned_xuxemon_id')->constrained('owned_xuxemons')->onDelete('cascade');
-            $table->enum('illness', ['bajon_azucar', 'atracon']);
+            $table->foreignId('illness_id')->constrained('illnesses')->onDelete('cascade');
             $table->timestamps();
-
-            $table->unique(['owned_xuxemon_id', 'illness']); // no duplicats
+            $table->unique(['owned_xuxemon_id', 'illness']);
         });
     }
 

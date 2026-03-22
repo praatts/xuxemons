@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('illnesses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('stackable');
-            $table->integer('max_capacity')->default(1);
-            $table->foreignId('illness_id')->nullable()->constrained('illnesses')->nullOnDelete()
+            $table->integer('infection_percentage')->default(0);
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('illnesses');
     }
 };
