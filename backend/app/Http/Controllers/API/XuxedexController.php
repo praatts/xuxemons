@@ -80,6 +80,7 @@ class XuxedexController extends Controller
         $owned = OwnedXuxemon::where('user_id', $user->id)->with(['xuxemon', 'illnesses'])->get()
             ->map(function ($owned) {
                 return [
+                    'owned_xuxemon_id' => $owned->id,
                     'id' => $owned->xuxemon->id,
                     'name' => $owned->xuxemon->name,
                     'xuxemon_id' => $owned->xuxemon_id,
@@ -87,7 +88,7 @@ class XuxedexController extends Controller
                     'size' => $owned->size,
                     'owned' => true,
                     'type' => $owned->xuxemon->type,
-                    'illnesses' => $owned->illnesses->pluck('illness'),
+                    'illnesses' => $owned->illnesses,
                 ];
             });
         return response()->json($owned);
@@ -140,7 +141,7 @@ class XuxedexController extends Controller
                 'owned_xuxemon_id' => $owned->id,
                 'id' => $owned->xuxemon->id,
                 'name' => $owned->xuxemon->name,
-                'illnesses' => $owned->illnesses->pluck('illness'),
+                'illnesses' => $owned->illnesses,
             ];
         });
         return response()->json($owned);
