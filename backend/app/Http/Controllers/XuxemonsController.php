@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\API\inventoryController;
@@ -31,31 +32,28 @@ class XuxemonsController extends Controller
 
         if (!isset($map[$request->type])) {
             return response()->json([
-                'message' => 'Tipus de xuxe no vàlid'
+                'message' => 'Tipus de xuxe no vàlida'
             ], 400);
         }
 
-        $itemName = $map[$request->type];
+        //Buscar item
 
-        //buscar item
-        $item = Item::where('name', $itemName)->first();
+        $item = Item::where('name' , $map[$request->type])->first();
 
         if(!$item){
             return response()->json([
                 'message' => 'Item no trobat'
-            ], 400);
+            ], 404);
         }
 
-        //inventario
         $inventory = Inventory::where('user_id', $user->id)->where('item_id', $item->id)->first();
 
         if (!$inventory || $inventory->quantity <= 0) {
             return response()->json([
-                'message' => "No tens $itemName"
+                'message' => "No tens ninguna {$map[$request->type]}"
             ], 400);
         }
 
-        //xuxemon del user
         $owned = OwnedXuxemon::where('id', $ownedId)->where('user_id', $user->id)->firstOrFail();
 
         //restar del inventario
@@ -65,16 +63,20 @@ class XuxemonsController extends Controller
         //sumar progreso
         $owned->number_xuxes += 1;
 
+        $littleToMid = (int) Setting::where('key','little_to_mid')->value('value');
+        $midToBig = (int) Setting::where('key','mid_to_big')->value('value');
+
         //evolución
-        if ($owned->size === 'petit' && $owned->number_xuxes >= 3) {
+        if ($owned->size === 'petit' && $owned->number_xuxes >= $littleToMid) {
             $owned->size = 'mitja';
-            $owned->number_xuxes -= 3;
-        } elseif ($owned->size === 'mitja' && $owned->number_xuxes >= 5) {
+            $owned->number_xuxes -= $littleToMid;
+        } elseif ($owned->size === 'mitja' && $owned->number_xuxes >= $midToBig) {
             $owned->size = 'gran';
-            $owned->number_xuxes -= 5;
+            $owned->number_xuxes -= $midToBig;
         }
 
         $owned->save();
+
         return response()->json([
             'xuxes' => $owned->number_xuxes,
             'size' => $owned->size
