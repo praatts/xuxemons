@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\InventoryController;
@@ -43,6 +44,8 @@ Route::middleware([JwtMiddleware::class])->group(function () {
         Route::post('/xuxedex/{owned_id}/illness', [XuxedexController::class, 'addIllness']);
         Route::delete('/xuxedex/{owned_id}/illness/{illness}', [XuxedexController::class, 'removeIllness']);
         Route::get('/xuxedex/owned/{user_id}', [XuxedexController::class, 'ownedXuxemonsByUser']); //ver los owned xuxemons de cada usuario
+        Route::get('/settings', [SettingsController::class,'index']);
+        Route::put('/settings/{key}', [SettingsController::class,'update']);
     });
 
     Route::put('/update', [UserController::class, 'updateUser']);
