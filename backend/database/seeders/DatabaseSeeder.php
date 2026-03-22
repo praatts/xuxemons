@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            IllnessSeeder::class,
             ItemsSeeder::class,
             XuxemonsSeeder::class,
             SettingsSeeder::class,

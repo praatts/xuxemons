@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('owned_xuxemon_id')->constrained('owned_xuxemons')->onDelete('cascade');
             $table->foreignId('illness_id')->constrained('illnesses')->onDelete('cascade');
             $table->timestamps();
-            $table->unique(['owned_xuxemon_id', 'illness']);
+            $table->unique(['owned_xuxemon_id', 'illness_id']);
         });
     }
 

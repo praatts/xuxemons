@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('illnesses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('description')->nullable();
             $table->integer('infection_percentage')->default(0);
         });
     }

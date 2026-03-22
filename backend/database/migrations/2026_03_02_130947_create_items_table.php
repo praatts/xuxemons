@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('stackable');
             $table->integer('max_capacity')->default(1);
-            $table->foreignId('illness_id')->nullable()->constrained('illnesses')->nullOnDelete()
+            $table->foreignId('illness_id')->nullable()->constrained('illnesses')->nullOnDelete();
         });
     }
 
