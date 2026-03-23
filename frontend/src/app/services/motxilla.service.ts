@@ -25,7 +25,7 @@ export class MotxillaService {
   }
 
   giveItemToUser(user_id: number, item_id: number, quantity: number) {
-    return this.http.post(`${this.apiUrl}/inventory/add-xuxes/${user_id}`, {
+    return this.http.post(`${this.apiUrl}/inventory/add-item/${user_id}`, {
       item_id: item_id,
       quantity: quantity
     });

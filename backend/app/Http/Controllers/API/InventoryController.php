@@ -38,17 +38,20 @@ class InventoryController extends Controller
     }
 
     /**
-     * POST /api/inventory/add-xuxes/{user}
+     * POST /api/inventory/add-item/{user_id}
      * Añade objetos al inventario de un usuario
      */
-    public function addXuxes(Request $request, User $user)
+    public function addItem(Request $request, User $user)
     {
+
+    try {
 
         $authUser = Auth::guard('api')->user();
 
         if (!$authUser || $authUser->role !== 'admin') {
             return response()->json(['error' => 'No autorizado'], 403);
         }
+
         $request->validate([
             'item_id' => 'required|integer|exists:items,id',
             'quantity' => 'sometimes|integer|min:1'
@@ -56,33 +59,19 @@ class InventoryController extends Controller
 
         $item = Item::findOrFail($request->item_id);
         $quantity = $request->input('quantity', 1);
-
-        if (!$item->stackable) {
-            return response()->json([
-                'error' => 'Objeto no apilable'
-            ], 403);
-        }
-
         $availableSlots = $user->getAvailableSlots();
-        $maxQuantity = $availableSlots * $item->max_capacity;
-        $finalQuantity = min($quantity, $maxQuantity);
-
-        $remaining = $quantity - $finalQuantity;
-
-        //Arreglar
-        if ($finalQuantity < $quantity) {
-            return response()->json([
-                'error' => "Solo se han podido añadir {$finalQuantity} items debido a la capacidad del inventario, los {$remaining} restantes no se han descartado",
-            ], 403);
-        }
 
         if ($availableSlots == 0) {
             return response()->json([
-                'error' => 'El inventario del usuario está lleno, no se ha podido añadir los items al inventario',
-            ], 404);
+                'error' => 'El inventario del usuario está lleno',
+            ], 403);
         }
 
-        if ($finalQuantity > 0) {
+        if ($item->stackable) {
+            $maxQuantity = $availableSlots * $item->max_capacity;
+            $finalQuantity = min($quantity, $maxQuantity);
+            $remaining = $quantity - $finalQuantity;
+
             $slot = Inventory::firstOrNew([
                 'user_id' => $user->id,
                 'item_id' => $item->id,
@@ -90,12 +79,44 @@ class InventoryController extends Controller
 
             $slot->quantity += $finalQuantity;
             $slot->save();
-        }
 
+            if ($finalQuantity < $quantity) {
+                return response()->json([
+                    'message' => "Solo se han podido añadir {$finalQuantity} items, los {$remaining} restantes no se han añadido",
+                    'added' => $finalQuantity,
+                ]);
+            }
+
+            return response()->json([
+                'message' => "Se han añadido {$finalQuantity} correctamente",
+                'added' => $finalQuantity,
+            ]);
+        } else {
+            if ($availableSlots < $quantity) {
+                return response()->json([
+                    'error' => "Solo hay {$availableSlots} slots disponibles",
+                ], 403);
+            }
+
+            for ($i = 0; $i < $quantity; $i++) {
+                Inventory::create([
+                    'user_id' => $user->id,
+                    'item_id' => $item->id,
+                    'quantity' => 1,
+                ]);
+            }
+
+            return response()->json([
+                'message' => "Se han añadido {$quantity} correctamente",
+                'added' => $quantity,
+            ]);
+        }
+    } catch (Exception $e) {
         return response()->json([
-            'message' => "Se han añadido {$finalQuantity} correctamente",
-            'added' => $finalQuantity,
-        ]);
+            'error'=> $e->getMessage(),
+            ],500);
+    }
+
     }
 
     /**
@@ -151,14 +172,14 @@ class InventoryController extends Controller
             $slotEvolucionado->increment('quantity');
         } else {
             Inventory::create([
-                'user_id'  => $user->id,
-                'xuxe_id'  => $evolvedXuxemon->id,
+                'user_id' => $user->id,
+                'xuxe_id' => $evolvedXuxemon->id,
                 'quantity' => 1,
             ]);
         }
 
         return response()->json([
-            'message'      => 'Evolució completada!',
+            'message' => 'Evolució completada!',
             'evolved_into' => $evolvedXuxemon,
         ]);
     }
@@ -212,7 +233,7 @@ class InventoryController extends Controller
         if ($user->role !== 'admin') {
             return response()->json(['error' => 'No autorizado'], 403);
         }
-        
+
         $items = Item::all();
         return response()->json($items);
     }

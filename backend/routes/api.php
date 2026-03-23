@@ -57,7 +57,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     //MOTXILLA
-    Route::post('/inventory/add-xuxes/{user}', [InventoryController::class, 'addXuxes']);
+    Route::post('/inventory/add-item/{user}', [InventoryController::class, 'addItem']);
     Route::get('/inventory/users', [InventoryController::class, 'index']);
     Route::post('/inventory/{slot_id}/evolve', [InventoryController::class, 'evolve']);
     Route::get('/inventory/slots/{user}', [InventoryController::class, 'getAvailableSlots']);
