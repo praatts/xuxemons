@@ -33,9 +33,9 @@ export class XuxemonsService {
   }
 
   //método para dar xuxes
-  giveXuxe(id: number, type: string) {
-    return this.http.post(`${this.apiUrl}/xuxemons/${id}/xuxe`, {type});
-  }
+  giveXuxe(owned_xuxemon_id: number, type: string) {
+    return this.http.post(`${this.apiUrl}/xuxemons/${owned_xuxemon_id}/xuxe`, { type });
+}
 
   setUserXuxemons(xuxemons: Xuxemon[]): void {
     this.xuxemons = xuxemons;

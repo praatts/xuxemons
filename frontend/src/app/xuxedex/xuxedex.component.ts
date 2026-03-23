@@ -200,17 +200,18 @@ export class XuxedexComponent {
 
     const oldSize = xuxemon.size;
 
-    this.xuxemonsService.giveXuxe(xuxemon.id, this.selectedXuxeType).subscribe({
+    this.xuxemonsService.giveXuxe(xuxemon.owned_xuxemon_id!, this.selectedXuxeType).subscribe({
       next: (updated: any) => {
+        const mapped = {
+          ...updated,
+          xuxes: updated.xuxes,
+        };
 
-        xuxemon.xuxes = updated.number_xuxes;
-
-        Object.assign(xuxemon, updated);
-        this.selectedXuxemon = { ...xuxemon };
-
+        Object.assign(xuxemon, mapped);
+        this.selectedXuxemon = xuxemon;
         this.userXuxes[this.selectedXuxeType]--;
 
-        if (oldSize !== updated.size) {
+        if (oldSize !== xuxemon.size) {
           alert('El xuxemon ha evolucionat!');
         }
       },
