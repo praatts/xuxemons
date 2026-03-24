@@ -140,7 +140,6 @@ class XuxemonsController extends Controller
     {
 
         try {
-
             $user = Auth::guard('api')->user();
 
             $request->validate([

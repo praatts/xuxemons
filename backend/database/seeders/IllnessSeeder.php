@@ -14,9 +14,9 @@ class IllnessSeeder extends Seeder
     public function run(): void
     {
         $illnesses = [
-            ['name' => 'Bajón de azúcar', 'description' => 'Requereix +2 xuxes per nivell per créixer', 'infection_percentage' => 5],
-            ['name' => 'Sobredosis de sucre', 'description' => '', 'infection_percentage' => 10],
-            ['name' => 'Atracón', 'description' => 'El xuxemon no pot alimentar-se', 'infection_percentage' => 15],
+            ['key' => 'bajon_azucar', 'name' => 'Bajón de azúcar', 'description' => 'Requereix +2 xuxes per nivell per créixer', 'infection_percentage' => 5],
+            ['key' => 'sobredosis_azucar','name' => 'Sobredosis de sucre', 'description' => '', 'infection_percentage' => 10],
+            ['key' => 'atracon', 'name' => 'Atracón', 'description' => 'El xuxemon no pot alimentar-se', 'infection_percentage' => 15],
         ];
 
         foreach ($illnesses as $i) {

@@ -49,7 +49,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
         Route::put('/settings/update', [SettingsController::class, 'update']);
 
         Route::get('/illnesses', [IllnessController::class, 'index']);
-        Route::put('/illnesses/{id}', [IllnessController::class, 'update']);
+        Route::put('/illnesses/update', [IllnessController::class, 'update']);
     });
 
     Route::put('/update', [UserController::class, 'updateUser']);

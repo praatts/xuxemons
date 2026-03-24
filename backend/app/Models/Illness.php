@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Illness extends Model
 {
-    protected $fillable = ['name', 'description', 'infection_percentage'];
+    protected $fillable = ['key', 'name', 'description', 'infection_percentage'];
     public $timestamps = false;
 }

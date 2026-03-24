@@ -1,0 +1,499 @@
+{
+  "info": {
+    "_postman_id": "9346d47c-51a8-497a-94bd-6c9282dbab74",
+    "name": "XUXEMONS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51970352",
+    "_collection_link": "https://go.postman.co/collection/51970352-9346d47c-51a8-497a-94bd-6c9282dbab74?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Generar Token",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"admin@xuxemons.com\",\r\n    \"password\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzcxOTU4MTgwLCJleHAiOjE3NzE5NjE3ODAsIm5iZiI6MTc3MTk1ODE4MCwianRpIjoiZVdWQmhjNVlkU3lnSUtkMyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.JXcnF8JQTErg1gedvs6Fp-yP23D3iVnmVIcZ9iyrkNM",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8000/api/logout",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "logout"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Revisar headers",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzcxOTU4MTgwLCJleHAiOjE3NzE5NjE3ODAsIm5iZiI6MTc3MTk1ODE4MCwianRpIjoiZVdWQmhjNVlkU3lnSUtkMyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.JXcnF8JQTErg1gedvs6Fp-yP23D3iVnmVIcZ9iyrkNM",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8000/api/check-headers",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "check-headers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET AvailableSlots",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "POST item to user",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"item_id\": \"3\",\r\n    \"quantity\": \"60\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/inventory/add-item/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "inventory",
+            "add-item",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "USER INVENTORY",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzc0MTkxNTUxLCJleHAiOjE3NzQxOTUxNTEsIm5iZiI6MTc3NDE5MTU1MSwianRpIjoiYlU2SzR1alVJTlU0VjZHQyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.degi8U-kdPKpUH3ZLkmw5ObiWgqrG_Q1R_C5wuurkyw",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"admin@xuxemons.com\",\r\n    \"password\": \"1234567\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/inventory",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "inventory"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET All Xuxemons",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzczMjQ1NjM0LCJleHAiOjE3NzMyNDkyMzQsIm5iZiI6MTc3MzI0NTYzNCwianRpIjoib0FMdHFVMElBNG5WUUxmRCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.sPhpk4i9wVu2_jYPpghbZyGHLr13ItEWHa3DfrX2WVw",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"a@gmail.com\",\r\n    \"password\": \"123456\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/xuxedex/all",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "xuxedex",
+            "all"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Random Xuxemon",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzc0Mzc5NTQ0LCJleHAiOjE3NzQzODMxNDQsIm5iZiI6MTc3NDM3OTU0NCwianRpIjoiVjJnWVFsa1VvUHdpbkNNOSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.P4ybCZcXz2Goq7qQpkmv0gfKljrQBGF0TwjHkDIJDDw",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8000/api/xuxedex/add-random/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "xuxedex",
+            "add-random",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Auth User Xuxedex",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzc0Mzc5NTQ0LCJleHAiOjE3NzQzODMxNDQsIm5iZiI6MTc3NDM3OTU0NCwianRpIjoiVjJnWVFsa1VvUHdpbkNNOSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.P4ybCZcXz2Goq7qQpkmv0gfKljrQBGF0TwjHkDIJDDw",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8000/api/xuxedex/owned",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "xuxedex",
+            "owned"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Items",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"a@gmail.com\",\r\n    \"password\": \"123456\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/inventory/items",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "inventory",
+            "items"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Settings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzc0MTgxMzYyLCJleHAiOjE3NzQxODQ5NjIsIm5iZiI6MTc3NDE4MTM2MiwianRpIjoiNkpMckI0NGV5eUpiV1FqSyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qG5bigIyDUVpm6Oe82TEynuBNbpbzEwfNu41LNg0aGA",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8000/api/settings",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "settings"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update setting",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzc0MzcwMjI2LCJleHAiOjE3NzQzNzM4MjYsIm5iZiI6MTc3NDM3MDIyNiwianRpIjoiMDBCNEFxcG1tOE1uSjdrSyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qkth1CZDjdBQkR_IAgbgmBSgFJkwkxgNSU4yk9mmjpk",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"little_to_mid\": \"5\",\n    \"mid_to_big\": \"10\",\n    \"infection_rate\": \"15\",\n    \"daily_xuxes_time\": \"10:00\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/settings/update",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "settings",
+            "update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Donar Xuxe",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzc0Mzc5NTQ0LCJleHAiOjE3NzQzODMxNDQsIm5iZiI6MTc3NDM3OTU0NCwianRpIjoiVjJnWVFsa1VvUHdpbkNNOSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.P4ybCZcXz2Goq7qQpkmv0gfKljrQBGF0TwjHkDIJDDw",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"type\": \"blava\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/xuxemons/1/xuxe",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "xuxemons",
+            "1",
+            "xuxe"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Donar Vacuna",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzc0Mzc5NTQ0LCJleHAiOjE3NzQzODMxNDQsIm5iZiI6MTc3NDM3OTU0NCwianRpIjoiVjJnWVFsa1VvUHdpbkNNOSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.P4ybCZcXz2Goq7qQpkmv0gfKljrQBGF0TwjHkDIJDDw",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"item_id\": \"6\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/xuxemons/1/vaccinate",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "xuxemons",
+            "1",
+            "vaccinate"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Malalties",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzc0MTkxNTUxLCJleHAiOjE3NzQxOTUxNTEsIm5iZiI6MTc3NDE5MTU1MSwianRpIjoiYlU2SzR1alVJTlU0VjZHQyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.degi8U-kdPKpUH3ZLkmw5ObiWgqrG_Q1R_C5wuurkyw",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8000/api/illnesses",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "illnesses"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Editar % malalties",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzc0Mzc5NTQ0LCJleHAiOjE3NzQzODMxNDQsIm5iZiI6MTc3NDM3OTU0NCwianRpIjoiVjJnWVFsa1VvUHdpbkNNOSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.P4ybCZcXz2Goq7qQpkmv0gfKljrQBGF0TwjHkDIJDDw",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"bajon_azucar\": 99,\n    \"sobredosis_azucar\": 94,\n    \"atracon\": 99\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/illnesses/update",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "illnesses",
+            "update"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

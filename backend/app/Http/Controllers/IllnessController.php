@@ -10,7 +10,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class IllnessController extends Controller
 {
-    public function index() : JsonResponse {
+    public function index(): JsonResponse
+    {
         $user = Auth::guard('api')->user();
 
         if (!$user || $user->role !== 'admin') {
@@ -20,35 +21,29 @@ class IllnessController extends Controller
         return response()->json(Illness::all());
     }
 
-    public function update(Request $request, $id) : JsonResponse {
+    public function update(Request $request): JsonResponse
+    {
         $user = Auth::guard('api')->user();
 
         if (!$user || $user->role !== 'admin') {
             return response()->json(['error' => 'No autorizado'], 403);
         }
 
-        $request->validate([
-            'percentage' => 'required|integer|min:0|max:100'
-            ]);
+        $illnesses = Illness::all();
 
-        $illness = Illness::find($id);
+        foreach ($illnesses as $illness) {
+            $value = $request->input($illness->key);
+            if ($value === '' || $value === null) {
+                continue;
+            }
 
-        if (!$illness) {
-            return response()->json(['error'=> 'Enfermedad no encontrada'],404);
+            $illness->infection_percentage = $value;
+            $illness->save();
         }
 
-        $old_percentage = $illness->infection_percentage;
-
-        $illness->infection_percentage = $request->percentage;
-        $new_percentage = $request->percentage;
-        $illness->save();
-
         return response()->json([
-            'message' => "Percentatge de {$illness->name} actualitzat correctament",
-            'change' => "{$old_percentage}% ha canviat a {$new_percentage}%",
+            'message' => 'Percentatges actualitzats correctament',
+            'illnesses' => $illnesses->fresh()
         ]);
-
-
     }
-
 }
