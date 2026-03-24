@@ -36,19 +36,16 @@ export class AdminSettingsComponent {
   }
 
   loadSettings() {
-  this.settingsService.getSettings().subscribe((data) => {
+    this.settingsService.getSettings().subscribe((data) => {
     const mapped: Record<string, string> = {};
-
     data.forEach(setting => {
       mapped[setting.key] = setting.value;
     });
-
-    this.settingsForm.patchValue({
-      littleToMiddle: Number(mapped['little_to_mid']),
-      middleToBig: Number(mapped['mid_to_big']),
-      daylyXuxesQuantity: Number(mapped['daily_xuxes_quantity']),
-      dailyXuxesTime: mapped['daily_xuxes_time']
-    });
+    
+    this.settingsForm.get('littleToMiddle')?.setValue(Number(mapped['little_to_mid']));
+    this.settingsForm.get('middleToBig')?.setValue(Number(mapped['mid_to_big']));
+    this.settingsForm.get('daylyXuxesQuantity')?.setValue(Number(mapped['daily_xuxes_quantity']));
+    this.settingsForm.get('dailyXuxesTime')?.setValue(mapped['daily_xuxes_time']);
   });
 }
 
