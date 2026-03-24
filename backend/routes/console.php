@@ -12,3 +12,7 @@ Artisan::command('inspire', function () {
 Schedule::command('xuxes:daily')->dailyAt(
     rescue(fn() => Setting::where('key', 'daily_xuxes_time')->value('value') ?? '08:00', '08:00')
 );
+
+Schedule::command('xuxemons:daily')->dailyAt(
+    rescue(fn() => Setting::where('key', 'daily_xuxemons_time')->value('value') ?? '08:00', '08:00')
+);
