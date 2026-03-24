@@ -25,7 +25,7 @@ export class AdminSettingsComponent {
       littleToMiddle: new FormControl('', [Validators.min(3), Validators.max(10)]),
       middleToBig: new FormControl('', [Validators.min(5), Validators.max(15)]),
       daylyXuxesQuantity: new FormControl('', [Validators.min(5), Validators.max(20)]),
-      dailyXuxesTime: new FormControl('',)
+      dailyXuxesTime: new FormControl('', [this.timeFormatValidator, this.minTime('08:00'), this.maxTime('18:30')])
     });
   }
 
@@ -38,9 +38,11 @@ export class AdminSettingsComponent {
     const errors = control.errors;
 
     if (errors['required']) return 'Este campo es obligatorio';
-    if (errors['time']) return 'Formato de email no válido';
-    if (errors['max']) return 'El email introducido ya está en uso';
+    if (errors['timeFormat']) return 'Formato de hora no válido (HH:mm)';
+    if (errors['minTime']) return `La hora mínima es ${errors['minTime'].min}`;
+    if (errors['maxTime']) return `La hora máxima es ${errors['maxTime'].max}`;
     if (errors['min']) return `El valor mínimo es ${errors['min'].min}`;
+    if (errors['max']) return `El valor máximo es ${errors['max'].max}`;
 
     return 'Error de validación';
   }
@@ -66,8 +68,10 @@ export class AdminSettingsComponent {
 
   minTime(minTime: string) {
     return (control: any) => {
-      if (!control.value) return null;
-
+      if (!control.value || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(control.value)) {
+        return null;
+      }
+      
       const value = this.timeToMinutes(control.value);
       const min = this.timeToMinutes(minTime);
 
@@ -79,7 +83,9 @@ export class AdminSettingsComponent {
 
   maxTime(maxTime: string) {
     return (control: any) => {
-      if (!control.value) return null;
+      if (!control.value || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(control.value)) {
+        return null;
+      }
 
       const value = this.timeToMinutes(control.value);
       const max = this.timeToMinutes(maxTime);
