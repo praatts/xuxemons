@@ -9,5 +9,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-$time = Setting::where('key', 'daily_xuxes_time')->value('value') ?? '08:00';
-Schedule::command('xuxes:daily')->dailyAt($time);
+Schedule::command('xuxes:daily')->dailyAt(
+    rescue(fn() => Setting::where('key', 'daily_xuxes_time')->value('value') ?? '08:00', '08:00')
+);
