@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { SettingsService } from '../services/settings.service';
 
@@ -15,6 +15,8 @@ export class AdminSettingsComponent {
   msg = '';
   showDeleteDialog = false;
 
+  private timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
   little_to_midValue = '';
   mid_to_bigValue = '';
   daily_xuxes_quantityValue = '';
@@ -25,7 +27,49 @@ export class AdminSettingsComponent {
       littleToMiddle: new FormControl('', [Validators.min(3), Validators.max(10)]),
       middleToBig: new FormControl('', [Validators.min(5), Validators.max(15)]),
       daylyXuxesQuantity: new FormControl('', [Validators.min(5), Validators.max(20)]),
-      dailyXuxesTime: new FormControl('', [this.timeFormatValidator, this.minTime('08:00'), this.maxTime('18:30')])
+      dailyXuxesTime: new FormControl('', [this.timeFormatValidator(), this.minTime('08:00'), this.maxTime('18:30')])
+    });
+  }
+
+  ngOnInit() {
+    this.loadSettings();
+  }
+
+  loadSettings() {
+  this.settingsService.getSettings().subscribe((data) => {
+    const mapped: Record<string, string> = {};
+
+    data.forEach(setting => {
+      mapped[setting.key] = setting.value;
+    });
+
+    this.settingsForm.patchValue({
+      littleToMiddle: Number(mapped['little_to_mid']),
+      middleToBig: Number(mapped['mid_to_big']),
+      daylyXuxesQuantity: Number(mapped['daily_xuxes_quantity']),
+      dailyXuxesTime: mapped['daily_xuxes_time']
+    });
+  });
+}
+
+  saveSettings() {
+    if (this.settingsForm.invalid) {
+      this.settingsForm.markAllAsTouched();
+      return;
+    }
+
+    const form = this.settingsForm.value;
+
+    const payload = {
+      little_to_mid: form.littleToMiddle,
+      mid_to_big: form.middleToBig,
+      daily_xuxes_quantity: form.daylyXuxesQuantity,
+      daily_xuxes_time: form.dailyXuxesTime
+    };
+
+    this.settingsService.updateSettings(payload).subscribe({
+      next: () => this.msg = 'Settings actualizados correctamente',
+      error: () => this.msg = 'Error al actualizar settings'
     });
   }
 
@@ -55,7 +99,7 @@ export class AdminSettingsComponent {
   }
 
   timeFormatValidator() {
-    const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+    const regex = this.timeRegex;
 
     return (control: any) => {
       if (!control.value) return null;
@@ -68,7 +112,7 @@ export class AdminSettingsComponent {
 
   minTime(minTime: string) {
     return (control: any) => {
-      if (!control.value || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(control.value)) {
+      if (!control.value || !this.timeRegex.test(control.value)) {
         return null;
       }
       
@@ -83,7 +127,7 @@ export class AdminSettingsComponent {
 
   maxTime(maxTime: string) {
     return (control: any) => {
-      if (!control.value || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(control.value)) {
+      if (!control.value || !this.timeRegex.test(control.value)) {
         return null;
       }
 
