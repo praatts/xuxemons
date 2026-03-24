@@ -5,7 +5,7 @@ import { SettingsService } from '../services/settings.service';
 @Component({
   selector: 'app-admin-settings',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './admin-settings.component.html',
   styleUrl: './admin-settings.component.css'
 })
