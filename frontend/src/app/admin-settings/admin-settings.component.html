@@ -1,0 +1,67 @@
+<form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="settings-form">
+
+  <!-- Little to Middle -->
+  <div class="form-group">
+    <label for="littleToMiddle">Pequeño a Mediano:</label>
+    <input
+      id="littleToMiddle"
+      type="number"
+      formControlName="littleToMiddle"
+      placeholder="Introduce un valor entre 3 y 10"
+    />
+    <div class="error" *ngIf="settingsForm.get('littleToMiddle')?.touched">
+      {{ getErrorMessage('littleToMiddle') }}
+    </div>
+  </div>
+
+  <!-- Middle to Big -->
+  <div class="form-group">
+    <label for="middleToBig">Mediano a Grande:</label>
+    <input
+      id="middleToBig"
+      type="number"
+      formControlName="middleToBig"
+      placeholder="Introduce un valor entre 5 y 15"
+    />
+    <div class="error" *ngIf="settingsForm.get('middleToBig')?.touched">
+      {{ getErrorMessage('middleToBig') }}
+    </div>
+  </div>
+
+  <!-- Daily Xuxes Quantity -->
+  <div class="form-group">
+    <label for="daylyXuxesQuantity">Cantidad diaria de Xuxes:</label>
+    <input
+      id="daylyXuxesQuantity"
+      type="number"
+      formControlName="daylyXuxesQuantity"
+      placeholder="Introduce un valor entre 5 y 20"
+    />
+    <div class="error" *ngIf="settingsForm.get('daylyXuxesQuantity')?.touched">
+      {{ getErrorMessage('daylyXuxesQuantity') }}
+    </div>
+  </div>
+
+  <!-- Daily Xuxes Time -->
+  <div class="form-group">
+    <label for="dailyXuxesTime">Hora diaria de Xuxes (HH:mm):</label>
+    <input
+      id="dailyXuxesTime"
+      type="text"
+      formControlName="dailyXuxesTime"
+      placeholder="08:00 - 18:30"
+    />
+    <div class="error" *ngIf="settingsForm.get('dailyXuxesTime')?.touched">
+      {{ getErrorMessage('dailyXuxesTime') }}
+    </div>
+  </div>
+
+  <!-- Mensaje de éxito o error -->
+  <div *ngIf="msg" class="msg">
+    {{ msg }}
+  </div>
+
+  <!-- Botón de Guardar -->
+  <button type="submit" [disabled]="settingsForm.invalid">Guardar Configuración</button>
+
+</form>
