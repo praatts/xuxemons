@@ -10,6 +10,7 @@ import { UserStatsComponent } from './user-stats/user-stats.component';
 import { MotxillaComponent } from './motxilla/motxilla.component';
 import { UserAdminComponent } from './user-admin/user-admin.component';
 import { adminGuardGuard } from './guards/admin-guard.guard';
+import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
 
 
 export const routes: Routes = [
@@ -52,6 +53,12 @@ export const routes: Routes = [
                                 path: 'useradmin',
                                 title: 'user_admin',
                                 component: UserAdminComponent,
+                                canActivate: [authGuard, adminGuardGuard]
+                            },
+                            {
+                                path: 'adminsettings',
+                                title: 'admin-settings',
+                                component: AdminSettingsComponent,
                                 canActivate: [authGuard, adminGuardGuard]
                             }
                         ]
