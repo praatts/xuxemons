@@ -27,7 +27,7 @@ class SettingsController extends Controller
      * Actualiza un setting específico según su 'key' (API endpoint)
      */
 
-    public function update(Request $request, $key)
+    public function update(Request $request)
     {
         $user = Auth::guard('api')->user();
 
@@ -35,25 +35,22 @@ class SettingsController extends Controller
             return response()->json(['error' => 'No autorizado'], 403);
         }
 
-        $request->validate([
-            'value' => 'required',
-        ]);
+        $settings = Setting::all();
 
-        $setting = Setting::where('key', $key)->first();
+        foreach ($settings as $setting) {
+            $value = $request->input($setting->key);
 
-        if (!$setting) {
-            return response()->json(
-                ['error' => 'No existe ninguna configuracion con esta clave'],
-                404
-            );
+            if ($value === '' || $value == null) {
+                continue;
+            }
+
+            $setting->value = $value;
+            $setting->save();
         }
 
-        $setting->value = $request->input('value');
-        $setting->save();
-
         return response()->json([
-            'message' => 'Configuración actualizada correctamente',
-            'updated_setting' => $setting
+            'message' => 'Configuraciones actualizada correctamente',
+            'updated_setting' => $settings->fresh()
         ]);
     }
 }

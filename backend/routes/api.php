@@ -46,7 +46,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
         Route::delete('/xuxedex/{owned_id}/illness/{illness}', [XuxedexController::class, 'removeIllness']);
         Route::get('/xuxedex/owned/{user_id}', [XuxedexController::class, 'ownedXuxemonsByUser']); //ver los owned xuxemons de cada usuario
         Route::get('/settings', [SettingsController::class,'index']);
-        Route::put('/settings/{key}', [SettingsController::class,'update']);
+        Route::put('/settings/update', [SettingsController::class, 'update']);
 
         Route::get('/illnesses', [IllnessController::class, 'index']);
         Route::put('/illnesses/{id}', [IllnessController::class, 'update']);
