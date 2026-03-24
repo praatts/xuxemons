@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { SettingsService } from '../services/settings.service';
 
 @Component({
@@ -17,17 +17,13 @@ export class AdminSettingsComponent {
 
   private timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
-  little_to_midValue = '';
-  mid_to_bigValue = '';
-  daily_xuxes_quantityValue = '';
-  daily_xuxes_timeValue = '';
-
   constructor(private settingsService: SettingsService) {
     this.settingsForm = new FormGroup({
       littleToMiddle: new FormControl('', [Validators.min(3), Validators.max(10)]),
       middleToBig: new FormControl('', [Validators.min(5), Validators.max(15)]),
       daylyXuxesQuantity: new FormControl('', [Validators.min(5), Validators.max(20)]),
-      dailyXuxesTime: new FormControl('', [this.timeFormatValidator(), this.minTime('08:00'), this.maxTime('18:30')])
+      dailyXuxesTime: new FormControl('', [Validators.required, this.timeFormatValidator(), this.minTime('08:00'), this.maxTime('18:30')]),
+      dailyXuxemonTime: new FormControl('', [Validators.required, this.timeFormatValidator(), this.minTime('08:00'), this.maxTime('18:30')])
     });
   }
 
@@ -37,17 +33,32 @@ export class AdminSettingsComponent {
 
   loadSettings() {
     this.settingsService.getSettings().subscribe((data) => {
-    const mapped: Record<string, string> = {};
-    data.forEach(setting => {
-      mapped[setting.key] = setting.value;
+      const mapped = data.map(setting => ({
+        key: setting.key,
+        value: setting.value
+      }));
+
+      mapped.forEach(setting => {
+        switch (setting.key) {
+          case 'little_to_mid':
+            this.settingsForm.get('littleToMiddle')?.setValue(setting.value);
+            break;
+          case 'mid_to_big':
+            this.settingsForm.get('middleToBig')?.setValue(setting.value);
+            break;
+          case 'daily_xuxes_quantity':
+            this.settingsForm.get('daylyXuxesQuantity')?.setValue(setting.value);
+            break;
+          case 'daily_xuxes_time':
+            this.settingsForm.get('dailyXuxesTime')?.setValue(setting.value);
+            break;
+          case 'daily_xuxemon_time':
+            this.settingsForm.get('dailyXuxemonTime')?.setValue(setting.value);
+            break;
+        }
+      });
     });
-    
-    this.settingsForm.get('littleToMiddle')?.setValue(Number(mapped['little_to_mid']));
-    this.settingsForm.get('middleToBig')?.setValue(Number(mapped['mid_to_big']));
-    this.settingsForm.get('daylyXuxesQuantity')?.setValue(Number(mapped['daily_xuxes_quantity']));
-    this.settingsForm.get('dailyXuxesTime')?.setValue(mapped['daily_xuxes_time']);
-  });
-}
+  }
 
   saveSettings() {
     if (this.settingsForm.invalid) {
@@ -61,7 +72,8 @@ export class AdminSettingsComponent {
       little_to_mid: form.littleToMiddle,
       mid_to_big: form.middleToBig,
       daily_xuxes_quantity: form.daylyXuxesQuantity,
-      daily_xuxes_time: form.dailyXuxesTime
+      daily_xuxes_time: form.dailyXuxesTime,
+      daily_xuxemon_time: form.dailyXuxemonTime
     };
 
     this.settingsService.updateSettings(payload).subscribe({
@@ -112,7 +124,7 @@ export class AdminSettingsComponent {
       if (!control.value || !this.timeRegex.test(control.value)) {
         return null;
       }
-      
+
       const value = this.timeToMinutes(control.value);
       const min = this.timeToMinutes(minTime);
 
