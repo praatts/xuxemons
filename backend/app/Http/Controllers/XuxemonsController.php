@@ -128,13 +128,83 @@ class XuxemonsController extends Controller
                 'size' => $owned->size,
                 'new_illnesses' => $newIllnesses
             ]);
-
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
                 'line' => $e->getLine()
             ], 500);
         }
+    }
 
+    public function giveVaccine(Request $request, $owned_id)
+    {
+
+        try {
+
+            $user = Auth::guard('api')->user();
+
+            $request->validate([
+                'item_id' => 'required|integer|exists:items,id'
+            ]);
+
+            $item = Item::findOrFail($request->item_id);
+
+            if ($item->stackable) {
+                return response()->json([
+                    'message' => 'Aquest item no és una vacuna'
+                ], 400);
+            }
+
+            $inventory = Inventory::where('user_id', $user->id)
+                ->where('item_id', $item->id)
+                ->first();
+
+            if (!$inventory || $inventory->quantity <= 0) {
+                return response()->json(['message' => 'No tens aquesta vacuna'], 400);
+            }
+
+            $owned = OwnedXuxemon::where('id', $owned_id)
+                ->where('user_id', $user->id)
+                ->with('illnesses')
+                ->first();
+
+            if (!$owned) {
+                return response()->json(['message' => "Xuxemon no trobat"], 404);
+            }
+
+            if ($owned->illnesses->isEmpty()) {
+                return response()->json([
+                    'message' => 'Aquest xuxemon no té cap malaltia'
+                ], 400);
+            }
+
+            if ($item->illness_id == null) {
+                $owned->illnesses()->detach();
+                $cured = 'S\'han curat totes les enfermetats';
+            } else {
+                $illness = $owned->illnesses->where('id', $item->illness_id)->first();
+
+                if (!$illness) {
+                    return response()->json([
+                        'message' => 'Aquest xuxemon no té la malaltia que cura aquesta vacuna'
+                    ], 400);
+                }
+
+                $owned->illnesses()->detach($item->illness_id);
+                $cured = 'S\'ha curat la enfermetat:' . $illness->name;
+            }
+
+            $inventory->delete();
+
+            return response()->json([
+                'message' => 'Vacuna aplicada correctament',
+                'cured' => $cured
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+            ]);
+        }
     }
 }
