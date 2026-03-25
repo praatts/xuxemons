@@ -34,8 +34,18 @@ input[type="text"] {
   color: green;
 }
 
-button {
-  padding: 10px;
-  font-size: 1em;
-  cursor: pointer;
+button[type="submit"] {
+    background: #666;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+button[type="submit"]:hover {
+    background: #444;
 }
