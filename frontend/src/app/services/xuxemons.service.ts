@@ -68,4 +68,9 @@ export class XuxemonsService {
     return this.http.get<any[]>(`${this.apiUrl}/xuxedex/owned/${user_id}`);
   }
 
+  // MÈTODE PER ADMINISTRAR VACUNES (APLICAR UNA VACUNA A UN XUXEMON ESPECÍFIC)
+  giveVaccine(owned_id: number, item_id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/xuxemons/${owned_id}/vaccinate`, { item_id });
+  }
+
 }

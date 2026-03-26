@@ -9,12 +9,13 @@ import { UserService } from '../services/user.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserInterface } from '../user-interface';
 import { MotxillaService } from '../services/motxilla.service';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-xuxedex',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule],
+  imports: [NgClass, ReactiveFormsModule, FormsModule],
   templateUrl: './xuxedex.component.html',
   styleUrl: './xuxedex.component.css'
 })
@@ -34,12 +35,13 @@ export class XuxedexComponent {
     { id: 'agua', name: 'Agua' },
     { id: 'aire', name: 'Aire' }
   ];
-
   userXuxes: { [key: string]: number } = {
     verda: 0,
     blava: 0,
     vermella: 0
   };
+  userVaccines: any[] = [];
+  selectedVaccine: any = null;
   //Parametros para Ilnesses
   showIllnessModal = false;
   illnessUsers: UserInterface[] = [];
@@ -54,6 +56,12 @@ export class XuxedexComponent {
   successUserId: number | null = null;
   searchUser = new FormControl('');
   activeElement: string = 'all';
+  
+  // Variables para el modal de vacunas
+  showVaccineModal: boolean = false;
+  selectedUserForVaccine: UserInterface | null = null;
+  vaccines: any[] = [];
+  modalStep: 'users' | 'vaccines' = 'users'; // Pas actual del modal d'administració de vacunes
 
 
 
@@ -188,6 +196,7 @@ export class XuxedexComponent {
     this.showModal = false;
     this.selectedXuxemon = xuxemon;
     this.selectedXuxeType = 'verda';
+    this.selectedVaccine = null;
     this.loadInventory();
   }
 
@@ -225,14 +234,33 @@ export class XuxedexComponent {
     this.motxillaService.getInventory().subscribe((data: any[]) => {
       // Reset
       this.userXuxes = { verda: 0, blava: 0, vermella: 0 };
+      this.userVaccines = [];
 
       data.forEach(item => {
         const name = item.item.name.toLowerCase();
 
         if (name.includes('verda')) this.userXuxes['verda'] = item.quantity;
-        if (name.includes('blava')) this.userXuxes['blava'] = item.quantity;
-        if (name.includes('vermella')) this.userXuxes['vermella'] = item.quantity;
+        else if (name.includes('blava')) this.userXuxes['blava'] = item.quantity;
+        else if (name.includes('vermella')) this.userXuxes['vermella'] = item.quantity;
+        else if (!item.item.stackable) {
+          this.userVaccines.push(item);
+        }
       });
+    });
+  }
+
+  // MÈTODE PER VACCINAR EL XUXEMON SELECCIONAT (Només per al propietari)
+  vaccinate(xuxemon: Xuxemon) {
+    if (!this.selectedVaccine) return;
+
+    this.xuxemonsService.giveVaccine(xuxemon.owned_xuxemon_id!, this.selectedVaccine.item.id).subscribe({
+      next: (res: any) => {
+        alert(res.message + (res.cured ? ': ' + res.cured : ''));
+        this.getOwnedXuxemons(); // Refresquem la llista per veure si s'ha curat
+        this.loadInventory(); // Refresquem l'inventari per treure la vacuna usada
+        this.selectedVaccine = null;
+      },
+      error: (err) => alert(err.error.message)
     });
   }
   //Bloque de logica para enfermedades "admin"
@@ -280,6 +308,43 @@ export class XuxedexComponent {
         console.error("Error al obtener xuxemons del usuario:", err);
         this.loadingUserId = null;
       }
+    });
+  }
+
+  // Lògica d'administrador: Obrir el modal per donar una vacuna a qualsevol usuari
+  abrirModalVacuna() {
+    this.showVaccineModal = true;
+    this.modalStep = 'users';
+    this.loadUsers();
+    // Carreguem tots els objectes i filtrem només les vacunes (objectes no apilables)
+    this.motxillaService.getAllItems().subscribe(items => {
+      this.vaccines = items.filter(i => !i.stackable);
+    });
+  }
+
+  // Tancar el modal de donar vacunes
+  cerrarModalVacuna() {
+    this.showVaccineModal = false;
+    this.selectedUserForVaccine = null;
+    this.modalStep = 'users';
+  }
+
+  // Seleccionar l'usuari a qui volem donar la vacuna (Pas 1)
+  seleccionarUsuarioVacuna(user: UserInterface) {
+    this.selectedUserForVaccine = user;
+    this.modalStep = 'vaccines';
+  }
+
+  // Donar la vacuna seleccionada a l'usuari seleccionat (Pas 2)
+  darVacuna(vaccine: any) {
+    if (!this.selectedUserForVaccine) return;
+
+    this.motxillaService.giveItemToUser(this.selectedUserForVaccine.id!, vaccine.id, 1).subscribe({
+      next: () => {
+        alert(`S'ha donat ${vaccine.name} a ${this.selectedUserForVaccine?.player_id}`);
+        this.cerrarModalVacuna(); // Tanquem el modal en acabar correctament
+      },
+      error: (err) => alert("Error al donar la vacuna")
     });
   }
 }
