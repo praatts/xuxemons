@@ -23,7 +23,8 @@ export class AdminSettingsComponent {
       middleToBig: new FormControl('', [Validators.min(5), Validators.max(15)]),
       daylyXuxesQuantity: new FormControl('', [Validators.min(5), Validators.max(20)]),
       dailyXuxesTime: new FormControl('', [Validators.required, this.timeFormatValidator(), this.minTime('08:00'), this.maxTime('18:30')]),
-      dailyXuxemonTime: new FormControl('', [Validators.required, this.timeFormatValidator(), this.minTime('08:00'), this.maxTime('18:30')])
+      dailyXuxemonTime: new FormControl('', [Validators.required, this.timeFormatValidator(), this.minTime('08:00'), this.maxTime('18:30')]),
+      infectionProbability: new FormControl('', [Validators.min(0), Validators.max(100)])
     });
   }
 
@@ -55,6 +56,9 @@ export class AdminSettingsComponent {
           case 'daily_xuxemon_time':
             this.settingsForm.get('dailyXuxemonTime')?.setValue(setting.value);
             break;
+          case 'infection_probability':
+            this.settingsForm.get('infectionProbability')?.setValue(setting.value);
+            break;
         }
       });
     });
@@ -73,7 +77,8 @@ export class AdminSettingsComponent {
       mid_to_big: form.middleToBig,
       daily_xuxes_quantity: form.daylyXuxesQuantity,
       daily_xuxes_time: form.dailyXuxesTime,
-      daily_xuxemon_time: form.dailyXuxemonTime
+      daily_xuxemon_time: form.dailyXuxemonTime,
+      infection_probability: form.infectionProbability
     };
 
     this.settingsService.updateSettings(payload).subscribe({

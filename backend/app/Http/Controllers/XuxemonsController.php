@@ -107,6 +107,9 @@ class XuxemonsController extends Controller
             $illnesses = Illness::all();
             $newIllnesses = [];
 
+            //para poder modificar la probabilidad de infeccion
+            $globalInfectionProbability = (int) Setting::where('key', 'infection_probability')->value('value');
+            $canInfect = rand(1, 100) <= $globalInfectionProbability;
 
             foreach ($illnesses as $i) {
                 $exist = $owned->illnesses->contains('id', $i->id);
@@ -114,7 +117,7 @@ class XuxemonsController extends Controller
 
                 if ($exist) {
                     $newIllnesses[] = "{$i->name}: ja té aquesta malaltia";
-                } elseif ($infection_chance <= $i->infection_percentage) {
+                } elseif ($canInfect && $infection_chance <= $i->infection_percentage) {
                     $owned->illnesses()->attach($i->id);
                     $newIllnesses[] = "{$i->name}: infectat! (tret: {$infection_chance}%)";
                     break;

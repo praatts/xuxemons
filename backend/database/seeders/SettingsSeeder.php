@@ -18,7 +18,8 @@ class SettingsSeeder extends Seeder
             ['key' => 'mid_to_big', 'value' => '5'],
             ['key' => 'daily_xuxes_quantity', 'value' => '10'],
             ['key' => 'daily_xuxes_time', 'value' => '08:00'],
-            ['key' => 'daily_xuxemon_time', 'value' => '08:00']
+            ['key' => 'daily_xuxemon_time', 'value' => '08:00'],
+            ['key' => 'infection_probability', 'value' => '10']
         ];
 
         foreach ($settings as $setting) {

@@ -58,6 +58,18 @@
         }
     </div>
 
+    <!-- Infection Probability -->
+    <div class="form-group">
+        <label for="infectionProbability">Probabilidad de Infección (%):</label>
+        <input id="infectionProbability" type="number" formControlName="infectionProbability"
+            placeholder="Introduce un valor entre 0 y 100" />
+        @if(settingsForm.get('infectionProbability')?.touched) {
+        <div class="error">
+            {{ getErrorMessage('infectionProbability') }}
+        </div>
+        }
+    </div>
+
     <!-- Mensaje de éxito o error -->
     @if(msg) {
     <div class="msg">
