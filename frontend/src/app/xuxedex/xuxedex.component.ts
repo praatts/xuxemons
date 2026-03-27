@@ -9,6 +9,7 @@ import { UserService } from '../services/user.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserInterface } from '../user-interface';
 import { MotxillaService } from '../services/motxilla.service';
+import { SettingsService } from '../services/settings.service';
 
 
 @Component({
@@ -54,10 +55,12 @@ export class XuxedexComponent {
   successUserId: number | null = null;
   searchUser = new FormControl('');
   activeElement: string = 'all';
+  littleToMid: number = 0;
+  midToBig: number = 0;
 
 
 
-  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService, private motxillaService: MotxillaService) {
+  constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService, private motxillaService: MotxillaService, private settingsService: SettingsService) {
     this.userXuxemon$ = this.xuxemonsService.userXuxemons$;
     this.ownedXuxemon$ = this.xuxemonsService.ownedXuxemons$;
   }
@@ -87,6 +90,13 @@ export class XuxedexComponent {
       } else if (this.activeElement !== 'all') {
         this.filteredXuxemons = data.filter(x => x.type === this.activeElement);
       }
+    });
+
+    this.settingsService.getSettings().subscribe((settings) => {
+      settings.forEach(setting => {
+        if (setting.key === 'little_to_mid') this.littleToMid = Number(setting.value);
+        if (setting.key === 'mid_to_big') this.midToBig = Number(setting.value);
+      });
     });
   }
 
@@ -185,8 +195,12 @@ export class XuxedexComponent {
     if (!xuxemon.owned) {
       return;
     }
+
+    //Permet carregar el xuxemon capturat tant a la vista de tots els xuxemons com a la de xuxemons capturats
+    const owned = this.xuxemonsService.getCurrentOwnedXuxemons().find(ownedXuxemon => ownedXuxemon.id === xuxemon.id);
+
     this.showModal = false;
-    this.selectedXuxemon = xuxemon;
+    this.selectedXuxemon = owned ?? xuxemon;
     this.selectedXuxeType = 'verda';
     this.loadInventory();
   }
@@ -202,14 +216,16 @@ export class XuxedexComponent {
 
     this.xuxemonsService.giveXuxe(xuxemon.owned_xuxemon_id!, this.selectedXuxeType).subscribe({
       next: (updated: any) => {
-        const mapped = {
-          ...updated,
-          xuxes: updated.xuxes,
-        };
-
-        Object.assign(xuxemon, mapped);
-        this.selectedXuxemon = xuxemon;
+        xuxemon.xuxes = updated.xuxes;
+        xuxemon.number_xuxes = updated.xuxes;
+        xuxemon.size = updated.size;
+        this.selectedXuxemon = { ...xuxemon };
         this.userXuxes[this.selectedXuxeType]--;
+
+        // Actualizar el BehaviorSubject para mostrar el cambio de xuxes correctamente
+        const owned = this.xuxemonsService.getCurrentOwnedXuxemons()
+          .map(x => x.owned_xuxemon_id === xuxemon.owned_xuxemon_id ? { ...xuxemon } : x);
+        this.xuxemonsService.setOwnedXuxemons(owned);
 
         if (oldSize !== xuxemon.size) {
           alert('El xuxemon ha evolucionat!');
@@ -282,4 +298,6 @@ export class XuxedexComponent {
       }
     });
   }
+
+
 }
