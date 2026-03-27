@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { SettingsService } from '../services/settings.service';
+import { Illness, IllnessService } from '../services/illness.service';
 
 @Component({
   selector: 'app-admin-settings',
@@ -14,22 +15,26 @@ export class AdminSettingsComponent {
   settingsForm: FormGroup;
   msg = '';
   showDeleteDialog = false;
+  illnesses: Illness[] = [];
 
   private timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
-  constructor(private settingsService: SettingsService) {
+  constructor(private settingsService: SettingsService, private illnessService: IllnessService) {
     this.settingsForm = new FormGroup({
       littleToMiddle: new FormControl('', [Validators.min(3), Validators.max(10)]),
       middleToBig: new FormControl('', [Validators.min(5), Validators.max(15)]),
       daylyXuxesQuantity: new FormControl('', [Validators.min(5), Validators.max(20)]),
       dailyXuxesTime: new FormControl('', [Validators.required, this.timeFormatValidator(), this.minTime('08:00'), this.maxTime('18:30')]),
       dailyXuxemonTime: new FormControl('', [Validators.required, this.timeFormatValidator(), this.minTime('08:00'), this.maxTime('18:30')]),
-      infectionProbability: new FormControl('', [Validators.min(0), Validators.max(100)])
+      bajon_azucar: new FormControl('', [Validators.min(0), Validators.max(100)]),
+      sobredosis_azucar: new FormControl('', [Validators.min(0), Validators.max(100)]),
+      atracon: new FormControl('', [Validators.min(0), Validators.max(100)])
     });
   }
 
   ngOnInit() {
     this.loadSettings();
+    this.loadIllnesses();
   }
 
   loadSettings() {
@@ -56,12 +61,22 @@ export class AdminSettingsComponent {
           case 'daily_xuxemon_time':
             this.settingsForm.get('dailyXuxemonTime')?.setValue(setting.value);
             break;
-          case 'infection_probability':
-            this.settingsForm.get('infectionProbability')?.setValue(setting.value);
-            break;
         }
       });
     });
+  }
+
+  loadIllnesses() {
+    this.illnessService.getIllnesses().subscribe((illnesses) => {
+        this.illnesses = illnesses;
+        illnesses.forEach(({ key, infection_percentage }) => {
+            this.settingsForm.get(key)?.setValue(infection_percentage);
+        });
+    });
+}
+
+  illnessControlName(key: string): string {
+    return `illness_${key}`;
   }
 
   saveSettings() {
@@ -72,17 +87,26 @@ export class AdminSettingsComponent {
 
     const form = this.settingsForm.value;
 
-    const payload = {
+    const settingsPayload = {
       little_to_mid: form.littleToMiddle,
       mid_to_big: form.middleToBig,
       daily_xuxes_quantity: form.daylyXuxesQuantity,
       daily_xuxes_time: form.dailyXuxesTime,
-      daily_xuxemon_time: form.dailyXuxemonTime,
-      infection_probability: form.infectionProbability
+      daily_xuxemon_time: form.dailyXuxemonTime
     };
 
-    this.settingsService.updateSettings(payload).subscribe({
-      next: () => this.msg = 'Settings actualizados correctamente',
+    const illnessPayload = this.illnesses.map(illness => ({
+    key: illness.key,
+    infection_percentage: form[illness.key]
+}));
+
+    this.settingsService.updateSettings(settingsPayload).subscribe({
+      next: () => {
+        this.illnessService.updateIllness(illnessPayload).subscribe({
+          next: () => this.msg = 'Settings actualizados correctamente',
+          error: () => this.msg = 'Error al actualizar los porcentajes de infección'
+        });
+      },
       error: () => this.msg = 'Error al actualizar settings'
     });
   }

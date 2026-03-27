@@ -58,17 +58,13 @@
         }
     </div>
 
-    <!-- Infection Probability -->
+    @for(illness of illnesses; track illness.key) {
     <div class="form-group">
-        <label for="infectionProbability">Probabilidad de Infección (%):</label>
-        <input id="infectionProbability" type="number" formControlName="infectionProbability"
+        <label [for]="illness.key">{{ illness.name }} (%):</label>
+        <input [id]="illness.key" type="number" [formControlName]="illness.key"
             placeholder="Introduce un valor entre 0 y 100" />
-        @if(settingsForm.get('infectionProbability')?.touched) {
-        <div class="error">
-            {{ getErrorMessage('infectionProbability') }}
-        </div>
-        }
     </div>
+    }
 
     <!-- Mensaje de éxito o error -->
     @if(msg) {
@@ -76,7 +72,7 @@
         {{ msg }}
     </div>
     }
-    
+
     <button type="submit" [disabled]="settingsForm.invalid">Guardar Configuración</button>
 
 </form>
