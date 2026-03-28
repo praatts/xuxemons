@@ -128,6 +128,15 @@
         <p><strong>Tipus:</strong> {{ selectedXuxemon.type }}</p>
         <p><strong>Mida:</strong> {{ selectedXuxemon.size }}</p>
 
+        @if(selectedXuxemon.illnesses && selectedXuxemon.illnesses.length > 0) {
+        <div class="illnesses">
+            <p><strong>Malalties:</strong></p>
+            @for(illness of selectedXuxemon.illnesses; track illness) {
+            <p>{{ illness.name }}</p>
+            }
+        </div>
+        }
+
         <p><strong>Xuxes:</strong> {{ (selectedXuxemon.number_xuxes ?? selectedXuxemon.xuxes) ?? 0 }} / {{ getMaxXuxes()
             }}</p>
 

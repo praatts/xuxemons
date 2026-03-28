@@ -6,6 +6,6 @@ export interface Xuxemon {
     xuxes: number,
     owned: boolean,
     owned_xuxemon_id?: number,
-    illnesses?: string[],
+    illnesses?: any[],
     number_xuxes?: number
 }
