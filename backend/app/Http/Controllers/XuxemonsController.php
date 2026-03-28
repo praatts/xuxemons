@@ -107,17 +107,13 @@ class XuxemonsController extends Controller
             $illnesses = Illness::all();
             $newIllnesses = [];
 
-            //para poder modificar la probabilidad de infeccion
-            $globalInfectionProbability = (int) Setting::where('key', 'infection_probability')->value('value');
-            $canInfect = rand(1, 100) <= $globalInfectionProbability;
-
             foreach ($illnesses as $i) {
                 $exist = $owned->illnesses->contains('id', $i->id);
                 $infection_chance = rand(1, 100);
 
                 if ($exist) {
                     $newIllnesses[] = "{$i->name}: ja té aquesta malaltia";
-                } elseif ($canInfect && $infection_chance <= $i->infection_percentage) {
+                } elseif ($infection_chance <= $i->infection_percentage) {
                     $owned->illnesses()->attach($i->id);
                     $newIllnesses[] = "{$i->name}: infectat! (tret: {$infection_chance}%)";
                     break;
@@ -129,7 +125,9 @@ class XuxemonsController extends Controller
             return response()->json([
                 'xuxes' => $owned->number_xuxes,
                 'size' => $owned->size,
-                'new_illnesses' => $newIllnesses
+                'new_illnesses' => $newIllnesses,
+                'illnesses' => $owned->fresh()->load('illnesses')->illnesses
+
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -200,7 +198,8 @@ class XuxemonsController extends Controller
 
             return response()->json([
                 'message' => 'Vacuna aplicada correctament',
-                'cured' => $cured
+                'cured' => $cured,
+                'illnesses' => $owned->fresh()->load('illnesses')->illnesses
             ]);
         } catch (Exception $e) {
             return response()->json([

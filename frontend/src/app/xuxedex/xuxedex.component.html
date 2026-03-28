@@ -157,6 +157,21 @@
                 Vermella ({{ userXuxes['vermella'] }})
             </button>
         </div>
+        @if(userVaccines.length > 0 && selectedXuxemon.illnesses && selectedXuxemon.illnesses.length > 0) {
+        <div class="xuxe-selector">
+            @for(vaccine of userVaccines; track vaccine.item.id) {
+            <button class="action-btn" [class.active]="selectedVaccine?.item.id === vaccine.item.id"
+                (click)="selectedVaccine = vaccine">
+                {{ vaccine.item.name }} ({{ vaccine.quantity }})
+            </button>
+            }
+        </div>
+
+        <button class="xuxe-btn" (click)="useVaccine(selectedXuxemon, selectedVaccine.item.id)"
+            [disabled]="!selectedVaccine">
+            Usar Vacuna
+        </button>
+        }
 
         <button class="xuxe-btn" (click)="giveXuxe(selectedXuxemon)"
             [disabled]="selectedXuxemon.size === 'gran' || userXuxes[selectedXuxeType] === 0">

@@ -57,7 +57,8 @@ export class XuxedexComponent {
   activeElement: string = 'all';
   littleToMid: number = 0;
   midToBig: number = 0;
-
+  userVaccines: any[] = [];
+  selectedVaccine: any = null;
 
 
   constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService, private motxillaService: MotxillaService, private settingsService: SettingsService) {
@@ -223,6 +224,7 @@ export class XuxedexComponent {
 
   closeDetail() {
     this.selectedXuxemon = null;
+    this.selectedVaccine = null;
   }
 
   giveXuxe(xuxemon: Xuxemon) {
@@ -232,6 +234,9 @@ export class XuxedexComponent {
 
     this.xuxemonsService.giveXuxe(xuxemon.owned_xuxemon_id!, this.selectedXuxeType).subscribe({
       next: (updated: any) => {
+
+        const previousIllnesses = xuxemon.illnesses ?? [];
+
         xuxemon.xuxes = updated.xuxes;
         xuxemon.number_xuxes = updated.xuxes;
         xuxemon.size = updated.size;
@@ -245,6 +250,14 @@ export class XuxedexComponent {
 
         if (oldSize !== xuxemon.size) {
           alert('El xuxemon ha evolucionat!');
+        }
+
+        const newIllness = updated.illnesses?.find(
+          (i: any) => !previousIllnesses.find((p: any) => p.id === i.id)
+        );
+        
+        if (newIllness) {
+          alert(`El teu xuxemon s'ha infectat de ${newIllness.name}!`);
         }
       },
       error: (err) => {
@@ -260,10 +273,21 @@ export class XuxedexComponent {
 
       data.forEach(item => {
         const name = item.item.name.toLowerCase();
-
         if (name.includes('verda')) this.userXuxes['verda'] = item.quantity;
         if (name.includes('blava')) this.userXuxes['blava'] = item.quantity;
         if (name.includes('vermella')) this.userXuxes['vermella'] = item.quantity;
+      });
+
+      this.userVaccines = [];
+      data.forEach(slot => {
+        if (!slot.item.stackable && slot.quantity > 0) {
+          const existing = this.userVaccines.find(v => v.item.id === slot.item.id);
+          if (existing) {
+            existing.quantity += slot.quantity;
+          } else {
+            this.userVaccines.push({ ...slot });
+          }
+        }
       });
     });
   }
@@ -315,5 +339,20 @@ export class XuxedexComponent {
     });
   }
 
+  useVaccine(xuxemon: Xuxemon, item_id: number): void {
+    this.xuxemonsService.giveVaccine(xuxemon.owned_xuxemon_id!, item_id).subscribe({
+      next: (updated: any) => {
+        xuxemon.illnesses = updated.illnesses;
+        this.selectedXuxemon = { ...xuxemon };
 
+        const owned = this.xuxemonsService.getCurrentOwnedXuxemons().map(
+          x => x.owned_xuxemon_id === xuxemon.owned_xuxemon_id ? { ...xuxemon } : x);
+        this.xuxemonsService.setOwnedXuxemons(owned);
+        this.loadInventory();
+      },
+      error: (err) => {
+        console.error("Error al aplicar vacuna:", err);
+      }
+    });
+  }
 }

@@ -68,4 +68,7 @@ export class XuxemonsService {
     return this.http.get<any[]>(`${this.apiUrl}/xuxedex/owned/${user_id}`);
   }
 
+  giveVaccine(owned_xuxemon_id: number, item_id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/xuxemons/${owned_xuxemon_id}/vaccinate`, { item_id });
+  }
 }

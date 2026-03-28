@@ -29,21 +29,16 @@ class IllnessController extends Controller
             return response()->json(['error' => 'No autorizado'], 403);
         }
 
-        $illnesses = Illness::all();
+        $data = $request->all();
 
-        foreach ($illnesses as $illness) {
-            $value = $request->input($illness->key);
-            if ($value === '' || $value === null) {
-                continue;
-            }
-
-            $illness->infection_percentage = $value;
-            $illness->save();
+        foreach ($data as $illness) {
+           Illness::where('key', $illness['key'])
+                ->update(['infection_percentage' => (int) $illness['infection_percentage']]);
         }
 
         return response()->json([
             'message' => 'Percentatges actualitzats correctament',
-            'illnesses' => $illnesses->fresh()
+            'illnesses' => Illness::all()
         ]);
     }
 }

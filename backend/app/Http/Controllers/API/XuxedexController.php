@@ -55,7 +55,7 @@ class XuxedexController extends Controller
             return response()->json(['error' => 'No hi ha xuxemons a la base de datos.'], 404);
         }
 
-        OwnedXuxemon::create([
+        $owned = OwnedXuxemon::create([
             'user_id'      => $user->id,
             'xuxemon_id'   => $xuxemon->id,
             'number_xuxes' => 0,
@@ -63,6 +63,7 @@ class XuxedexController extends Controller
         ]);
 
         return response()->json([
+            'owned_xuxemon_id' => $owned->id,
             'id'           => $xuxemon->id,
             'name'         => $xuxemon->name,
             'xuxemon_id'   => $xuxemon->id,

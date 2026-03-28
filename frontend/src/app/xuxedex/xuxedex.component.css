@@ -347,3 +347,14 @@
     border-radius: 50px;
     border: none;
 }
+
+.action-btn.active {
+    background-color: #FF4400;
+    color: white;
+}
+
+.detail-img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+}
