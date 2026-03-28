@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\SettingsController;
 use App\Http\Controllers\IllnessController;
 use App\Http\Controllers\UserController;
@@ -45,7 +46,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
         Route::post('/xuxedex/{owned_id}/illness', [XuxedexController::class, 'addIllness']);
         Route::delete('/xuxedex/{owned_id}/illness/{illness}', [XuxedexController::class, 'removeIllness']);
         Route::get('/xuxedex/owned/{user_id}', [XuxedexController::class, 'ownedXuxemonsByUser']); //ver los owned xuxemons de cada usuario
-        Route::get('/settings', [SettingsController::class,'index']);
+        Route::get('/settings', [SettingsController::class, 'index']);
         Route::put('/settings/update', [SettingsController::class, 'update']);
 
         Route::get('/illnesses', [IllnessController::class, 'index']);
@@ -74,4 +75,9 @@ Route::middleware([JwtMiddleware::class])->group(function () {
 
     //XUXEMONS
     Route::post('/xuxemons/{id}/xuxe', [XuxemonsController::class, 'giveXuxe']);
+
+    //NOTIFICACIONES
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 });
