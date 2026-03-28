@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class FriendshipController extends Controller
 {
-    //Devuelve las amistades bidireccionales del usuario autenticado (enviadas y recibidas)
+    //Retorna la llista d'amics del usuari autenticat (relacions d'amistat acceptades)
 
     public function index()
     {
@@ -23,7 +23,7 @@ class FriendshipController extends Controller
             ->get()
             ->map(function ($friendship) use ($user) {
 
-                //Determina quién es el amigo en la relación de amistad (usuario contrario al autenticado)
+                //Determina qui és l'amic en la relació d'amistat (usuari contrari a l'autenticat)
     
                 if ($friendship->user_id === $user->id) {
                     $friend = $friendship->friend;
@@ -41,6 +41,8 @@ class FriendshipController extends Controller
 
         return response()->json($friends);
     }
+
+    //Funció per enviar la sol·licitud d'amistat a un altre usuari (crea una relació de amistat pendent)
 
     public function sendFriendRequest(Request $request)
     {
@@ -78,8 +80,82 @@ class FriendshipController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Sol·licitud d\'amistat enviada correctament a ' . $friend->player_id], 200);
+            'message' => 'Sol·licitud d\'amistat enviada correctament a ' . $friend->player_id
+        ], 200);
     }
 
-    
+    public function acceptFriendRequest($id)
+    {
+        $user = Auth::guard('api')->user();
+
+        $friendship = Friendship::where('id', $id)
+            ->where('friend_id', $user->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$friendship) {
+            return response()->json([
+                'error' => 'Solicitud d\'amistad no trobada'
+            ], 404);
+        }
+
+        //Actualitza el estat de la sol·licitud de 'pending' a 'accepted' (confirma la amistat)
+
+        $friendship->status = 'accepted';
+        $friendship->save();
+
+        return response()->json([   
+            'message' => 'Solicitud d\'amistad aceptada'
+        ]);
+    }
+
+    //Rebutja la sol·licitud d'amistat pendent
+    public function rejectFriendRequest($id) {
+        $user = Auth::guard('api')->user();
+
+        $friendship = Friendship::where('id', $id)
+            ->where('friend_id', $user->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$friendship) {
+            return response()->json([
+                'error' => 'Solicitud d\'amistad no trobada'
+            ], 404);
+        }
+
+        //Elimina la sol·licitud de amistat pendent (rebutja la amistat)
+
+        $friendship->delete();
+
+        return response()->json([
+            'message' => 'Solicitud d\'amistad rechazada'
+        ]);
+    }
+
+    //Elimina la relació d'amistat entre el usuari autenticat i l'usuari contrari ja acceptada (bidireccional)
+    public function destroy($id) {
+        $user = Auth::guard('api')->user();
+
+        //Busca la relació d'amistat acceptada entre el usuari autenticat i l'usuari contrari (bidireccional)
+        $friendship = Friendship::where('id', $id)
+        ->where('status', 'accepted')
+        ->where(function ($query) use ($user) {
+            $query->where('user_id', $user->id)
+              ->orWhere('friend_id', $user->id);
+        })->first();
+
+        if (!$friendship) {
+            return response()->json([
+                'error' => 'Relació d\'amistat no trobada'
+            ], 404);
+        }
+
+        //Elimina la relació d'amistat bidireccional
+        $friendship->delete();
+
+        return response()->json([
+            'message' => 'Relació d\'amistat entre els usuaris eliminada correctament'
+        ]);
+    }
 }
