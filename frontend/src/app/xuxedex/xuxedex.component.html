@@ -128,10 +128,7 @@
         <p><strong>Tipus:</strong> {{ selectedXuxemon.type }}</p>
         <p><strong>Mida:</strong> {{ selectedXuxemon.size }}</p>
 
-        <p><strong>Xuxes:</strong> {{ selectedXuxemon.number_xuxes ?? 0 }} /
-            {{
-            selectedXuxemon.size === 'petit' ? littleToMid :
-            selectedXuxemon.size === 'mitja' ? midToBig : 0
+        <p><strong>Xuxes:</strong> {{ (selectedXuxemon.number_xuxes ?? selectedXuxemon.xuxes) ?? 0 }} / {{ getMaxXuxes()
             }}</p>
 
         @if(selectedXuxemon.owned_xuxemon_id) {

@@ -171,10 +171,13 @@ export class XuxedexComponent {
   }
 
   addRandomXuxemon(user_id: number): void {
+
     this.loadingUserId = user_id;
     this.successUserId = null;
     this.xuxemonsService.addRandomXuxemon(user_id).subscribe({
       next: (data) => {
+        console.log('Xuxemon añadido:', data);
+
         this.xuxemonsService.addToOwnedXuxemons(data);
         console.log("Xuxemon añadido: ", data);
         this.loadingUserId = null;
@@ -196,13 +199,26 @@ export class XuxedexComponent {
       return;
     }
 
-    //Permet carregar el xuxemon capturat tant a la vista de tots els xuxemons com a la de xuxemons capturats
-    const owned = this.xuxemonsService.getCurrentOwnedXuxemons().find(ownedXuxemon => ownedXuxemon.id === xuxemon.id);
+    // Busca el xuxemon capturat per owned_xuxemon_id si està disponible (vista de capturats),
+    // o per id del xuxemon si ve de la vista general. Això permet diferenciar duplicats.
+
+    const owned = xuxemon.owned_xuxemon_id
+      ? this.xuxemonsService.getCurrentOwnedXuxemons().find(o => o.owned_xuxemon_id === xuxemon.owned_xuxemon_id)
+      : this.xuxemonsService.getCurrentOwnedXuxemons().find(o => o.id === xuxemon.id);
 
     this.showModal = false;
     this.selectedXuxemon = owned ?? xuxemon;
     this.selectedXuxeType = 'verda';
     this.loadInventory();
+  }
+
+  getMaxXuxes(): number {
+    const base = this.selectedXuxemon?.size === 'petit' ? this.littleToMid :
+      this.selectedXuxemon?.size === 'mitja' ? this.midToBig : 0;
+
+    const hasBajon = this.selectedXuxemon?.illnesses?.find((i: any) => i.name === 'Bajón de azúcar');
+
+    return hasBajon ? base + 2 : base;
   }
 
   closeDetail() {
@@ -219,10 +235,10 @@ export class XuxedexComponent {
         xuxemon.xuxes = updated.xuxes;
         xuxemon.number_xuxes = updated.xuxes;
         xuxemon.size = updated.size;
+        xuxemon.illnesses = updated.illnesses;
         this.selectedXuxemon = { ...xuxemon };
         this.userXuxes[this.selectedXuxeType]--;
 
-        // Actualizar el BehaviorSubject para mostrar el cambio de xuxes correctamente
         const owned = this.xuxemonsService.getCurrentOwnedXuxemons()
           .map(x => x.owned_xuxemon_id === xuxemon.owned_xuxemon_id ? { ...xuxemon } : x);
         this.xuxemonsService.setOwnedXuxemons(owned);
