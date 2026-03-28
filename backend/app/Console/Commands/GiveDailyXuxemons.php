@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Notification;
 use Illuminate\Console\Command;
 use App\Models\User;
 use App\Models\Xuxemon;
@@ -40,10 +41,16 @@ class GiveDailyXuxemons extends Command
             $xuxemon = $xuxemons->random();
 
             OwnedXuxemon::create([
-                'user_id'    => $user->id,
+                'user_id' => $user->id,
                 'xuxemon_id' => $xuxemon->id,
                 'number_xuxes' => 0,
-                'size'       => $xuxemon->size,
+                'size' => $xuxemon->size,
+            ]);
+
+            Notification::create([
+                'user_id' => $user->id,
+                'title' => 'Xuxemon diària',
+                'message' => "Has rebut un xuxemon diari: {$xuxemon->name} ({$xuxemon->type})."
             ]);
 
             $this->info("Usuari {$user->id} - Xuxemon donat: {$xuxemon->name} ({$xuxemon->type})");

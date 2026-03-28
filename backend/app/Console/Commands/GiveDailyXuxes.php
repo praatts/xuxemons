@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Inventory;
 use App\Models\Item;
+use App\Models\Notification;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -62,6 +63,12 @@ class GiveDailyXuxes extends Command
                 $slot->save();
                 $given++;
             }
+
+            Notification::create([  
+                'user_id' => $user->id,
+                'title' => 'Recompensa diària',
+                'message' => "Has rebut {$given} xuxes diàries.",
+            ]);
 
             $this->info("Usuari {$user->id} - Xuxes donades: {$given}");
         }
