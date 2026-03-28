@@ -80,4 +80,5 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/read', [NotificationController::class,'deleteAllRead']);
 });

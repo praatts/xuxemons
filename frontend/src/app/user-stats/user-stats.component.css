@@ -1,4 +1,4 @@
-:host{
+:host {
     --bg-main: #e5c18f;
     --text-main: #000;
 
@@ -23,7 +23,7 @@
     color: var(--text-main);
 }
 
-:host(.dark-mode){
+:host(.dark-mode) {
 
     --bg-main: #121212;
     --text-main: #ffffff;
@@ -41,19 +41,20 @@
     --streak-bg: #ff7f50;
     --online-border: #121212;
 }
+
 /* ============================= */
 /* LAYOUT PRINCIPAL */
 /* ============================= */
 
-.profile-container{
+.profile-container {
     display: grid;
 
     grid-template-columns: 220px 1fr;
     grid-template-rows: auto 1fr;
 
     grid-template-areas:
-    "header header"
-    "favorite main";
+        "header header"
+        "favorite main";
 
     gap: 20px;
 
@@ -66,7 +67,7 @@
 /* HEADER */
 /* ============================= */
 
-.profile-header{
+.profile-header {
     grid-area: header;
 
     display: flex;
@@ -76,18 +77,18 @@
 
 
 /* avatar */
-.avatar-wrapper{
+.avatar-wrapper {
     position: relative;
 }
 
-.avatar{
+.avatar {
     width: 120px;
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.online-dot{
+.online-dot {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -100,22 +101,22 @@
 
 
 /* user info */
-.user-info h2{
+.user-info h2 {
     margin: 0;
     font-size: 28px;
 }
 
-.level-row{
+.level-row {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.level{
+.level {
     font-size: 20px;
 }
 
-.xp-bar{
+.xp-bar {
     width: 150px;
     height: 18px;
     background: var(--xp-bg);
@@ -123,12 +124,12 @@
     overflow: hidden;
 }
 
-.xp-fill{
+.xp-fill {
     height: 100%;
     background: var(--xp-fill);
 }
 
-.friends{
+.friends {
     margin-top: 10px;
     background: var(--friends-bg);
     padding: 8px 14px;
@@ -139,19 +140,19 @@
 
 /* streak */
 
-.streak{
+.streak {
     position: relative;
     font-size: 48px;
     margin-left: auto;
 }
 
-.fire{
+.fire {
     display: block;
     font-size: 48px;
     opacity: 0.5;
 }
 
-.streak-number{
+.streak-number {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -172,7 +173,7 @@
 /* ============================= */
 /* FAVORITE */
 /* ============================= */
-.favorite{
+.favorite {
     grid-area: favorite;
 
     display: flex;
@@ -184,7 +185,7 @@
     font-weight: bold;
 }
 
-.favorite img{
+.favorite img {
     width: 160px;
     max-width: 100%;
 }
@@ -193,7 +194,7 @@
 /* ============================= */
 /* MAIN PANEL */
 /* ============================= */
-.main-panel{
+.main-panel {
     grid-area: main;
 
     display: flex;
@@ -209,14 +210,14 @@
 /* ============================= */
 /* TABS */
 /* ============================= */
-.tabs{
+.tabs {
     display: flex;
     background: var(--tabs-bg);
     border-radius: 8px 8px 0 0;
     overflow: hidden;
 }
 
-.tab{
+.tab {
     flex: 1;
     padding: 12px;
 
@@ -229,15 +230,15 @@
     transition: 0.2s;
 }
 
-.tab:hover{
+.tab:hover {
     background: var(--tabs-hover);
 }
 
-.tab.active{
+.tab.active {
     background: var(--tabs-hover);
 }
 
-.icon{
+.icon {
     margin-right: 6px;
 }
 
@@ -245,10 +246,10 @@
 /* ============================= */
 /* CONTENT PANEL */
 /* ============================= */
-.content{
+.content {
     background: var(--content-bg);
 
-    border-radius:  0 0 12px 12px;
+    border-radius: 0 0 12px 12px;
 
     padding: 20px;
 
@@ -261,7 +262,7 @@
 /* ============================= */
 /* EMPTY ROUTE */
 /* ============================= */
-.empty-background{
+.empty-background {
     position: absolute;
     inset: 0;
 
@@ -315,8 +316,8 @@
     background-color: #FFD9A3;
     border-radius: 30px;
     padding: 30px;
-    width: 500px;
-    max-height: 80vh;
+    width: calc(100vw - 80px);
+    height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
     gap: 20px;

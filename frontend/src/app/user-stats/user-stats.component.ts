@@ -118,4 +118,15 @@ export class UserStatsComponent {
     const date = new Date(dateString);
     return date.toLocaleString(); //Retorna la data amb un format llegible
   }
+
+  //Elimina totes les notificacions llegides i mostra un missatge amb el nombre de notificacions eliminades
+  deleteRead() {
+    this.notificationService.deleteRead().subscribe({
+      next: (data) => {
+        this.notifications = this.notifications.filter(n => !n.read); //Manté només les notificacions no llegides a la llista
+        alert(data.message);
+      },
+      error: (err) => console.log('Error eliminant notificacions llegides:', err)
+    });
+  }
 }
