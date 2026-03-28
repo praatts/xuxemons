@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ThemeService } from '../services/theme.service';
 import { HostBinding } from '@angular/core';
 import { XuxemonsService } from '../services/xuxemons.service';
@@ -10,12 +10,13 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserInterface } from '../user-interface';
 import { MotxillaService } from '../services/motxilla.service';
 import { SettingsService } from '../services/settings.service';
+import { A11yModule } from '@angular/cdk/a11y';
 
 
 @Component({
   selector: 'app-xuxedex',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule],
+  imports: [NgClass, ReactiveFormsModule, A11yModule],
   templateUrl: './xuxedex.component.html',
   styleUrl: './xuxedex.component.css'
 })
@@ -356,7 +357,18 @@ export class XuxedexComponent {
         this.loadInventory();
       },
       error: (err) => {
-        alert(err.error.message);}
+        alert(err.error.message);
+      }
     });
+  }
+  //Tancar modal amb Escape
+  @HostListener('keydown.escape')
+  onEscape() {
+    if (this.selectedXuxemon) {
+      this.closeDetail();
+    }
+    if (this.showModal) {
+      this.closeModal();
+    }
   }
 }
