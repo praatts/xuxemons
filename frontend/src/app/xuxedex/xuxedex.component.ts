@@ -44,6 +44,7 @@ export class XuxedexComponent {
   //Parametros para Ilnesses
   showIllnessModal = false;
   illnessUsers: UserInterface[] = [];
+  isEvolving: boolean = false;
 
   isAdmin: boolean = false;
 
@@ -249,13 +250,17 @@ export class XuxedexComponent {
         this.xuxemonsService.setOwnedXuxemons(owned);
 
         if (oldSize !== xuxemon.size) {
-          alert('El xuxemon ha evolucionat!');
+          this.isEvolving = true;
+          setTimeout(() => {
+            this.isEvolving = false;
+            alert('El xuxemon ha evolucionat!');
+          }, 1000);
         }
 
         const newIllness = updated.illnesses?.find(
           (i: any) => !previousIllnesses.find((p: any) => p.id === i.id)
         );
-        
+
         if (newIllness) {
           alert(`El teu xuxemon s'ha infectat de ${newIllness.name}!`);
         }
@@ -351,8 +356,7 @@ export class XuxedexComponent {
         this.loadInventory();
       },
       error: (err) => {
-        console.error("Error al aplicar vacuna:", err);
-      }
+        alert(err.error.message);}
     });
   }
 }

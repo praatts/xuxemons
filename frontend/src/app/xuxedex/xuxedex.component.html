@@ -118,15 +118,15 @@
 }
 
 @if (selectedXuxemon) {
-<div class="modal-overlay" (click)="closeDetail()">
-    <div class="modal" (click)="$event.stopPropagation()">
+<div class="modal-overlay" (click)="closeDetail()" role="dialog" aria-modal="true" [attr.aria-label]="selectedXuxemon.name">
+    <div class="modal" (click)="$event.stopPropagation()" #modalContent tabindex="-1">
 
         <h2>{{ selectedXuxemon.name }}</h2>
 
         <img [src]="'xuxemons/' + selectedXuxemon.id + '.png'" class="detail-img">
 
         <p><strong>Tipus:</strong> {{ selectedXuxemon.type }}</p>
-        <p><strong>Mida:</strong> {{ selectedXuxemon.size }}</p>
+        <p><strong>Mida:</strong> <span [class.evolving]="isEvolving">{{ selectedXuxemon.size }}</span></p>
 
         @if(selectedXuxemon.illnesses && selectedXuxemon.illnesses.length > 0) {
         <div class="illnesses">
