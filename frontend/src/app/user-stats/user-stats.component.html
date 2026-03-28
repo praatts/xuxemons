@@ -23,7 +23,43 @@
             <span class="fire">🔥</span>
             <span class="streak-number">{{streakValue}}</span>
         </div>
+        <div class="notifications-btn" (click)="openNotifications()">
+            <span>💬</span>
+            @if(unreadNotificationsCount > 0) {
+            <span class="badge">{{unreadNotificationsCount}}</span>
+            }
+        </div>
     </div>
+
+
+    @if(showNotifications) {
+    <div class="modal-overlay" (click)="openNotifications()">
+        <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+            <h2>Notificacions</h2>
+
+            <div class="notifications-list">
+                @if(notifications.length === 0) {
+                <p class="no-notifications">No tens notificacions</p>
+                }
+                @for(notification of notifications; track notification.id) {
+                <div class="notification-card" [class.unread]="!notification.read"
+                    (click)="markAsRead(notification.id)">
+                    <p class="notification-title">{{ notification.title }}</p>
+                    <p class="notification-message">{{ notification.message }}</p>
+                    <p class="notification-date">{{ formatDate(notification.created_at) }}</p>
+                </div>
+                }
+            </div>
+
+            <div class="modal-actions">
+                <button (click)="markAllAsRead()">Marcar totes com a llegides</button>
+                <button class="cancel-btn" (click)="openNotifications()">Tancar</button>
+            </div>
+        </div>
+    </div>
+    }
+
+
 
     <!-- FAVORITE -->
     <div class="favorite">
@@ -35,22 +71,17 @@
         <!-- TABS -->
         <div class="tabs">
             @for(ruta of rutas; track ruta.label){
-                <a
-                class="tab"
-                [routerLink]="ruta.route"
-                routerLinkActive="active"
-                [routerLinkActiveOptions]="{exact:ruta.exact}"
-                [hidden]="ruta.admin && !isAdmin"
-                >
-                    {{ruta.label}}
-                </a>
+            <a class="tab" [routerLink]="ruta.route" routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact:ruta.exact}" [hidden]="ruta.admin && !isAdmin">
+                {{ruta.label}}
+            </a>
             }
         </div>
 
         <!-- CONTENT -->
         <div class="content">
             @if(isRoot){
-                <div class="empty-background"></div>
+            <div class="empty-background"></div>
             }
             <router-outlet></router-outlet>
         </div>
