@@ -43,7 +43,7 @@ export class UserPrincipalComponent {
     { label: 'Usuario', route: 'principal/userstats', exact: false, img: 'user.png' },
     { label: 'xuxedex', route: 'principal/xuxedex', exact: true, img: 'xuxedex.png' },
     { label: 'Motxilla', route: 'principal/motxilla', exact: true, img: 'inventari.png' },
-    
+    { label: 'Amics', route: 'principal/friends', exact: true, img: 'friends.png' },    
   ];
 
   logout() {

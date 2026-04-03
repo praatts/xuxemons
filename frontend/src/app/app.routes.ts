@@ -11,6 +11,7 @@ import { MotxillaComponent } from './motxilla/motxilla.component';
 import { UserAdminComponent } from './user-admin/user-admin.component';
 import { adminGuardGuard } from './guards/admin-guard.guard';
 import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
+import { FriendsComponent } from './friends/friends.component';
 
 
 export const routes: Routes = [
@@ -73,6 +74,12 @@ export const routes: Routes = [
                         path: 'motxilla',
                         title: 'motxilla',
                         component: MotxillaComponent,
+                        canActivate: [authGuard]
+                    },
+                    {
+                        path: 'friends',
+                        title: 'Amics',
+                        component: FriendsComponent,
                         canActivate: [authGuard]
                     }
                 ]
