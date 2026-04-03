@@ -17,25 +17,25 @@ class FriendshipController extends Controller
         $user = Auth::guard('api')->user();
 
         $friends = Friendship::where('status', 'accepted')
-            ->where('user_id', $user->id)
-            ->orWhere('friend_id', $user->id)
+            ->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->orWhere('friend_id', $user->id);
+            })
             ->with(['user', 'friend'])
             ->get()
             ->map(function ($friendship) use ($user) {
-
-                //Determina qui és l'amic en la relació d'amistat (usuari contrari a l'autenticat)
-    
+                //Determina qui és l'amic en la relació d'amistat (l'altre usuari que no és el autenticat)
                 if ($friendship->user_id === $user->id) {
                     $friend = $friendship->friend;
                 } else {
                     $friend = $friendship->user;
                 }
-
+                
                 return [
+                    'friendship_id' => $friendship->id,
                     'id' => $friend->id,
                     'name' => $friend->name,
                     'player_id' => $friend->player_id,
-                    'friendship_id' => $friendship->id
                 ];
             });
 
@@ -52,21 +52,21 @@ class FriendshipController extends Controller
             'friend_id' => 'required|integer|exists:users,id'
         ]);
 
-        $friend = User::where('user_id', $request->friend_id)->first();
+        $friend = User::where('id', $request->friend_id)->first();
 
         if (!$friend) {
             return response()->json(['error' => 'Usuario no trobat'], 404);
         }
 
-        if ($friend->user_id === $user->id) {
+        if ($friend->id === $user->id) {
             return response()->json(['error' => 'No pots enviar-te una sol·licitud d\'amistat a tu mateix'], 400);
         }
 
         //Verifica bidireccionalment si ja existeix una relació d'amistat entre els dos usuaris
         $existing = Friendship::where(function ($query) use ($user, $friend) {
-            $query->where('user_id', $user->id)->where('friend_id', $friend->user_id);
+            $query->where('user_id', $user->id)->where('friend_id', $friend->id);
         })->orWhere(function ($query) use ($user, $friend) {
-            $query->where('user_id', $friend->user_id)->where('friend_id', $user->id);
+            $query->where('user_id', $friend->id)->where('friend_id', $user->id);
         })->first();
 
         if ($existing) {
@@ -75,7 +75,7 @@ class FriendshipController extends Controller
 
         Friendship::create([
             'user_id' => $user->id,
-            'friend_id' => $friend->user_id,
+            'friend_id' => $friend->id,
             'status' => 'pending'
         ]);
 
@@ -83,7 +83,6 @@ class FriendshipController extends Controller
             'message' => 'Sol·licitud d\'amistat enviada correctament a ' . $friend->player_id
         ], 200);
     }
-
     public function acceptFriendRequest($id)
     {
         $user = Auth::guard('api')->user();
@@ -104,13 +103,14 @@ class FriendshipController extends Controller
         $friendship->status = 'accepted';
         $friendship->save();
 
-        return response()->json([   
+        return response()->json([
             'message' => 'Solicitud d\'amistad aceptada'
         ]);
     }
 
     //Rebutja la sol·licitud d'amistat pendent
-    public function rejectFriendRequest($id) {
+    public function rejectFriendRequest($id)
+    {
         $user = Auth::guard('api')->user();
 
         $friendship = Friendship::where('id', $id)
@@ -134,16 +134,17 @@ class FriendshipController extends Controller
     }
 
     //Elimina la relació d'amistat entre el usuari autenticat i l'usuari contrari ja acceptada (bidireccional)
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $user = Auth::guard('api')->user();
 
         //Busca la relació d'amistat acceptada entre el usuari autenticat i l'usuari contrari (bidireccional)
         $friendship = Friendship::where('id', $id)
-        ->where('status', 'accepted')
-        ->where(function ($query) use ($user) {
-            $query->where('user_id', $user->id)
-              ->orWhere('friend_id', $user->id);
-        })->first();
+            ->where('status', 'accepted')
+            ->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->orWhere('friend_id', $user->id);
+            })->first();
 
         if (!$friendship) {
             return response()->json([
@@ -157,5 +158,40 @@ class FriendshipController extends Controller
         return response()->json([
             'message' => 'Relació d\'amistat entre els usuaris eliminada correctament'
         ]);
+    }
+
+    // Retorna les sol·licituds d'amistat pendents rebudes pel usuari autenticat
+    public function getRequests()
+    {
+        $user = Auth::guard('api')->user();
+
+        $requests = Friendship::where('friend_id', $user->id)
+            ->where('status', 'pending')
+            ->with('user')
+            ->get()
+            ->map(function ($friendship) {
+                return [
+                    'friendship_id' => $friendship->id,
+                    'id' => $friendship->user->id,
+                    'name' => $friendship->user->name,
+                    'player_id' => $friendship->user->player_id,
+                ];
+            });
+
+        return response()->json($requests);
+    }
+
+    public function getAllPlayers()
+    {
+        $user = Auth::guard('api')->user();
+
+        //Retorna tots els usuaris actius excepte l'usuari autenticat
+        $user = Auth::guard('api')->user();
+        $users = User::where('id', '!=', $user->id)
+            ->where('status', 1)
+            ->select('id', 'name', 'player_id')
+            ->get();
+
+        return response()->json($users);
     }
 }

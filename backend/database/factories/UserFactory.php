@@ -24,7 +24,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'player_id' => fake()->unique()->regexify('[A-Za-z]+[0-9]{4}'),
+            'player_id' => fake()->unique()->regexify('[A-Za-z]{4}#[0-9]{4}'),
             'name' => fake()->name(),
             'surname' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
@@ -46,7 +46,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

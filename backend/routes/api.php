@@ -14,6 +14,7 @@ use App\Http\Middleware\JwtMiddleware;
 use App\Models\Inventory;
 use App\Models\OwnedXuxemonIllness;
 use App\Models\OwnedXuxemon;
+use App\Http\Controllers\API\FriendshipController;
 
 //http://localhost:8000/api/
 //Comprobar si el email ya existe
@@ -80,7 +81,14 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
-    Route::delete('/notifications/read', [NotificationController::class,'deleteAllRead']);
+    Route::delete('/notifications/read', [NotificationController::class, 'deleteAllRead']);
 
-    
+    // FRIENDSHIPS
+    Route::get('/friends', [FriendshipController::class, 'index']);
+    Route::get('/friends/players', [FriendshipController::class, 'getAllPlayers']);
+    Route::get('/friends/requests', [FriendshipController::class, 'getRequests']);
+    Route::post('/friends/request', [FriendshipController::class, 'sendFriendRequest']);
+    Route::put('/friends/{id}/accept', [FriendshipController::class, 'acceptFriendRequest']);
+    Route::put('/friends/{id}/reject', [FriendshipController::class, 'rejectFriendRequest']);
+    Route::delete('/friends/{id}', [FriendshipController::class, 'destroy']);
 });

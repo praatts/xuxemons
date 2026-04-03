@@ -1,1 +1,71 @@
-<p>friends works!</p>
+<div class="friends-container">
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button [class.active]="activeTab === 'search'" (click)="activeTab = 'search'">Cercar</button>
+        <button [class.active]="activeTab === 'requests'" (click)="activeTab = 'requests'">Sol·licituds</button>
+        <button [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'">Amics</button>
+    </div>
+
+    <!-- SEARCH -->
+    @if(activeTab === 'search') {
+    <div class="search-bar">
+        <input type="text" [formControl]="searchControl" placeholder="Cerca un jugador...">
+    </div>
+    <div class="list">
+        @if(searchResult.length === 0 && searchControl.value && searchControl.value.length >= 3) {
+        <p class="no-results">No s'han trobat jugadors</p>
+        }
+        @if(displayUsers.length >= 0) {
+        @for(user of displayUsers; track user.id) {
+        <div class="card">
+            <div class="card-info">
+                <p class="card-name">{{ user.name }}</p>
+                <p class="card-player-id">{{ user.player_id }}</p>
+            </div>
+            <button class="action-btn" (click)="sendRequest(user.id)">+ Amic</button>
+        </div>
+        }
+        }
+    </div>
+    }
+
+    <!-- REQUESTS -->
+    @if(activeTab === 'requests') {
+    <div class="list">
+        @if(requests.length === 0) {
+        <p class="no-results">No tens sol·licituds pendents</p>
+        }
+        @for(request of requests; track request.friend_id) {
+        <div class="card">
+            <div class="card-info">
+                <p class="card-name">{{ request.name }}</p>
+                <p class="card-player-id">{{ request.player_id }}</p>
+            </div>
+            <div class="card-actions">
+                <button class="action-btn accept" (click)="acceptRequest(request.friend_id)">✓</button>
+                <button class="action-btn reject" (click)="rejectRequest(request.friend_id)">✗</button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+
+    @if(activeTab === 'friends') {
+    <div class="list">
+        @if(friends.length === 0) {
+        <p class="no-results">Encara no tens amics</p>
+        }
+        @for(friend of friends; track friend.friend_id) {
+        <div class="card">
+            <div class="card-info">
+                <p class="card-name">{{ friend.name }}</p>
+                <p class="card-player-id">{{ friend.player_id }}</p>
+            </div>
+            <button class="action-btn reject" (click)="deleteFriend(friend.friend_id)">Eliminar</button>
+        </div>
+        }
+    </div>
+    }
+
+</div>

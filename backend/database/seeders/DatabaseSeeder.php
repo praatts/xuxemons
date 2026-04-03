@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt(123456),
         ]);
 
+        User::factory(10)->create();
+
         $this->call([
             IllnessSeeder::class,
             ItemsSeeder::class,
