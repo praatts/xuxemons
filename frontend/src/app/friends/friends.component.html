@@ -43,8 +43,8 @@
                 <p class="card-player-id">{{ request.player_id }}</p>
             </div>
             <div class="card-actions">
-                <button class="action-btn accept" (click)="acceptRequest(request.friend_id)">✓</button>
-                <button class="action-btn reject" (click)="rejectRequest(request.friend_id)">✗</button>
+                <button class="action-btn accept" (click)="acceptRequest(request.friendship_id!)">✓</button>
+                <button class="action-btn reject" (click)="rejectRequest(request.friendship_id!)">✗</button>
             </div>
         </div>
         }
