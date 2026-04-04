@@ -88,7 +88,9 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/friends/players', [FriendshipController::class, 'getAllPlayers']);
     Route::get('/friends/requests', [FriendshipController::class, 'getRequests']);
     Route::get('/friends/status', [FriendshipController::class, 'getStatus']);
+    Route::get('/friends/requests/sent', [FriendshipController::class, 'getSentRequests']);
     Route::post('/friends/request', [FriendshipController::class, 'sendFriendRequest']);
+    Route::delete('/friends/{id}/revoke', [FriendshipController::class, 'revokeFriendRequest']);
     Route::put('/friends/{id}/accept', [FriendshipController::class, 'acceptFriendRequest']);
     Route::put('/friends/{id}/reject', [FriendshipController::class, 'rejectFriendRequest']);
     Route::delete('/friends/{id}', [FriendshipController::class, 'destroy']);

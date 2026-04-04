@@ -43,4 +43,8 @@ export class FriendshipService {
   getStatus(): Observable<any> {
     return this.http.get(`${this.apiUrl}/friends/status`);
   }
+
+  getSentRequests(): Observable<Friend[]> {
+    return this.http.get<Friend[]>(`${this.apiUrl}/friends/requests/sent`);
+  }
 }

@@ -41,11 +41,11 @@
 
     <!-- REQUESTS -->
     @if(activeTab === 'requests') {
-    <div class="list">
-        @if(requests.length === 0) {
-        <p class="no-results">No tens sol·licituds pendents</p>
-        }
-        @for(request of requests; track request.friend_id) {
+<div class="list">
+
+    @if(requests.length > 0) {
+        <p class="list-title">Rebudes</p>
+        @for(request of requests; track request.friendship_id) {
         <div class="card">
             <div class="card-info">
                 <p class="card-name">{{ request.name }}</p>
@@ -57,8 +57,27 @@
             </div>
         </div>
         }
-    </div>
     }
+
+    @if(sentRequests.length > 0) {
+        <p class="list-title">Enviades</p>
+        @for(request of sentRequests; track request.friendship_id) {
+        <div class="card">
+            <div class="card-info">
+                <p class="card-name">{{ request.name }}</p>
+                <p class="card-player-id">{{ request.player_id }}</p>
+            </div>
+            <button class="action-btn reject" (click)="revokeRequest(request.friendship_id!)">Revocar</button>
+        </div>
+        }
+    }
+
+    @if(requests.length === 0 && sentRequests.length === 0) {
+        <p class="no-results">No tens sol·licituds pendents</p>
+    }
+
+</div>
+}
 
     @if(activeTab === 'friends') {
     <div class="list">

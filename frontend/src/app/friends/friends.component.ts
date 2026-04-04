@@ -17,6 +17,7 @@ export class FriendsComponent {
   friends: Friend[] = [];
   requests: Friend[] = [];
   friendStatuses: { [key: number]: any } = {}; // Objecte per emmagatzemar els estats de les relacions
+  sentRequests: Friend[] = [];
   searchResult: any[] = [];
   allUsers: any[] = [];
   activeTab: 'search' | 'requests' | 'friends' = 'search';
@@ -28,6 +29,7 @@ export class FriendsComponent {
     this.loadAllUsers();
     this.loadFriends();
     this.loadRequests();
+    this.loadSentRequests();
 
     this.searchControl.valueChanges.pipe(
       distinctUntilChanged(),
@@ -71,6 +73,13 @@ export class FriendsComponent {
     this.friendshipService.getRequests().subscribe({
       next: (data) => this.requests = data,
       error: (err) => console.log('Error carregant sol·licituds:', err)
+    });
+  }
+
+  loadSentRequests() {
+    this.friendshipService.getSentRequests().subscribe({
+      next: (data) => this.sentRequests = data,
+      error: (err) => console.log('Error carregant sol·licituds enviades:', err)
     });
   }
 

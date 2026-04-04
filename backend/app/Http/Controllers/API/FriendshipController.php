@@ -30,7 +30,7 @@ class FriendshipController extends Controller
                 } else {
                     $friend = $friendship->user;
                 }
-                
+
                 return [
                     'friendship_id' => $friendship->id,
                     'id' => $friend->id,
@@ -199,7 +199,8 @@ class FriendshipController extends Controller
 
     //Mètode per obtenir l'estat de totes les relacions d'amistats
 
-    public function getStatus() {
+    public function getStatus()
+    {
         $user = Auth::guard('api')->user();
         $result = [];
 
@@ -207,19 +208,68 @@ class FriendshipController extends Controller
             ->orWhere('friend_id', $user->id)
             ->get();
 
-            foreach ($friendships as $friendship) {
-                if ($friendship->user_id == $user->id) {
-                    $other_id = $friendship->friend_id;
-                } else {
-                    $other_id = $friendship->user_id;
-                }
-                $result[$other_id] = [
-                    'status' => $friendship->status,
-                    'friendship_id' => $friendship->id,
-                    'sender' => $friendship->user_id === $user->id //Retorna true/false si l'usuari autenticat es el remitent de la sol·licitud d'amistat
-                ];
+        foreach ($friendships as $friendship) {
+            if ($friendship->user_id == $user->id) {
+                $other_id = $friendship->friend_id;
+            } else {
+                $other_id = $friendship->user_id;
             }
+            $result[$other_id] = [
+                'status' => $friendship->status,
+                'friendship_id' => $friendship->id,
+                'sender' => $friendship->user_id === $user->id //Retorna true/false si l'usuari autenticat es el remitent de la sol·licitud d'amistat
+            ];
+        }
 
         return response()->json($result);
+    }
+
+    //Mètode per obtenir les sol·licituds d'amistat pendents enviades pel usuari autenticat
+
+    public function getSentRequests()
+    {
+
+        $user = Auth::guard('api')->user();
+
+        $requests = Friendship::where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->with('friend')
+            ->get()
+            ->map(function ($friendship) {
+                return [
+                    'friendship_id' => $friendship->id,
+                    'id' => $friendship->friend->id,
+                    'name' => $friendship->friend->name,
+                    'player_id' => $friendship->friend->player_id,
+                ];
+            });
+
+            return response()->json($requests);
+    
+
+    }
+
+    //Mètode per eliminar una sol·licitud enviada, però no acceptada encara (rebutjar la sol·licitud enviada)
+
+    public function revokeFriendRequest($id)
+    {
+        $user = Auth::guard('api')->user();
+
+        $friendship = Friendship::where('id', $id)
+            ->where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$friendship) {
+            return response()->json([
+                'error' => 'Solicitud d\'amistad no trobada'
+            ], 404);
+        }
+
+        $friendship->delete();
+
+        return response()->json([
+            'message' => 'Solicitud d\'amistad revocada correctament'
+        ]);
     }
 }
