@@ -107,7 +107,10 @@ export class FriendsComponent {
 
   deleteFriend(friend_id: number) {
     this.friendshipService.deleteFriend(friend_id).subscribe({
-      next: () => this.friends = this.friends.filter(f => f.friend_id !== friend_id), //Actualitza la llista d'amics eliminant el que s'ha borrat
+      next: () => {
+        alert('Amic eliminat correctament!');
+        this.friends = this.friends.filter(f => f.friendship_id !== friend_id); //Actualitza la llista d'amics eliminant el que s'ha borrat
+      },
       error: (err) => console.log('Error eliminant amic:', err)
     });
   }

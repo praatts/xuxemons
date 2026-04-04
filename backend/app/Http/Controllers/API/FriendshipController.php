@@ -181,6 +181,8 @@ class FriendshipController extends Controller
         return response()->json($requests);
     }
 
+    //Mètode per obtenir tots els usuaris actius menys l'autenticat (gestió de sol·licituds d'amistat)
+
     public function getAllPlayers()
     {
         $user = Auth::guard('api')->user();
@@ -193,5 +195,31 @@ class FriendshipController extends Controller
             ->get();
 
         return response()->json($users);
+    }
+
+    //Mètode per obtenir l'estat de totes les relacions d'amistats
+
+    public function getStatus() {
+        $user = Auth::guard('api')->user();
+        $result = [];
+
+        $friendships = Frienship::where('user_id', $user->id)
+            ->orWhere('friend_id', $user->id)
+            ->get();
+
+            foreach ($friendships as $friendship) {
+                if ($friendship->user_id == $user->id) {
+                    $other_id = $friendship->friend_id;
+                } else {
+                    $other_id = $friendship->user_id;
+                }
+                $result[$other_id] = [
+                    'status' => $friendship->status,
+                    'friendship_id' => $friendship->id,
+                    'sender' => $friendship->user_id === $user->id //Retorna true/false si l'usuari autenticat es el remitent de la sol·licitud d'amistat
+                ];
+            }
+
+        return response()->json($result);
     }
 }

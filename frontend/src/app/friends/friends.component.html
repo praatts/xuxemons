@@ -2,7 +2,7 @@
 
     <!-- TABS -->
     <div class="tabs">
-        <button [class.active]="activeTab === 'search'" (click)="activeTab = 'search'">Cercar</button>
+        <button [class.active]="activeTab === 'search'" (click)="activeTab = 'search'">Usuaris</button>
         <button [class.active]="activeTab === 'requests'" (click)="activeTab = 'requests'">Sol·licituds</button>
         <button [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'">Amics</button>
     </div>
@@ -62,7 +62,7 @@
                 <p class="card-name">{{ friend.name }}</p>
                 <p class="card-player-id">{{ friend.player_id }}</p>
             </div>
-            <button class="action-btn reject" (click)="deleteFriend(friend.friend_id)">Eliminar</button>
+            <button class="action-btn reject" (click)="deleteFriend(friend.friendship_id!)">Eliminar</button>
         </div>
         }
     </div>
