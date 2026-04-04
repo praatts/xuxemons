@@ -3,7 +3,7 @@ import { Friend } from '../../../interfaces/friend';
 import { FormControl } from '@angular/forms';
 import { FriendshipService } from '../services/friendship.service';
 import { UserService } from '../services/user.service';
-import { debounceTime, distinct, distinctUntilChanged, filter } from 'rxjs';
+import { distinctUntilChanged, interval } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -30,6 +30,14 @@ export class FriendsComponent {
     this.loadFriends();
     this.loadRequests();
     this.loadSentRequests();
+
+    //Actualitza les dades cada 2 segons per mantenir la informació actualitzada sense necessitat de recarregar la pàgina
+    interval(2000).subscribe(() => {
+      this.loadStatuses();
+      this.loadFriends();
+      this.loadRequests();
+      this.loadSentRequests();
+    });
 
     this.searchControl.valueChanges.pipe(
       distinctUntilChanged(),
