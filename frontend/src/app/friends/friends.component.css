@@ -111,6 +111,10 @@
     background-color: #16a34a;
 }
 
+.action-btn.pending {
+    background-color: #f59e0b;
+}
+
 .action-btn.reject {
     background-color: #FF0000;
 }

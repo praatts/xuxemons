@@ -134,9 +134,10 @@ export class FriendsComponent {
   }
 
   revokeRequest(friendship_id: number) {
-    this.friendshipService.deleteFriend(friendship_id).subscribe({
+    this.friendshipService.revokeRequest(friendship_id).subscribe({
       next: () => {
         this.loadStatuses();
+        this.loadSentRequests();
         alert('Sol·licitud revocada');
       },
       error: (err) => console.log('Error revocant sol·licitud:', err)

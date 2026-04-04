@@ -29,7 +29,7 @@
             <button class="action-btn reject"
                 (click)="revokeRequest(friendStatuses[user.id].friendship_id)">Revocar</button>
             } @else if(friendStatuses[user.id].status === 'pending') {
-            <button class="action-btn" disabled>Pendent</button>
+            <button class="action-btn pending" disabled>Pendent</button>
             } @else if(friendStatuses[user.id].status === 'accepted') {
             <button class="action-btn accept" disabled>✓ Amic</button>
             }

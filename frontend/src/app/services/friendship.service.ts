@@ -47,4 +47,8 @@ export class FriendshipService {
   getSentRequests(): Observable<Friend[]> {
     return this.http.get<Friend[]>(`${this.apiUrl}/friends/requests/sent`);
   }
+
+  revokeRequest(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/friends/${id}/revoke`);
+  }
 }
