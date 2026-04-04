@@ -23,7 +23,16 @@
                 <p class="card-name">{{ user.name }}</p>
                 <p class="card-player-id">{{ user.player_id }}</p>
             </div>
+            @if(!friendStatuses[user.id]) {
             <button class="action-btn" (click)="sendRequest(user.id)">+ Amic</button>
+            } @else if(friendStatuses[user.id].status === 'pending' && friendStatuses[user.id].is_sender) {
+            <button class="action-btn reject"
+                (click)="revokeRequest(friendStatuses[user.id].friendship_id)">Revocar</button>
+            } @else if(friendStatuses[user.id].status === 'pending') {
+            <button class="action-btn" disabled>Pendent</button>
+            } @else if(friendStatuses[user.id].status === 'accepted') {
+            <button class="action-btn accept" disabled>✓ Amic</button>
+            }
         </div>
         }
         }

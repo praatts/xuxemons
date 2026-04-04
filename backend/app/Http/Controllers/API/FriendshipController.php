@@ -203,7 +203,7 @@ class FriendshipController extends Controller
         $user = Auth::guard('api')->user();
         $result = [];
 
-        $friendships = Frienship::where('user_id', $user->id)
+        $friendships = Friendship::where('user_id', $user->id)
             ->orWhere('friend_id', $user->id)
             ->get();
 

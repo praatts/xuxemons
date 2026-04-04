@@ -39,4 +39,8 @@ export class FriendshipService {
   getAllPlayers(): Observable<any> {
     return this.http.get(`${this.apiUrl}/friends/players`);
   }
+
+  getStatus(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/friends/status`);
+  }
 }

@@ -16,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class FriendsComponent {
   friends: Friend[] = [];
   requests: Friend[] = [];
+  friendStatuses: { [key: number]: any } = {}; // Objecte per emmagatzemar els estats de les relacions
   searchResult: any[] = [];
   allUsers: any[] = [];
   activeTab: 'search' | 'requests' | 'friends' = 'search';
@@ -73,9 +74,17 @@ export class FriendsComponent {
     });
   }
 
+  loadStatuses() {
+    this.friendshipService.getStatus().subscribe({
+      next: (data) => this.friendStatuses = data,
+      error: (err) => console.log('Error carregant estats:', err)
+    });
+  }
+
   sendRequest(friend_id: number) {
     this.friendshipService.sendRequest(friend_id).subscribe({
       next: () => {
+        this.loadStatuses(); //Actualitza els estats després d'enviar la sol·licitud
         alert('Sol·licitud enviada!');
         this.searchResult = [];
         this.searchControl.reset();
@@ -112,6 +121,16 @@ export class FriendsComponent {
         this.friends = this.friends.filter(f => f.friendship_id !== friend_id); //Actualitza la llista d'amics eliminant el que s'ha borrat
       },
       error: (err) => console.log('Error eliminant amic:', err)
+    });
+  }
+
+  revokeRequest(friendship_id: number) {
+    this.friendshipService.deleteFriend(friendship_id).subscribe({
+      next: () => {
+        this.loadStatuses();
+        alert('Sol·licitud revocada');
+      },
+      error: (err) => console.log('Error revocant sol·licitud:', err)
     });
   }
 }
