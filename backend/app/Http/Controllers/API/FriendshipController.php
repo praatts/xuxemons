@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Friendship;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -102,6 +103,16 @@ class FriendshipController extends Controller
 
         $friendship->status = 'accepted';
         $friendship->save();
+
+        //Crea una notificació per l'usuari remitent de la sol·licitud d'amistat
+        //  informant que la sol·licitud ha estat acceptada
+
+        Notification::create([
+            'user_id' => $friendship->user_id,
+            'title' => 'Solicitud d\'amistad aceptada',
+            'message' => 'La solicitud d\'amistad ha estat acceptada per ' . $user->player_id . 
+            '. Ara sou amics!'
+        ]);
 
         return response()->json([
             'message' => 'Solicitud d\'amistad aceptada'
