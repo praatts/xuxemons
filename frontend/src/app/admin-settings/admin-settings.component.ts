@@ -17,9 +17,10 @@ export class AdminSettingsComponent {
   showDeleteDialog = false;
   illnesses: Illness[] = [];
 
-  private timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+  private timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/; // Regex per validar el format d'hora HH:mm (00:00 a 23:59)
 
   constructor(private settingsService: SettingsService, private illnessService: IllnessService) {
+    //Creació del formulari reactiu amb els FormControls necessaris per les configuracions i els percentatges d'infecció, afegint les validacions corresponents a cada camp.
     this.settingsForm = new FormGroup({
       littleToMiddle: new FormControl('', [Validators.min(3), Validators.max(10)]),
       middleToBig: new FormControl('', [Validators.min(5), Validators.max(15)]),
@@ -32,18 +33,22 @@ export class AdminSettingsComponent {
     });
   }
 
+  //Carrega la configuració actual des del backend i la mostra al formulari, també carrega els percentatges d'infecció de les malalties i els mostra als camps corresponents del formulari.
   ngOnInit() {
     this.loadSettings();
     this.loadIllnesses();
   }
 
+  //Mètode per carregar la configuració actual des del backend i mostrar-la al formulari.
   loadSettings() {
     this.settingsService.getSettings().subscribe((data) => {
+      //Mapeig de les configuracions carregades per mostrar-les als camps corresponents del formulari utilitzant el key de cada configuració per identificar a quin camp correspon i el seu valor.
       const mapped = data.map(setting => ({
         key: setting.key,
         value: setting.value
       }));
 
+      //Mapeig de les configuracions carregades per mostrar-les als camps corresponents del formulari.
       mapped.forEach(setting => {
         switch (setting.key) {
           case 'little_to_mid':
@@ -67,6 +72,7 @@ export class AdminSettingsComponent {
   }
 
   loadIllnesses() {
+    //Mètode per carregar les malalties i els seus percentatges d'infecció des del backend i mostrar-los al formulari.
     this.illnessService.getIllnesses().subscribe((illnesses) => {
         this.illnesses = illnesses;
         illnesses.forEach(({ key, infection_percentage }) => {
@@ -75,10 +81,12 @@ export class AdminSettingsComponent {
     });
 }
 
+  //Mètode per obtenir el nom del control del formulari corresponent al percentatge d'infecció d'una malaltia, utilitzat a la vista per mostrar els camps de cada malaltia dinàmicament.
   illnessControlName(key: string): string {
     return `illness_${key}`;
   }
 
+  //Guarda les configuracions i els percentatges d'infecció modificats al backend, mostrant un missatge d'èxit o error segons el resultat de les operacions.
   saveSettings() {
     if (this.settingsForm.invalid) {
       this.settingsForm.markAllAsTouched();
@@ -111,7 +119,7 @@ export class AdminSettingsComponent {
     });
   }
 
-  //VALIDACION DE ERRORES
+  //VALIDACIÓ D'ERRORS
   getErrorMessage(controlName: string): string {
     const control = this.settingsForm.get(controlName);
 
@@ -119,16 +127,17 @@ export class AdminSettingsComponent {
 
     const errors = control.errors;
 
-    if (errors['required']) return 'Este campo es obligatorio';
-    if (errors['timeFormat']) return 'Formato de hora no válido (HH:mm)';
-    if (errors['minTime']) return `La hora mínima es ${errors['minTime'].min}`;
-    if (errors['maxTime']) return `La hora máxima es ${errors['maxTime'].max}`;
-    if (errors['min']) return `El valor mínimo es ${errors['min'].min}`;
-    if (errors['max']) return `El valor máximo es ${errors['max'].max}`;
+    if (errors['required']) return 'Aquest camp és obligatori';
+    if (errors['timeFormat']) return 'Format d\'hora no vàlid (HH:mm)';
+    if (errors['minTime']) return `L'hora mínima és ${errors['minTime'].min}`;
+    if (errors['maxTime']) return `L'hora màxima és ${errors['maxTime'].max}`;
+    if (errors['min']) return `El valor mínim és ${errors['min'].min}`;
+    if (errors['max']) return `El valor màxim és ${errors['max'].max}`;
 
-    return 'Error de validación';
+    return 'Error de validació';
   }
 
+  //Mètode auxiliar per convertir un string de temps en format HH:mm a minuts totals, utilitzat per les validacions de temps del formulari.
   private timeToMinutes(time: string): number {
     if (!time) return 0;
 
@@ -136,18 +145,18 @@ export class AdminSettingsComponent {
     return hours * 60 + minutes;
   }
 
+  //Mètode per validar que el camp d'hora del formulari té un format vàlid (HH:mm) i està dins del rang permès (validador personalitzat)
   timeFormatValidator() {
     const regex = this.timeRegex;
 
     return (control: any) => {
       if (!control.value) return null;
 
-      return regex.test(control.value)
-        ? null
-        : { timeFormat: true };
+      return regex.test(control.value) ? null : { timeFormat: true }; //.test() retorna true si el format és vàlid, si es false retorna el missatge d'error indicant que el format d'hora no és vàlid.
     };
   }
 
+  //Mètode per validar que el camp d'hora del formulari és posterior a una hora mínima especificada (validador personalitzat)
   minTime(minTime: string) {
     return (control: any) => {
       if (!control.value || !this.timeRegex.test(control.value)) {
@@ -157,12 +166,12 @@ export class AdminSettingsComponent {
       const value = this.timeToMinutes(control.value);
       const min = this.timeToMinutes(minTime);
 
-      return value < min
-        ? { minTime: { min: minTime } }
+      return value < min ? { minTime: { min: minTime } }
         : null;
     };
   }
 
+  //Mètode per validar que el camp d'hora del formulari és anterior a una hora màxima especificada (validador personalitzat)
   maxTime(maxTime: string) {
     return (control: any) => {
       if (!control.value || !this.timeRegex.test(control.value)) {
@@ -172,9 +181,7 @@ export class AdminSettingsComponent {
       const value = this.timeToMinutes(control.value);
       const max = this.timeToMinutes(maxTime);
 
-      return value > max
-        ? { maxTime: { max: maxTime } }
-        : null;
+      return value > max ? { maxTime: { max: maxTime } } : null;
     };
   }
 
