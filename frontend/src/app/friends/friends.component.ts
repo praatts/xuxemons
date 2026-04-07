@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Friend } from '../../../interfaces/friend';
 import { FormControl } from '@angular/forms';
 import { FriendshipService } from '../services/friendship.service';
 import { UserService } from '../services/user.service';
-import { debounceTime, distinctUntilChanged, interval } from 'rxjs';
+import { debounceTime, distinctUntilChanged, interval, Subscription } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -13,7 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './friends.component.html',
   styleUrl: './friends.component.css'
 })
-export class FriendsComponent {
+export class FriendsComponent implements OnInit, OnDestroy {
   friends: Friend[] = [];
   requests: Friend[] = [];
   friendStatuses: { [key: number]: any } = {}; // Objecte per emmagatzemar els estats de les relacions
@@ -22,6 +22,7 @@ export class FriendsComponent {
   allUsers: any[] = [];
   activeTab: 'search' | 'requests' | 'friends' = 'search';
   searchControl = new FormControl('');
+  private subscriptions = new Subscription();
 
   constructor(private friendshipService: FriendshipService) { }
 
@@ -31,27 +32,35 @@ export class FriendsComponent {
     this.loadRequests();
     this.loadSentRequests();
 
-    //Actualitza les dades cada 2 segons per mantenir la informació actualitzada sense necessitat de recarregar la pàgina
-    interval(2000).subscribe(() => {
-      this.loadStatuses();
-      this.loadFriends();
-      this.loadRequests();
-      this.loadSentRequests();
-    });
+    this.subscriptions.add(
+      interval(2000).subscribe(() => {
+        this.loadStatuses();
+        this.loadFriends();
+        this.loadRequests();
+        this.loadSentRequests();
+      })
+    );
 
-    this.searchControl.valueChanges.pipe(
-      distinctUntilChanged(),
-      debounceTime(300)
-    ).subscribe(value => {
-      if (!!value && value.length >= 3) {
-        this.searchResult = this.allUsers.filter(
-          u => u.player_id.toLowerCase().includes(value.toLowerCase())
-        );
-      } else {
-        this.searchResult = [];
-      }
-    });
+    this.subscriptions.add(
+      this.searchControl.valueChanges.pipe(
+        distinctUntilChanged(),
+        debounceTime(300)
+      ).subscribe(value => {
+        if (!!value && value.length >= 3) {
+          this.searchResult = this.allUsers.filter(
+            u => u.player_id.toLowerCase().includes(value.toLowerCase())
+          );
+        } else {
+          this.searchResult = [];
+        }
+      })
+    );
   }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
 
   get displayUsers(): any[] {
     const value = this.searchControl.value;
