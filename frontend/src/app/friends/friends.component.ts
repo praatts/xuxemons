@@ -15,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class FriendsComponent implements OnInit, OnDestroy {
   friends: Friend[] = [];
   requests: Friend[] = [];
-  friendStatuses: { [key: number]: any } = {};
+  friendStatuses: { [key: number]: any } = {}; // Estructura: { user_id : { status: accepted | pending, friendship_id: number, sender: boolean } }
   sentRequests: Friend[] = [];
   searchResult: any[] = [];
   allUsers: any[] = [];

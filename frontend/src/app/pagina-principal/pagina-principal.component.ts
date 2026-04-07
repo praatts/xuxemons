@@ -8,6 +8,4 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './pagina-principal.component.html',
   styleUrl: './pagina-principal.component.css'
 })
-export class PaginaPrincipalComponent {
-
-}
+export class PaginaPrincipalComponent {}

@@ -27,6 +27,7 @@ export class UserPrincipalComponent {
   pfpValue = '';
 
   constructor(private userService: UserService, private router: Router, public theme: ThemeService, private authService: AuthService) {
+    //Obté les dades de l'usuari autenticat i les assigna a les variables corresponents per mostrar-les al HTML.
     this.userService.getUser().subscribe((u: any) => {
       this.nameValue = u.name || '';
       this.uidValue = u.player_id || '';
@@ -37,6 +38,7 @@ export class UserPrincipalComponent {
   
   botonInfoHover = false;
 
+  //Rutes del menú lateral
   rutas: rutas[] = [
     //{ label: 'Inicio', route: 'inicio', exact: true, img: 'inicio.png' },
     { label: 'Pàgina principal', route: 'principal', exact: true, img: 'Home.png'},
@@ -46,6 +48,7 @@ export class UserPrincipalComponent {
     { label: 'Amics', route: 'principal/friends', exact: true, img: 'friends.png' },    
   ];
 
+  //Funció per fer logout de l'usuari, eliminant el token d'autenticació i redirigint a la pàgina d'inici de sessió.
   logout() {
     this.authService.logout().subscribe({
       next: () => {
