@@ -25,6 +25,7 @@ interface rutas {
 export class UserStatsComponent {
 
   constructor(public theme: ThemeService, private userService: UserService, private router: Router, private notificationService: NotificationService) {
+    //Crida al servei per obtenir les dades de l'usuari autenticat i assignar-les a les variables corresponents per mostrar-les al HTML.
     this.userService.getUser().subscribe((u: any) => {
       this.nameValue = u.name || '';
       this.idValue = u.player_id || '';
@@ -38,6 +39,7 @@ export class UserStatsComponent {
     });
   }
 
+  //HostBinding per aplicar la classe CSS "dark-mode" al component quan el mode fosc està activat al servei de tema. Això permet canviar l'estil del component segons el mode seleccionat per l'usuari.
   @HostBinding('class.dark-mode')
   get darkMode() {
     return this.theme.darkMode;
@@ -58,16 +60,19 @@ export class UserStatsComponent {
   notifications: Notification[] = [];
   unreadNotificationsCount = 0;
 
+  //Definició de les rutes del menú lateral, amb una propietat "admin" per indicar si la ruta és només per administradors o no.
   rutas: rutas[] = [
     { label: 'Modificar Usuario', route: 'userinfo', exact: true, admin: false },
     { label: 'Usuarios', route: 'useradmin', exact: true, admin: true },
     { label: 'Ajustes', route: 'adminsettings', exact: true, admin: true }
   ];
 
+  //Getter per comprovar si la ruta actual és la ruta principal de "userstats", per mostrar o ocultar certs elements al HTML segons la ruta actual.
   get isRoot() {
     return this.router.url.endsWith('/userstats');
   }
 
+  //Mètode per carregar les notificacions de l'usuari autenticat quan el component s'inicialitza.
   ngOnInit() {
     this.loadNotifications();
   }
@@ -84,6 +89,7 @@ export class UserStatsComponent {
     });
   }
 
+  //Mètode per mostrar/ocultar el panell de notificacions al clicar el botó de notificacions. (Segons aquesta variable s'obra un modal al HTML per mostrar les notificacions)
   openNotifications() {
     this.showNotifications = !this.showNotifications;
   }
