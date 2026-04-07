@@ -40,7 +40,7 @@ export class MotxillaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    //Carrega l'inventari de l'usuari autenticat i l'expandeix per mostrar cada slot individualment, emetent els canvis als components subscrits.
     this.motxillaService.getInventory().subscribe({
       next: (data) => {
         const expanded = this.expandSlots(data);
@@ -52,14 +52,14 @@ export class MotxillaComponent implements OnInit {
 
     this.searchControl.valueChanges.subscribe(value => this.searchItem(value));
 
-    //usuario actual
+    //Carrega l'usuari actual i comprova si és admininistrador per mostrar els botons d'administració a la vista (donar xuxes).
     this.userService.getUser().subscribe((user: any) => {
       if (user?.role === 'admin') {
         this.isAdmin = true;
       }
     });
   }
-
+  //Mètode per mostrar els slots de l'inventari correctament, dividint els slots segons si son apilables o no.
   expandSlots(motxilla: any[]): any[] {
    const result: any[] = [];
     for (let slot of motxilla) {
@@ -80,6 +80,7 @@ export class MotxillaComponent implements OnInit {
     return result;
   }
 
+  //Mètode per filtrar els objectes de l'inventari del usuari autenticat segons el tipus de filtre seleccionat (tots, apilables o no apilables).
   filterItems(filter: string): void {
     const currentInventory = this.motxillaService.getCurrentInventory();
     if (filter == 'all') {
@@ -91,11 +92,13 @@ export class MotxillaComponent implements OnInit {
     }
   }
 
+  //Mètode per seleccionar un slot de l'inventari, emmagatzemant el slot seleccionat i el seu index per mostrar els detalls del slot a la vista.
   selectSlot(slot: any, index: number): void {
     this.selectedSlot = this.selectedIndex === index ? null : slot;
     this.selectedIndex = this.selectedIndex === index ? -1 : index;
   }
 
+  //Mètode per buscar un objecte a l'inventari de l'usuari autenticat segons el nom de l'objecte.
   searchItem(value: string | null): void {
     const currentInventory = this.motxillaService.getCurrentInventory();
     this.filteredMotxilla = currentInventory.filter(slot =>
@@ -103,6 +106,7 @@ export class MotxillaComponent implements OnInit {
     );
   }
 
+  //Mètode per carregar la llista de tots els usuaris registrats (només accessible per l'admin) per poder realitzar accions d'administració sobre els usuaris (donar xuxes).
   loadUsers() {
     if (this.isAdmin) {
       this.userService.getAllUsers().subscribe({
@@ -115,6 +119,7 @@ export class MotxillaComponent implements OnInit {
     }
   }
 
+  //Mètode per assignar la vista activa (items propis o usuaris), s'ha de ser administrador per poder utilitzar aquesta funcionalitat.
   setView(view: 'items' | 'users') {
     this.activeView = view;
 
@@ -123,10 +128,10 @@ export class MotxillaComponent implements OnInit {
     }
   }
 
+  //Dona un item a un usuari específic, utilitzat a la vista d'administració per donar xuxes als usuaris.
   giveItem() {
 
     if (!this.selectedUser || !this.selectedSlot) return;
-
     this.motxillaService.giveItemToUser(
       this.selectedUser.id,
       this.selectedSlot.item.id,
@@ -142,8 +147,7 @@ export class MotxillaComponent implements OnInit {
     this.openModal();
   }
 
-  //Modal para añadir items a un usuario desde la vista admin
-
+  //Mètode que obre el modal per donar un item a un usuari específic.
   openModal() {
     this.motxillaService.getAllItems().subscribe({
       next: (items) => {
@@ -155,12 +159,14 @@ export class MotxillaComponent implements OnInit {
     });
   }
 
+  //Mètode que tanca el modal per donar un item a un usuari específic, resetejant les variables relacionades amb el modal.
   closeModal() {
     this.showModal = false;
     this.selectedItem = null;
     this.itemQuantity = 1;
   }
 
+  //Mètode per seleccionar un item al modal, emmagatzema l'item seleccionat i la quantitat a donar, si es torna a clicar el mateix item, es deselecciona.
   selectedItemOnModal(item: any) {
     if (this.selectedItem?.id === item.id) {
       this.selectedItem = null;
@@ -170,6 +176,7 @@ export class MotxillaComponent implements OnInit {
     }
   }
 
+  //Mètode per confirmar l'acció de donar un item a un usuari específic, actualitzant l'inventari i tancant el modal.
   giveConfirmation() {
     if (!this.selectedUser || !this.selectedItem || this.itemQuantity < 0) return;
 
@@ -182,10 +189,10 @@ export class MotxillaComponent implements OnInit {
           this.filteredMotxilla = expanded;
         }
       });
-      alert('Item añadido correctamente al usuario ' + this.selectedUser.player_id);
+      alert('Item afegit correctament a l\'usuari ' + this.selectedUser.player_id);
       this.closeModal();
     },
-    error: (err) => console.log('Error añadiendo item:', err)
+    error: (err) => console.log('Error afegint item:', err)
   });
   }
 }

@@ -9,6 +9,7 @@ export class ThemeService {
 
   darkMode: boolean = false;
 
+  //Mètode per alternar entre mode fosc/clar
   toggleDarkMode() {
     this.darkMode = !this.darkMode;
   }
