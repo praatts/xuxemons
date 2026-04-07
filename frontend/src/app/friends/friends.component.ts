@@ -3,7 +3,7 @@ import { Friend } from '../../../interfaces/friend';
 import { FormControl } from '@angular/forms';
 import { FriendshipService } from '../services/friendship.service';
 import { UserService } from '../services/user.service';
-import { distinctUntilChanged, interval } from 'rxjs';
+import { debounceTime, distinctUntilChanged, interval } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -41,6 +41,7 @@ export class FriendsComponent {
 
     this.searchControl.valueChanges.pipe(
       distinctUntilChanged(),
+      debounceTime(300)
     ).subscribe(value => {
       if (!!value && value.length >= 3) {
         this.searchResult = this.allUsers.filter(

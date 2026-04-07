@@ -10,13 +10,12 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserInterface } from '../user-interface';
 import { MotxillaService } from '../services/motxilla.service';
 import { SettingsService } from '../services/settings.service';
-import { A11yModule } from '@angular/cdk/a11y';
 
 
 @Component({
   selector: 'app-xuxedex',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule, A11yModule],
+  imports: [NgClass, ReactiveFormsModule],
   templateUrl: './xuxedex.component.html',
   styleUrl: './xuxedex.component.css'
 })
