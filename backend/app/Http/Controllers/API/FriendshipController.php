@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Friendship;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,6 +78,13 @@ class FriendshipController extends Controller
             'user_id' => $user->id,
             'friend_id' => $friend->id,
             'status' => 'pending'
+        ]);
+
+        //Notificació per l'usuari destinatari de la sol·licitud d'amistat
+        Notification::create([
+            'user_id' => $friend->id,
+            'title' => 'Nova solicitud d\'amistad',
+            'message' => 'Has rebut una nova solicitud d\'amistad de ' . $user->player_id
         ]);
 
         return response()->json([
