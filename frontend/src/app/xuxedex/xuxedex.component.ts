@@ -62,30 +62,36 @@ export class XuxedexComponent {
   selectedVaccine: any = null;
 
 
+  
   constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService, private motxillaService: MotxillaService, private settingsService: SettingsService) {
     this.userXuxemon$ = this.xuxemonsService.userXuxemons$;
     this.ownedXuxemon$ = this.xuxemonsService.ownedXuxemons$;
   }
 
+  //HostBinding per aplicar la classe CSS "dark-mode" al component quan el mode fosc està activat al servei de tema. Això permet canviar l'estil del component segons el mode seleccionat per l'usuari.
   @HostBinding('class.dark-mode')
   get darkMode() {
     return this.theme.darkMode;
   }
 
   ngOnInit(): void {
+    //Carregem els xuxemons disponibles i els xuxemons capturats per l'usuari autenticat.
     this.getAllXuxemons();
     this.getOwnedXuxemons();
 
+    //Comprova si l'usuari autenticat és administrador per mostrar o ocultar certs elements al HTML segons el rol de l'usuari (donar xuxemons a altres usuaris i veure la llista completa d'usuaris).
     this.authService.isAdmin().subscribe((value) => {
       this.isAdmin = value;
     });
 
+    //Subscripció als observables de XuxemonsService per mantenir actualitzada la llista de xuxemons disponibles i capturats, i actualitzar la vista segons el filtre d'element seleccionat.
     this.xuxemonsService.userXuxemons$.subscribe(data => {
       if (this.activeElement === 'all') {
         this.filteredXuxemons = data;
       }
     });
 
+    //Quan es canvia el filtre d'element, es comprova si el filtre és "all" per mostrar tots els xuxemons de l'usuari, o si no, es filtra la llista de xuxemons capturats per mostrar només els que coincideixen amb el tipus d'element seleccionat.
     this.xuxemonsService.ownedXuxemons$.subscribe(data => {
       if (this.activeElement === 'owned') {
         this.filteredXuxemons = data;
@@ -94,6 +100,7 @@ export class XuxedexComponent {
       }
     });
 
+    //Carrega la configuració de l'aplicació i assigna els valors corresponents a les variables locals.
     this.settingsService.getSettings().subscribe((settings) => {
       settings.forEach(setting => {
         if (setting.key === 'little_to_mid') this.littleToMid = Number(setting.value);
@@ -102,6 +109,7 @@ export class XuxedexComponent {
     });
   }
 
+  //Mètode per obtenir tots els xuxemons disponibles per l'usuari autenticat, i assignar-los al servei de xuxemons i a la variable de xuxemons filtrats per mostrar-los a la vista.
   getAllXuxemons(): void {
     this.xuxemonsService.getUserXuxemons().subscribe({
       next: (data) => {
@@ -113,6 +121,7 @@ export class XuxedexComponent {
     });
   }
 
+  //Mètode per obtenir els xuxemons capturats per l'usuari autenticat, i assignar-los al servei de xuxemons per mostrar-los a la vista quan es selecciona el filtre d'element corresponent.
   getOwnedXuxemons(): void {
     this.xuxemonsService.getOwnedXuxemons().subscribe({
       next: (data) => {
@@ -123,10 +132,12 @@ export class XuxedexComponent {
     });
   }
 
+  //Mètode per formatejar l'id del xuxemon rebuda del backend (1 es mostra com #001).
   alterXuxemonId(id: number): string {
     return '#' + id.toString().padStart(3, '0');
   }
 
+  //Mètode per filtrar els xuxemons segons el tipus d'element.
   filterXuxemonsByType(type: string): void {
     if (type === 'all') {
       this.activeElement = 'all';
@@ -137,6 +148,7 @@ export class XuxedexComponent {
     }
   }
 
+  //Filtra els xuxemons captirats segons l'element seleccionat, o mostra tots els xuxemons si el filtre és "all".
   filterXuxemonsByElement(element: string): void {
     this.activeElement = element;
     if (element === 'all') {
@@ -146,6 +158,7 @@ export class XuxedexComponent {
     }
   }
 
+  //Carrega tots els usuaris del sistema per mostrar-los al modal d'administració de xuxemons, i configurar el filtre de cerca per player_id.
   loadUsers(): void {
     this.userService.getAllUsers().subscribe({
       next: (response: any) => {
@@ -157,6 +170,7 @@ export class XuxedexComponent {
     });
   }
 
+  //Obra el modal i carrega la llista completa d'usuaris i configura el filtre de cerca per player_id.
   openModal(): void {
     this.showModal = true;
     this.loadUsers();
@@ -166,12 +180,14 @@ export class XuxedexComponent {
     });
   }
 
+  //Tanca el modal
   closeModal(): void {
     this.showModal = false;
     this.searchUser.reset();
     this.filteredUsers = this.users;
   }
 
+  //Afegeix un xuxemon aleatori a l'usuari seleccionat al modal. S'utilitza timeout per mostrar una animació al botó mentre es carrega el xuxemon, i mostrar un missatge d'èxit quan s'ha afegit correctament.
   addRandomXuxemon(user_id: number): void {
 
     this.loadingUserId = user_id;
@@ -196,6 +212,7 @@ export class XuxedexComponent {
   }
 
 
+  //Obre el modal del xuxemon, s'ha de tenir aquest xuxemon capturat per poder obrir-lo.
   openXuxemon(xuxemon: Xuxemon) {
     if (!xuxemon.owned) {
       return;
