@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Friend } from '../../../interfaces/friend';
 import { FormControl } from '@angular/forms';
 import { FriendshipService } from '../services/friendship.service';
-import { UserService } from '../services/user.service';
-import { debounceTime, distinctUntilChanged, interval, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -16,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class FriendsComponent implements OnInit, OnDestroy {
   friends: Friend[] = [];
   requests: Friend[] = [];
-  friendStatuses: { [key: number]: any } = {}; // Objecte per emmagatzemar els estats de les relacions
+  friendStatuses: { [key: number]: any } = {};
   sentRequests: Friend[] = [];
   searchResult: any[] = [];
   allUsers: any[] = [];
@@ -27,19 +26,21 @@ export class FriendsComponent implements OnInit, OnDestroy {
   constructor(private friendshipService: FriendshipService) { }
 
   ngOnInit() {
-    this.loadAllUsers();
-    this.loadFriends();
-    this.loadRequests();
-    this.loadSentRequests();
-
     this.subscriptions.add(
-      interval(2000).subscribe(() => {
-        this.loadStatuses();
-        this.loadFriends();
-        this.loadRequests();
-        this.loadSentRequests();
-      })
+      this.friendshipService.friends$.subscribe(data => this.friends = data)
     );
+    this.subscriptions.add(
+      this.friendshipService.requests$.subscribe(data => this.requests = data)
+    );
+    this.subscriptions.add(
+      this.friendshipService.sentRequests$.subscribe(data => this.sentRequests = data)
+    );
+    this.subscriptions.add(
+      this.friendshipService.statuses$.subscribe(data => this.friendStatuses = data)
+    );
+
+    this.friendshipService.startPolling();
+    this.loadAllUsers();
 
     this.subscriptions.add(
       this.searchControl.valueChanges.pipe(
@@ -58,9 +59,9 @@ export class FriendsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.friendshipService.stopPolling();
     this.subscriptions.unsubscribe();
   }
-
 
   get displayUsers(): any[] {
     const value = this.searchControl.value;
@@ -73,45 +74,15 @@ export class FriendsComponent implements OnInit, OnDestroy {
   loadAllUsers() {
     this.friendshipService.getAllPlayers().subscribe({
       next: (data: any) => {
-        console.log('Usuaris:', data);
         this.allUsers = data || data.data || [];
       },
       error: (err) => console.log('Error carregant usuaris:', err)
     });
   }
 
-  loadFriends() {
-    this.friendshipService.getFriends().subscribe({
-      next: (data) => this.friends = data,
-      error: (err) => console.log('Error carregant amics:', err)
-    });
-  }
-
-  loadRequests() {
-    this.friendshipService.getRequests().subscribe({
-      next: (data) => this.requests = data,
-      error: (err) => console.log('Error carregant sol·licituds:', err)
-    });
-  }
-
-  loadSentRequests() {
-    this.friendshipService.getSentRequests().subscribe({
-      next: (data) => this.sentRequests = data,
-      error: (err) => console.log('Error carregant sol·licituds enviades:', err)
-    });
-  }
-
-  loadStatuses() {
-    this.friendshipService.getStatus().subscribe({
-      next: (data) => this.friendStatuses = data,
-      error: (err) => console.log('Error carregant estats:', err)
-    });
-  }
-
   sendRequest(friend_id: number) {
     this.friendshipService.sendRequest(friend_id).subscribe({
       next: () => {
-        this.loadStatuses(); //Actualitza els estats després d'enviar la sol·licitud
         alert('Sol·licitud enviada!');
         this.searchResult = [];
         this.searchControl.reset();
@@ -124,8 +95,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
     this.friendshipService.acceptRequest(request_id).subscribe({
       next: () => {
         alert('Sol·licitud acceptada!');
-        this.loadFriends();
-        this.loadRequests();
       },
       error: (err) => console.log('Error acceptant sol·licitud:', err)
     });
@@ -135,7 +104,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
     this.friendshipService.rejectRequest(request_id).subscribe({
       next: () => {
         alert('Sol·licitud rebutjada!');
-        this.loadRequests();
       },
       error: (err) => console.log('Error rebutjant sol·licitud:', err)
     });
@@ -145,7 +113,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
     this.friendshipService.deleteFriend(friend_id).subscribe({
       next: () => {
         alert('Amic eliminat correctament!');
-        this.friends = this.friends.filter(f => f.friendship_id !== friend_id); //Actualitza la llista d'amics eliminant el que s'ha borrat
       },
       error: (err) => console.log('Error eliminant amic:', err)
     });
@@ -154,8 +121,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
   revokeRequest(friendship_id: number) {
     this.friendshipService.revokeRequest(friendship_id).subscribe({
       next: () => {
-        this.loadStatuses();
-        this.loadSentRequests();
         alert('Sol·licitud revocada');
       },
       error: (err) => console.log('Error revocant sol·licitud:', err)
