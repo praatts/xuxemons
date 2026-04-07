@@ -14,9 +14,10 @@ import { RouterLink, Router } from "@angular/router";
 export class UserRegister {
 
   registerForm: FormGroup;
-  namePattern = /^[a-zA-ZÀ-ÿ\s]+$/;
+  namePattern = /^[a-zA-ZÀ-ÿ\s]+$/; //Permet lletres, accents i espais, però no números ni caràcters especials.
 
   constructor(private userService: UserService, private router: Router) {
+    //Inicialització del formulari de registre amb els controls i validacions corresponents.
     this.registerForm = new FormGroup({
       name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
       surname: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.namePattern)]),
@@ -26,6 +27,7 @@ export class UserRegister {
     }, { validators: this.passwordMatchValidator });
   }
 
+  //Validació personalitzada per comprovar que les contrasenyes introduïdes en els camps "passwd1" i "passwd2" coincideixen. Retorna un error de validació si no coincideixen.
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const p1 = control.get('passwd1')?.value;
     const p2 = control.get('passwd2')?.value;
@@ -39,6 +41,7 @@ export class UserRegister {
     }
   }
 
+  //Retorna un missatge d'error específic segons el camp i el tipus d'error de validació que s'ha produït, per mostrarlo al HTML.
   getErrorMessage(controlName: string): string {
     const control = this.registerForm.get(controlName);
 
@@ -57,15 +60,16 @@ export class UserRegister {
     return 'Error de validación';
   }
 
+  //Retorna tots els errors de validació en format d'Array de strings, combinant els errors a nivell de control i a nivell de formulari, per mostrar una llista completa d'errors al HTML.
   getAllErrors(): string[] {
     const errors: string[] = [];
 
-    // Verificar errores a nivel del formulario
+    // Verifica els errors a nivell de formulari (validació contrasenyes)
     if (this.registerForm.hasError('PasswdNoMatch')) {
       errors.push('Las contraseñas no coinciden');
     }
 
-    // Verificar errores en cada control
+    // Verifica els errors en cada control
     const fieldNames: { [key: string]: string } = {
       'name': 'Nombre',
       'surname': 'Apellido',
@@ -74,6 +78,7 @@ export class UserRegister {
       'passwd2': 'Confirmar Contraseña'
     };
 
+    // Recorre cada control del formulari i comprova si té errors de validació, afegeix el missatge d'error corresponent i retorna els errors.
     Object.keys(fieldNames).forEach(fieldName => {
       const control = this.registerForm.get(fieldName);
       if (control && control.errors && control.touched) {
@@ -87,11 +92,12 @@ export class UserRegister {
     return errors;
   }
 
-  //Llamada al servicio para crear un nuevo usuario en la base de datos
+  //Crida al servei per crear un nou usuari
   onSubmit(): void {
     if (!this.registerForm.valid) {
       return;
     }
+    //Variable que emmagatzema les dades introduïdes al formulari.
     const user = {
       player_id: this.generatePlayerId(),
       name: this.registerForm.get('name')?.value,
@@ -103,6 +109,7 @@ export class UserRegister {
 
     console.log('Enviando usuario:', user);
 
+    //Crida al serveir per crear l'usuari nou, retorna un missatge d'error en cas de ser necessàri.
     this.userService.postUser(user).subscribe({
       next: (response) => {
         console.log('Usuario creado:', response);
@@ -123,6 +130,7 @@ export class UserRegister {
     return !!(control && control?.invalid && control.touched);
   };
 
+  //Genera la id del jugador a partir del nom introduït al formulari, amb format #NomXXXX
   generatePlayerId(): string | undefined {
     const id = this.registerForm.get('name');
 
@@ -134,6 +142,7 @@ export class UserRegister {
     return undefined
   }
 
+  //Funció per tornar a la pàgina d'inici
   goBack() {
     this.router.navigate(['/']);
   }
