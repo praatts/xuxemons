@@ -21,10 +21,11 @@ export class FriendsComponent implements OnInit, OnDestroy {
   allUsers: any[] = [];
   activeTab: 'search' | 'requests' | 'friends' = 'search';
   searchControl = new FormControl('');
-  private subscriptions = new Subscription();
+  private subscriptions = new Subscription(); // Subscripcions per gestionar els observables i evitar "memory leaks" quan el component es destrueix.
 
   constructor(private friendshipService: FriendshipService) { }
 
+  //Subscipció als observables de FriendshipService per mantenir actualitzades les dades de la llista d'amics.
   ngOnInit() {
     this.subscriptions.add(
       this.friendshipService.friends$.subscribe(data => this.friends = data)
@@ -39,30 +40,36 @@ export class FriendsComponent implements OnInit, OnDestroy {
       this.friendshipService.statuses$.subscribe(data => this.friendStatuses = data)
     );
 
+    //Inici del polling per mantenir les dades actualitzades i carregar tots els usuaris per poder cercar/enviar sol·licituds d'amistat.
     this.friendshipService.startPolling();
     this.loadAllUsers();
 
+    //Afegir a la suscripció la funcionalitat de cerca.
     this.subscriptions.add(
       this.searchControl.valueChanges.pipe(
-        distinctUntilChanged(),
-        debounceTime(300)
+        distinctUntilChanged(), //Evitar realitzar cerques si el valor no ha canviat.
+        debounceTime(300) //Esperar 300ms abans de tornar a fer la suscripció per evitar realitzar búsquedes massa ràpides.
       ).subscribe(value => {
-        if (!!value && value.length >= 3) {
+        if (!!value && value.length >= 3) { //true i mínim 3 caràcters per fer la búsqueda, filtra per player_id introduït al input i actualitza el resultat de la búsqueda.
           this.searchResult = this.allUsers.filter(
             u => u.player_id.toLowerCase().includes(value.toLowerCase())
           );
         } else {
+          //Si el valor de búsqueda no és vàlid (menys de 3 caràcters o null), es neteja el resultat de la búsqueda.
           this.searchResult = [];
         }
       })
     );
   }
 
+  
   ngOnDestroy() {
+    //Atura el polling i les suscripcions per evitar crides innecessàries al canviar/destruir el component.
     this.friendshipService.stopPolling();
     this.subscriptions.unsubscribe();
   }
 
+  //Getter per mostrar la llista d'usuaris a la vista, en cas de no haver cap valor de búsqueda vàlid, es mostrarà la llista completa d'usuaris.
   get displayUsers(): any[] {
     const value = this.searchControl.value;
     if (value && value.length >= 3) {
@@ -71,15 +78,17 @@ export class FriendsComponent implements OnInit, OnDestroy {
     return this.allUsers ?? [];
   }
 
+  //Carrega tots els usuaris del sistema, menys el autenticat
   loadAllUsers() {
     this.friendshipService.getAllPlayers().subscribe({
       next: (data: any) => {
-        this.allUsers = data || data.data || [];
+        this.allUsers = data || data.data || []; //El backend pot retornar la llista d'usuaris directament o dins d'una propietat "data", per això es comprova amb "data || data.data".
       },
       error: (err) => console.log('Error carregant usuaris:', err)
     });
   }
 
+  //Envia una sol·licitud d'amistat a un altre usuari, mostrant un missatge d'èxit o error
   sendRequest(friend_id: number) {
     this.friendshipService.sendRequest(friend_id).subscribe({
       next: () => {
@@ -91,6 +100,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
     });
   }
 
+  //Accepta una sol·licitud d'amistat rebuda, mostrant un missatge d'èxit o error
   acceptRequest(request_id: number) {
     this.friendshipService.acceptRequest(request_id).subscribe({
       next: () => {
@@ -100,6 +110,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
     });
   }
 
+  //Rebutja una sol·licitud d'amistat rebuda, mostrant un missatge d'èxit o error
   rejectRequest(request_id: number) {
     this.friendshipService.rejectRequest(request_id).subscribe({
       next: () => {
@@ -109,6 +120,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
     });
   }
 
+  //Elimina una amistat existent entre l'usuari autenticat i un altre usuari, mostrant un missatge d'èxit o error
   deleteFriend(friend_id: number) {
     this.friendshipService.deleteFriend(friend_id).subscribe({
       next: () => {
@@ -118,6 +130,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
     });
   }
 
+  //Revoca la sol·licitud d'amistat enviada per l'usuari autenticat, mostrant un missatge d'èxit o error
   revokeRequest(friendship_id: number) {
     this.friendshipService.revokeRequest(friendship_id).subscribe({
       next: () => {
