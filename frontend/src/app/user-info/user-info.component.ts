@@ -4,6 +4,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModu
 import { UserService } from '../services/user.service';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
+//Interfície per representar les fotos de perfil disponibles, amb un id, una etiqueta descriptiva i la URL de la imatge.
 interface Pictures {
   id: number,
   label: string,
@@ -36,10 +37,12 @@ export class UserInfoComponent {
   isAdmin = false;
 
   selectPersonalizedPfp = false;
+  //Mètode per alternar entre la selecció de foto de perfil personalitzada (url) i la foto de perfil actual (predeterminades).
   togglePfpMode() {
     this.selectPersonalizedPfp = !this.selectPersonalizedPfp;
   }
   
+  //Array amb les fotos de perfil predeterminades
   pfpArray: Pictures [] = [
     {id: 1, label: 'Isaac', url: 'https://static.wikia.nocookie.net/thebindingofisaac/images/9/93/Isaac-0.png/revision/latest?cb=20200917114527&path-prefix=fr'},
     {id: 2, label: 'Rag mega', url: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/5/52/Boss_Rag_Mega_portrait.png/revision/latest?cb=20210409161229'},
@@ -50,6 +53,7 @@ export class UserInfoComponent {
   ];
 
   constructor(private userService: UserService, private router: Router) {
+    //Inicialització del formulari per poder modificar/veure la informació del usuari, amb validadors per cada camp.
     this.infoForm = new FormGroup({
       name: new FormControl('', Validators.minLength(3)),
       surname: new FormControl('', Validators.minLength(3)),
@@ -59,12 +63,12 @@ export class UserInfoComponent {
       pfp: new FormControl('', Validators.required)
     },
    {
-      validators: this.passwordMatchValidator
+      validators: this.passwordMatchValidator //Validador personalitzat per comprovar que les contrasenyes introduïdes coincideixen (dos camps de contrasenya: password i confirmPassword).
    })
   }
 
 
-  //VALIDACION DE ERRORES
+  //Validació d'errors
   getErrorMessage(controlName: string): string {
     const control = this.infoForm.get(controlName);
 
@@ -84,7 +88,7 @@ export class UserInfoComponent {
   }
 
   ngOnInit(): void {
-    // traemos los datos "normales"
+    //Al iniciar el component, carreguem les dades de l'usuari, en cas de no recuperar-les es mostren buides
     this.userService.getUser().subscribe((u: any) => {
       this.nameValue = u.name || '';
       this.surnameValue = u.surname || '';
@@ -92,6 +96,7 @@ export class UserInfoComponent {
       this.passwordValue = u.passwordActual || this.passwordValue;
       this.pfpValue = u.pfp || '';
 
+      //S'asigna el valor recuperat del backend a cada camp del formulari.
       this.infoForm.controls['name'].setValue(this.nameValue);
       this.infoForm.controls['surname'].setValue(this.surnameValue);
       this.infoForm.controls['email'].setValue(this.emailValue);
@@ -100,6 +105,7 @@ export class UserInfoComponent {
     });
   }
 
+  //Mètode per emmagatzemar els canvis realitzats per l'usuari als camps del formulari.
   save() {
     if (this.infoForm.invalid) return;
 
@@ -109,6 +115,7 @@ export class UserInfoComponent {
     this.passwordValue = this.infoForm.controls['password'].value;
     this.pfpValue = this.infoForm.controls['pfp'].value;
 
+    //S'envien les dades modificades al backend per actualitzar la informació de l'usuari, mostrant un missatge d'èxit o error segons el resultat de l'operació.
     const payload: any = {
       name: this.nameValue,
       surname: this.surnameValue,
@@ -129,22 +136,26 @@ export class UserInfoComponent {
     });
   }
 
+  //Mètode per eliminar el compte de l'usuari autenticat, mostrant una confirmació abans d'executar l'operació.
   confirmDelete() {
     this.userService.deleteUser().subscribe(() => {
       localStorage.removeItem('access_token');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login']); //redirecció al login després d'eliminar el compte, ja que l'usuari ja no està autenticat.
     });
   }
 
+  //Mètode per tancar sessió, eliminant el token d'accés i redirigint a la pàgina principal.
   logout() {
     this.userService.logOut();
     this.router.navigate(['/']);
   }
 
+  //Mètode per tornar a la pàgina d'estadístiques de l'usuari (pàgina anterior)
   goBack() {
     this.router.navigate(['/main/principal/userstats']);
   }
 
+  //Validador personalitzat per comprovar que les contrasenyes introduïdes coincideixen (password | confimmPassword), retornant un error de validació si no coincideixen.
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
       const p1 = control.get('password')?.value;
       const p2 = control.get('confirmPassword')?.value;
