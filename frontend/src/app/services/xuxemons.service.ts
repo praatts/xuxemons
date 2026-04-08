@@ -35,7 +35,7 @@ export class XuxemonsService {
   //método para dar xuxes
   giveXuxe(owned_xuxemon_id: number, type: string) {
     return this.http.post(`${this.apiUrl}/xuxemons/${owned_xuxemon_id}/xuxe`, { type });
-}
+  }
 
   setUserXuxemons(xuxemons: Xuxemon[]): void {
     this.xuxemons = xuxemons;
@@ -60,13 +60,6 @@ export class XuxemonsService {
     return this.ownedXuxemonsSubject.value;
   }
 
-  addIllness(owned_id: number, illness: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/xuxedex/${owned_id}/illness`, { illness });
-  }
-
-  getOwnedXuxemonsByUser(user_id: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/xuxedex/owned/${user_id}`);
-  }
 
   // MÈTODE PER ADMINISTRAR VACUNES (APLICAR UNA VACUNA A UN XUXEMON ESPECÍFIC)
   giveVaccine(owned_id: number, item_id: number): Observable<any> {
