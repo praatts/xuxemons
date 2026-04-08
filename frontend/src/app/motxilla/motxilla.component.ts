@@ -144,7 +144,6 @@ export class MotxillaComponent implements OnInit {
 
   selectUser(user: any) {
     this.selectedUser = user;
-    this.openModal();
   }
 
   //Mètode que obre el modal per donar un item a un usuari específic.
