@@ -1,5 +1,5 @@
-<div class="container">
-    <div class="search-wrapper">
+<main class="container">
+    <nav class="search-wrapper">
         <img src="search-icon.png" alt="Icono de búsqueda">
         <input type="text" for="pokemon" placeholder="Cerca un xuxemon...">
         <select id="elements" #elementSelect (change)="filterXuxemonsByElement(elementSelect.value)"
@@ -15,18 +15,15 @@
 
         @if (isAdmin) {
         <div class="admin-controls">
-            <button class="action-btn" (click)="openModal()">
-                + Afegir xuxemon aleatori
-            </button>
-
+            <button class="action-btn" (click)="openModal()">+ Afegir xuxemon aleatori</button>
             <button class="action-btn" (click)="abrirModalVacuna()">+ Afegir Vacuna</button>
         </div>
         }
-    </div>
+    </nav>
 
-    <div class="xuxedex-wrapper">
+    <section class="xuxedex-wrapper">
         @for (xuxemon of filteredXuxemons; track xuxemon.id) {
-        <div class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)">
+        <article class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)">
             @if(!xuxemon.owned) {
             <h2>???</h2>
             } @else {
@@ -35,10 +32,10 @@
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
             <img [src]="'xuxemons/' + xuxemon.id + '.png'" [alt]="xuxemon.name">
             <span class="xuxemon-base"></span>
-        </div>
+        </article>
         }
-    </div>
-</div>
+    </section>
+</main>
 
 
 @if (showModal) {
@@ -84,14 +81,10 @@
 @if (selectedXuxemon) {
 <div class="modal-overlay" (click)="closeDetail()">
     <div class="modal" (click)="$event.stopPropagation()">
-
         <h2>{{ selectedXuxemon.name }}</h2>
-
         <img [src]="'xuxemons/' + selectedXuxemon.id + '.png'" class="detail-img">
-
         <p><strong>Tipus:</strong> {{ selectedXuxemon.type }}</p>
         <p><strong>Mida:</strong> {{ selectedXuxemon.size }}</p>
-
         <p>
             <strong>Xuxes:</strong>
             {{ selectedXuxemon.xuxes }} /
@@ -106,12 +99,10 @@
                 [disabled]="userXuxes['verda'] === 0" (click)="selectedXuxeType = 'verda'">
                 Verda ({{ userXuxes['verda'] }})
             </button>
-
             <button class="action-btn blava" [class.active]="selectedXuxeType === 'blava'"
                 [disabled]="userXuxes['blava'] === 0" (click)="selectedXuxeType = 'blava'">
                 Blava ({{ userXuxes['blava'] }})
             </button>
-
             <button class="action-btn vermella" [class.active]="selectedXuxeType === 'vermella'"
                 [disabled]="userXuxes['vermella'] === 0" (click)="selectedXuxeType = 'vermella'">
                 Vermella ({{ userXuxes['vermella'] }})
@@ -146,11 +137,8 @@
         }
 
         <div class="modal-actions">
-            <button class="cancel-btn" (click)="closeDetail()">
-                Tancar
-            </button>
+            <button class="cancel-btn" (click)="closeDetail()">Tancar</button>
         </div>
-
     </div>
 </div>
 }
