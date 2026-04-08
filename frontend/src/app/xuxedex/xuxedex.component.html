@@ -21,9 +21,9 @@
         }
     </nav>
 
-    <section class="xuxedex-wrapper">
+    <section class="xuxedex-wrapper" role="grid" aria-label="Llista de xuxemons">
         @for (xuxemon of filteredXuxemons; track xuxemon.id) {
-        <article class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)">
+        <article class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)" role="gridcell">
             @if(!xuxemon.owned) {
             <h2>???</h2>
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
