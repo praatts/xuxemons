@@ -31,8 +31,8 @@
             </div>
 
             <div class="item-actions">
-                <button class="delete-item">Eliminar</button>
-                <button class="use-item">Utilitzar</button>
+                <button class="delete-item"></button>
+                <button class="use-item"></button>
             </div>
 
             }
@@ -114,8 +114,7 @@
 
         <div class="modal-items">
             @for (item of availableItems; track item.id) {
-            <div class="modal-item-card" [class.active]="selectedItem?.id === item.id"
-                (click)="selectedItemOnModal(item)">
+            <div class="modal-item-card" [class.active]="selectedItem?.id === item.id" (click)="selectedItemOnModal(item)">
                 <img [src]="'items/' + item.id + '.png'" [alt]="item.name" class="item-icon">
                 <p class="item-name">{{ item.name }}</p>
 
