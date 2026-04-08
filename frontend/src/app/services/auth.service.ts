@@ -24,7 +24,6 @@ export class AuthService {
 
   //Elimina el token d'accés del localStorage per desautenticar l'usuari.
   logout() : Observable<any> {
-    localStorage.removeItem('access_token');
     return this.http.post(`${this.apiUrl}/logout`, {});
   }
 
