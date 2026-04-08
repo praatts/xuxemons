@@ -231,6 +231,8 @@ export class XuxedexComponent {
     this.loadInventory();
   }
 
+
+  //Calcula el nombre màxim de xuxes que es poden donar al xuxemon, segons malalties i la seva mida
   getMaxXuxes(): number {
     const base = this.selectedXuxemon?.size === 'petit' ? this.littleToMid :
       this.selectedXuxemon?.size === 'mitja' ? this.midToBig : 0;
@@ -240,11 +242,13 @@ export class XuxedexComponent {
     return hasBajon ? base + 2 : base;
   }
 
+  //Tanca el model i reinicia les variables de item seleccionat
   closeDetail() {
     this.selectedXuxemon = null;
     this.selectedVaccine = null;
   }
 
+  //Dóna xuxe al xuxemon seleccionat, si es gran, no fa res, actualitza les dades del xuxemon a la vista i al servei
   giveXuxe(xuxemon: Xuxemon) {
     if (xuxemon.size === 'gran') return;
 
@@ -253,19 +257,22 @@ export class XuxedexComponent {
     this.xuxemonsService.giveXuxe(xuxemon.owned_xuxemon_id!, this.selectedXuxeType).subscribe({
       next: (updated: any) => {
 
-        const previousIllnesses = xuxemon.illnesses ?? [];
+        const previousIllnesses = xuxemon.illnesses ?? []; //Carrega les malalties abans de donar la xuxe
 
+        //Actualitza les dades del xuxemon al donar la xuxe
         xuxemon.xuxes = updated.xuxes;
         xuxemon.number_xuxes = updated.xuxes;
         xuxemon.size = updated.size;
         xuxemon.illnesses = updated.illnesses;
-        this.selectedXuxemon = { ...xuxemon };
-        this.userXuxes[this.selectedXuxeType]--;
+        this.selectedXuxemon = { ...xuxemon }; //Copia per forçar actualització a la vista
+        this.userXuxes[this.selectedXuxeType]--; //Resta una xuxe a la motxilla (vista i servei) després de donar-la al xuxemon
 
+        //Si el xuxe
         const owned = this.xuxemonsService.getCurrentOwnedXuxemons()
           .map(x => x.owned_xuxemon_id === xuxemon.owned_xuxemon_id ? { ...xuxemon } : x);
         this.xuxemonsService.setOwnedXuxemons(owned);
 
+        //Si el xuxemon canvia de tamany, mostra la animació
         if (oldSize !== xuxemon.size) {
           this.isEvolving = true;
           setTimeout(() => {
@@ -274,10 +281,12 @@ export class XuxedexComponent {
           }, 1000);
         }
 
+        //Comprova si el xuxemon ha agafat una nova malaltia, comparant la nova malaltia amb les malalties anteriors, busca segons la id de la malaltia
         const newIllness = updated.illnesses?.find(
           (i: any) => !previousIllnesses.find((p: any) => p.id === i.id)
         );
 
+        //Mostra alerta si el xuxemon ha agafat una nova malaltia
         if (newIllness) {
           alert(`El teu xuxemon s'ha infectat de ${newIllness.name}!`);
         }
@@ -288,11 +297,14 @@ export class XuxedexComponent {
     });
   }
 
+  //Carrega la motxilla de l'usuari, separant les xuxes i vacunes
   loadInventory() {
+    //Crida al backend per obtenir la motxilla/inventari de l'usuari autenticat
     this.motxillaService.getInventory().subscribe((data: any[]) => {
-      // Reset
+      // Reinicia el comptador de xuxes a 0, per evitar problemes al actualitzar la vista de la motxilla.
       this.userXuxes = { verda: 0, blava: 0, vermella: 0 };
 
+      //Carrega les xuxes, condicionals per identificar el tipus de xuxe segons el seu color, asigna la quantitat de cada item a la variable userXuxes per mostrar-la a la vista.
       data.forEach(item => {
         const name = item.item.name.toLowerCase();
         if (name.includes('verda')) this.userXuxes['verda'] = item.quantity;
@@ -300,7 +312,10 @@ export class XuxedexComponent {
         if (name.includes('vermella')) this.userXuxes['vermella'] = item.quantity;
       });
 
+      //Reinicia les vacunes de l'usuari
       this.userVaccines = [];
+
+      //Fa el mateix per les vacunes, comprova que son no apilables i comprova si no existeix ja a la llista de vacunes de l'usuari, si existeix suma la quantitat, si no existeix la afegeix a la llista de vacunes de l'usuari, copiant el objecte.
       data.forEach(slot => {
         if (!slot.item.stackable && slot.quantity > 0) {
           const existing = this.userVaccines.find(v => v.item.id === slot.item.id);
@@ -313,60 +328,15 @@ export class XuxedexComponent {
       });
     });
   }
-  //Bloque de logica para enfermedades "admin"
-  abrirModalEnfermedad(): void {
-    this.showIllnessModal = true;
-    this.userService.getAllUsers().subscribe((response: any) => {
-      this.illnessUsers = response.data;
-    });
-  }
-
-  cerrarModalEnfermedad(): void {
-    this.showIllnessModal = false;
-  }
-
-  addIllnessToUser(user_id: number): void {
-    this.loadingUserId = user_id;
-    this.successUserId = null;
-    this.xuxemonsService.getOwnedXuxemonsByUser(user_id).subscribe({
-      next: (owned: any[]) => {
-        if (owned.length === 0) {
-          this.loadingUserId = null;
-          alert('Aquest usuari no té xuxemons!');
-          return;
-        }
-
-        const xuxemon = owned[Math.floor(Math.random() * owned.length)];
-        const illness = ['bajon_azucar', 'atracon'][Math.floor(Math.random() * 2)];
-
-        this.xuxemonsService.addIllness(xuxemon.owned_xuxemon_id, illness).subscribe({
-          next: () => {
-            this.loadingUserId = null;
-            this.successUserId = user_id;
-            setTimeout(() => {
-              this.successUserId = null;
-              this.cerrarModalEnfermedad();
-            }, 1000);
-          },
-          error: (err) => {
-            console.error("Error al añadir enfermedad:", err);
-            this.loadingUserId = null;
-          }
-        });
-      },
-      error: (err) => {
-        console.error("Error al obtener xuxemons del usuario:", err);
-        this.loadingUserId = null;
-      }
-    });
-  }
-
+  
+  //Donar vacuna al xuxemon seleccionat, actualitza les dades del xuxemon a la vista i al servei, recarrega la motxilla de l'usuari per actualitzar la quantitat de vacunes disponibles.
   useVaccine(xuxemon: Xuxemon, item_id: number): void {
     this.xuxemonsService.giveVaccine(xuxemon.owned_xuxemon_id!, item_id).subscribe({
       next: (updated: any) => {
         xuxemon.illnesses = updated.illnesses;
         this.selectedXuxemon = { ...xuxemon };
 
+        //Carrega els xuxemons capturats, actualitza el xuxemon que ha rebut la vacuna a la llista de xuxemons capturats
         const owned = this.xuxemonsService.getCurrentOwnedXuxemons().map(
           x => x.owned_xuxemon_id === xuxemon.owned_xuxemon_id ? { ...xuxemon } : x);
         this.xuxemonsService.setOwnedXuxemons(owned);
@@ -377,6 +347,7 @@ export class XuxedexComponent {
       }
     });
   }
+
   //Tancar modal amb Escape
   @HostListener('keydown.escape')
   onEscape() {
