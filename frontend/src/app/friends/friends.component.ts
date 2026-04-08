@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { Friend } from '../../../interfaces/friend';
 import { FormControl } from '@angular/forms';
 import { FriendshipService } from '../services/friendship.service';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-friends',
@@ -23,7 +24,12 @@ export class FriendsComponent implements OnInit, OnDestroy {
   searchControl = new FormControl('');
   private subscriptions = new Subscription(); // Subscripcions per gestionar els observables i evitar "memory leaks" quan el component es destrueix.
 
-  constructor(private friendshipService: FriendshipService) { }
+  constructor(private friendshipService: FriendshipService, public theme: ThemeService) { }
+  @HostBinding('class.dark-mode')
+  get darkMode() {
+    return this.theme.darkMode;
+  }
+
 
   //Subscipció als observables de FriendshipService per mantenir actualitzades les dades de la llista d'amics.
   ngOnInit() {
