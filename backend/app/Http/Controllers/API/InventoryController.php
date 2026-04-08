@@ -15,10 +15,7 @@ use App\Models\Xuxemon;
 
 class InventoryController extends Controller
 {
-    /**
-     * get api/inventory 
-     * devuelve el inventario del usuario autenticado
-     */
+    //Retorna l'inventari de l'usuari autenticat
     public function index(): JsonResponse
     {
         try {
@@ -37,10 +34,7 @@ class InventoryController extends Controller
         }
     }
 
-    /**
-     * POST /api/inventory/add-item/{user_id}
-     * Añade objetos al inventario de un usuario
-     */
+    //Mètode per afegir un item a l'inventari d'un usuari (només admins)
     public function addItem(Request $request, User $user)
     {
 
@@ -49,24 +43,29 @@ class InventoryController extends Controller
         $authUser = Auth::guard('api')->user();
 
         if (!$authUser || $authUser->role !== 'admin') {
-            return response()->json(['error' => 'No autorizado'], 403);
+            return response()->json(['error' => 'No autoritzat'], 403);
         }
+
+        //Valida les dades de la petició
 
         $request->validate([
             'item_id' => 'required|integer|exists:items,id',
             'quantity' => 'sometimes|integer|min:1'
         ]);
 
+        //Obteneix l'item i la quantitat a afegir
         $item = Item::findOrFail($request->item_id);
         $quantity = $request->input('quantity', 1);
-        $availableSlots = $user->getAvailableSlots();
+        $availableSlots = $user->getAvailableSlots(); //Comprova que l'usuari té slots disponibles al inventari (max 20)
 
+        //Retorna error si no hi ha slots disponibles
         if ($availableSlots == 0) {
             return response()->json([
                 'error' => 'El inventario del usuario está lleno',
             ], 403);
         }
 
+        //Si el item es apilable, intenta apilar-lo, en cas de no poder, crea un slot nou
         if ($item->stackable) {
             $maxQuantity = $availableSlots * $item->max_capacity;
             $finalQuantity = min($quantity, $maxQuantity);
@@ -80,24 +79,28 @@ class InventoryController extends Controller
             $slot->quantity += $finalQuantity;
             $slot->save();
 
+            //Si no s'han pogut afegir tots els items, retorna un missatge indicant quants s'han afegit i quants no
             if ($finalQuantity < $quantity) {
                 return response()->json([
-                    'message' => "Solo se han podido añadir {$finalQuantity} items, los {$remaining} restantes no se han añadido",
+                    'message' => "Només s'han pogut afegir {$finalQuantity} items, els {$remaining} restants no s'han afegit per falta de slots disponibles",
                     'added' => $finalQuantity,
                 ]);
             }
 
+            //Si s'han pogut afegir tots els items, retorna un missatge indicant quants s'han afegit
             return response()->json([
-                'message' => "Se han añadido {$finalQuantity} correctamente",
+                'message' => "S'han afegit {$finalQuantity} correctament",
                 'added' => $finalQuantity,
             ]);
         } else {
+            //Si la quantitat a afegir és superior als slots disponibles (quan l'item no es apilable), retorna un error indicant quants slots hi ha disponibles
             if ($availableSlots < $quantity) {
                 return response()->json([
-                    'error' => "Solo hay {$availableSlots} slots disponibles",
+                    'error' => "Només hi ha {$availableSlots} slots disponibles",
                 ], 403);
             }
 
+            //Si el item no es apilable, crea un slot nou per cada unitat a afegir
             for ($i = 0; $i < $quantity; $i++) {
                 Inventory::create([
                     'user_id' => $user->id,
@@ -106,8 +109,9 @@ class InventoryController extends Controller
                 ]);
             }
 
+            //Retorna un missatge indicant quants items s'han afegit
             return response()->json([
-                'message' => "Se han añadido {$quantity} correctamente",
+                'message' => "S'han afegit {$quantity} correctament",
                 'added' => $quantity,
             ]);
         }
@@ -117,71 +121,6 @@ class InventoryController extends Controller
             ],500);
     }
 
-    }
-
-    /**
-     * POST /api/inventory/{slotId}/evolve
-     * Evoluciona 3 xuxes del mismo slot al siguiente tamaño
-     */
-    public function evolve(int $slotId): JsonResponse
-    {
-        $user = Auth::guard('api')->user();
-
-        $slot = Inventory::with('xuxemon')
-            ->where('user_id', $user->id)
-            ->find($slotId);
-
-        if (!$slot || !$slot->xuxemon) {
-            return response()->json(['error' => 'Registro de inventario o xuxemon no trobat.'], 404);
-        }
-
-        $nextSize = match ($slot->xuxemon->size) {
-            'petit' => 'mitja',
-            'mitja' => 'gran',
-            default => null,
-        };
-
-        if (!$nextSize) {
-            return response()->json(['error' => 'Aquest xuxe ja és gran i no pot evolucionar.'], 422);
-        }
-
-        if ($slot->quantity < 3) {
-            return response()->json(['error' => "Necessites 3 unitats. Tens {$slot->quantity}."], 422);
-        }
-
-        $slot->quantity -= 3;
-        if ($slot->quantity === 0) {
-            $slot->delete();
-        } else {
-            $slot->save();
-        }
-
-        $evolvedXuxemon = Xuxemon::where('type', $slot->xuxemon->type)
-            ->where('size', $nextSize)
-            ->first();
-
-        if (!$evolvedXuxemon) {
-            return response()->json(['error' => 'No existeix el xuxemon evolucionat a la BD.'], 404);
-        }
-
-        $slotEvolucionado = Inventory::where('user_id', $user->id)
-            ->where('xuxe_id', $evolvedXuxemon->id)
-            ->first();
-
-        if ($slotEvolucionado) {
-            $slotEvolucionado->increment('quantity');
-        } else {
-            Inventory::create([
-                'user_id' => $user->id,
-                'xuxe_id' => $evolvedXuxemon->id,
-                'quantity' => 1,
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'Evolució completada!',
-            'evolved_into' => $evolvedXuxemon,
-        ]);
     }
 
     /**
