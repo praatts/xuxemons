@@ -23,7 +23,8 @@
 
     <section class="xuxedex-wrapper" role="grid" aria-label="Llista de xuxemons">
         @for (xuxemon of filteredXuxemons; track xuxemon.id) {
-        <article class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)" role="gridcell">
+        <article class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)"
+            role="gridcell">
             @if(!xuxemon.owned) {
             <h2>???</h2>
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
@@ -31,6 +32,15 @@
             <img [src]="'xuxemons/' + xuxemon.id + '.png'" alt="Xuxemon desconegut">
             <span class="xuxemon-base"></span>
             } @else {
+            @if(xuxemon.size === 'gran') {
+            <span class="xuxemon-base gran" aria-label="Forma gran">
+                <img src="public/gran.png" alt="Forma gran" width="30" height="30">
+            </span>
+            } @else if(xuxemon.size === 'mitja') {
+            <span class="xuxemon-base mitja" aria-label="Forma mitjana">
+                <img src="public/mitja.png" alt="Forma mitjana" width="30" height="30">
+            </span>
+            }
             <h2>{{ xuxemon.name }}</h2>
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
             <p class="xuxemon-status">Capturat</p>
