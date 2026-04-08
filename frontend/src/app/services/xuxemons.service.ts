@@ -68,6 +68,7 @@ export class XuxemonsService {
     return this.ownedXuxemonsSubject.value;
   }
 
+
   //Mètode per afegir una malaltia a un xuxemon propietat de l'usuari autenticat (s'ha de ser admin per accedir-hi) i retorna un observable amb la resposta del backend.
   addIllness(owned_id: number, illness: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/xuxedex/${owned_id}/illness`, { illness });

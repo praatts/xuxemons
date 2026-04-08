@@ -13,7 +13,7 @@
     color: var(--text-main);
 }
 
-:host(.dark-mode){
+:host(.dark-mode) {
     --bg-container: #121212;
     --bg-search: #FFFFFF;
     --border-search: #333333;
@@ -27,6 +27,7 @@
     background-color: var(--bg-container);
     color: var(--text-main);
 }
+
 .container {
     padding: 50px;
     background-color: var(--bg-container);
@@ -91,7 +92,7 @@
 .xuxemon-filter {
     display: flex;
     gap: 10px;
-    margin-right: 15px; 
+    margin-right: 15px;
 }
 
 .admin-controls {
@@ -100,8 +101,9 @@
     gap: 10px;
 }
 
-.xuxemon-filter .action-btn, .admin-controls .action-btn {
-    border-radius: 24px; 
+.xuxemon-filter .action-btn,
+.admin-controls .action-btn {
+    border-radius: 24px;
     border: none;
     background-color: var(--bg-select);
     cursor: pointer;
@@ -116,7 +118,7 @@
     display: grid;
     flex: 1;
     grid-template-columns: repeat(4, 250px);
-    grid-auto-rows: 250px;
+    grid-auto-rows: 270px;
     gap: 50px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -305,33 +307,35 @@
 }
 
 .action-btn {
-  flex: 1;
-  padding: 10px 12px;
-  border: none;
-  border-radius: 10px;
-  background: #4a5568;
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 10px;
+    background: #4a5568;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .action-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
+    transform: translateY(-2px);
+    filter: brightness(1.1);
 }
 
-.action-btn.verda.active { 
-    background: #4caf50; 
-}
-.action-btn.blava.active { 
-    background: #2196f3; 
-}
-.action-btn.vermella.active { 
-    background: #f44336; 
+.action-btn.verda.active {
+    background: #4caf50;
 }
 
-.xuxe-selector{
+.action-btn.blava.active {
+    background: #2196f3;
+}
+
+.action-btn.vermella.active {
+    background: #f44336;
+}
+
+.xuxe-selector {
     display: flex;
     gap: 10px;
 }
@@ -346,6 +350,12 @@
     justify-content: center;
     border-radius: 50px;
     border: none;
+    background-color: #FF4400;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
 .action-btn.active {
@@ -360,12 +370,32 @@
 }
 
 @keyframes evolve {
-    0%   { transform: scale(1); }
-    20%  { transform: scale(1.6); color: #FF4400; }
-    40%  { transform: scale(0.9); }
-    60%  { transform: scale(1.3); color: #FF4400; }
-    80%  { transform: scale(0.95); }
-    100% { transform: scale(1); color: inherit; }
+    0% {
+        transform: scale(1);
+    }
+
+    20% {
+        transform: scale(1.6);
+        color: #FF4400;
+    }
+
+    40% {
+        transform: scale(0.9);
+    }
+
+    60% {
+        transform: scale(1.3);
+        color: #FF4400;
+    }
+
+    80% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+        color: inherit;
+    }
 }
 
 .evolving {
@@ -378,4 +408,43 @@
     .evolving {
         animation: none;
     }
+
+}
+
+.vaccine-section {
+    margin-top: 20px;
+    border-top: 1px solid var(--border-search);
+    padding-top: 15px;
+}
+
+.vaccine-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.vaccine-btn {
+    background-color: #eee;
+    color: #333;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.vaccine-btn.active {
+    background-color: #16a34a;
+    color: white;
+}
+
+.xuxemon-card p {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 20px;
+    margin: 0;
+    /* AFEGIT */
+}
+
+.xuxemon-status {
+    font-size: 13px;
+    color: var(--text-main);
+    margin: 0;
 }
