@@ -14,9 +14,11 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
-    // Register new user
+    // Mètode que regisra un nou usuari a la base de dades
     public function store(Request $request)
     {
+
+        //Valida que les dades introduïdes compleixen els validadors
         $request->validate([
             'player_id' => [
                 'required',
@@ -89,6 +91,7 @@ class AuthController extends Controller
 
         ]);
 
+        //Crea el usuari
         $user = User::create([
             'player_id' => $request->player_id,
             'name' => $request->name,
@@ -105,16 +108,18 @@ class AuthController extends Controller
             'status' => 1
         ]);
 
+        //Genera el token JWT per a l'usuari registrat
         $token = Auth::guard('api')->login($user);
 
+        //Retorna el token e informació de l'usuari
         return response()->json([
             'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::guard('api')->factory()->getTTL() * 60,
+            'expires_in' => Auth::guard('api')->factory()->getTTL() * 120,
             'user' => new UserResource($user)
         ]);
     }
-    // Login user and return JWT token
+    // Mètode que autentica un usuari i retorna un token JWT
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -125,28 +130,29 @@ class AuthController extends Controller
         }
 
 
-        //obtener usuario autenticado
+        //Obtenir usuari autenticat
         $user = Auth::guard('api')->user();
 
-        //para usuarios no autorizados (status = 0)
-        if($user->status == 0){
+       //Valida que l'usuari està habilitat abans de autenticar.
+        if ($user->status == 0) {
             return response()->json(['error' => 'This user is not active'], 403);
         }
 
-        //marcar usuario como activo
+        //Marca l'usuari com actiu al iniciar sessió
         $user->active = true;
         $user->save();
 
+        //Retorna el token JWT i informació de l'usuari
         return $this->respondWithToken($token);
     }
 
-    // Get user profile
+    // Mètode que retorna el perfil de l'usuari autenticat
     public function profile()
     {
         return response()->json(Auth::guard('api')->user());
     }
 
-    // Logout user (invalidate token)
+    // Tancar sessió de l'usuari (invalidar token)
     public function logout()
     {
         $user = Auth::guard('api')->user();
@@ -163,7 +169,7 @@ class AuthController extends Controller
     // Refresh JWT token
     public function refresh()
     {
-       return $this->respondWithToken(Auth::guard('api')->refresh());
+        return $this->respondWithToken(Auth::guard('api')->refresh());
     }
 
     // Return token response structure
