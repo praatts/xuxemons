@@ -26,12 +26,17 @@
         <article class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)">
             @if(!xuxemon.owned) {
             <h2>???</h2>
+            <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
+            <img [src]="'xuxemons/' + xuxemon.id + '.png'" alt="Xuxemon desconegut">
+            <span class="xuxemon-base"></span>
+            <span class="sr-only">No capturat</span>
             } @else {
             <h2>{{ xuxemon.name }}</h2>
-            }
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
             <img [src]="'xuxemons/' + xuxemon.id + '.png'" [alt]="xuxemon.name">
             <span class="xuxemon-base"></span>
+            <span class="sr-only">Capturat</span>
+            }
         </article>
         }
     </section>
