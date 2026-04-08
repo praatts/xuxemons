@@ -40,7 +40,7 @@
             <!-- INFO USER (ADMIN) -->
             @if (activeView === 'users' && selectedUser) {
             <h2>{{selectedUser.username}}</h2>
-            <img src="test-item.png" alt="{{selectedUser.username}}" class="item-icon">
+            <img [src]="selectedUser.pfp" alt="{{selectedUser.username}}" class="item-icon">
             <span class="item-base"></span>
 
             <div class="item-stats-wrapper">
@@ -96,7 +96,7 @@
             <div class="items">
                 @for(user of users; track user.id){
                 <div class="item-card" [class.active]="selectedUser?.id === user.id" (click)="selectUser(user)">
-                    <img src="test-item.png" [alt]="user.username" class="item-icon">
+                    <img [src]="user.pfp" [alt]="user.username" class="item-icon">
                     <p class="item-name">{{user.player_id}}</p>
                 </div>
                 }
