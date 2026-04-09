@@ -141,60 +141,74 @@ class XuxemonsController extends Controller
     {
 
         try {
+            //Carrega l'usuari autenticat
             $user = Auth::guard('api')->user();
 
+            //Comprova que la id de l'item és vàlida
             $request->validate([
                 'item_id' => 'required|integer|exists:items,id'
             ]);
 
+            //Carrega el item
             $item = Item::findOrFail($request->item_id);
 
+            //Comprova que el item és una vacuna (no apilable)
             if ($item->stackable) {
                 return response()->json([
                     'message' => 'Aquest item no és una vacuna'
                 ], 400);
             }
 
+
+            //Carrega la vacuna de l'inventari de l'usuari
             $inventory = Inventory::where('user_id', $user->id)
                 ->where('item_id', $item->id)
                 ->first();
 
+            //Comprova que l'usuari té la vacuna
             if (!$inventory || $inventory->quantity <= 0) {
                 return response()->json(['message' => 'No tens aquesta vacuna'], 400);
             }
 
+            //Carrega el xuxemon al que es vol aplicar la vacuna amb les seves malalties
             $owned = OwnedXuxemon::where('id', $owned_id)
                 ->where('user_id', $user->id)
                 ->with('illnesses')
                 ->first();
 
+            //Llança error si no es troba el xuxemon
             if (!$owned) {
                 return response()->json(['message' => "Xuxemon no trobat"], 404);
             }
 
+            //Llença missatge si el xuxemon no té malalties
             if ($owned->illnesses->isEmpty()) {
                 return response()->json([
                     'message' => 'Aquest xuxemon no té cap malaltia'
                 ], 400);
             }
 
+            //Si la vacuna cura totes les malalties, les elimina totes.
             if ($item->illness_id == null) {
-                $owned->illnesses()->detach();
+                $owned->illnesses()->detach(); //Treu totes les malalties del xuxemon si ilness_id és null (inxulina)
                 $cured = 'S\'han curat totes les enfermetats';
             } else {
+                //Carrega la enfermetat segons la id de la enfermetat que cura la vacuna seleccionada
                 $illness = $owned->illnesses->where('id', $item->illness_id)->first();
 
+                //Si el xuxemon no té la enfermetat que cura la vacuna, llença un error
                 if (!$illness) {
                     return response()->json([
                         'message' => 'Aquest xuxemon no té la malaltia que cura aquesta vacuna'
                     ], 400);
                 }
 
-                $owned->illnesses()->detach($item->illness_id);
+
+                $owned->illnesses()->detach($item->illness_id); //Treu la enfermetat que cura la vacuna
                 $cured = 'S\'ha curat la enfermetat:' . $illness->name;
             }
 
-            $inventory->delete();
+            $inventory->delete(); //S'elimina la vacuna utilitzada de l'inventari
 
             return response()->json([
                 'message' => 'Vacuna aplicada correctament',
