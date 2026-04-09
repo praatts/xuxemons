@@ -10,12 +10,13 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserInterface } from '../user-interface';
 import { MotxillaService } from '../services/motxilla.service';
 import { SettingsService } from '../services/settings.service';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-xuxedex',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule],
+  imports: [NgClass, ReactiveFormsModule, FormsModule],
   templateUrl: './xuxedex.component.html',
   styleUrl: './xuxedex.component.css'
 })
@@ -35,17 +36,16 @@ export class XuxedexComponent {
     { id: 'agua', name: 'Agua' },
     { id: 'aire', name: 'Aire' }
   ];
-
   userXuxes: { [key: string]: number } = {
     verda: 0,
     blava: 0,
     vermella: 0
   };
+
   //Parametros para Ilnesses
   showIllnessModal = false;
   illnessUsers: UserInterface[] = [];
   isEvolving: boolean = false;
-
   isAdmin: boolean = false;
 
   //Variables para el modal de usuarios
@@ -60,6 +60,12 @@ export class XuxedexComponent {
   midToBig: number = 0;
   userVaccines: any[] = [];
   selectedVaccine: any = null;
+
+  // Variables para el modal de vacunas
+  showVaccineModal: boolean = false;
+  selectedUserForVaccine: UserInterface | null = null;
+  vaccines: any[] = [];
+  modalStep: 'users' | 'vaccines' = 'users'; // Pas actual del modal d'administració de vacunes
 
 
   
@@ -148,6 +154,28 @@ export class XuxedexComponent {
     }
   }
 
+  //Mètode per eliminar un xuxemon capturat específic
+  deleteOwnedXuxemon(xuxemon: Xuxemon): void {
+    if (!xuxemon.owned_xuxemon_id) {
+      alert('No es pot eliminar un xuxemon que no has capturat!');
+      return;
+    }
+    
+    if (confirm(`Estàs segur que vols alliberar a ${xuxemon.name}?`)) {
+      this.xuxemonsService.deleteOwnedXuxemon(xuxemon.owned_xuxemon_id).subscribe({
+        next: () => {
+          alert(`${xuxemon.name} ha sigut eliminat!`);
+          const updated = this.xuxemonsService.getCurrentOwnedXuxemons().filter(x => x.owned_xuxemon_id !== xuxemon.owned_xuxemon_id);
+          this.xuxemonsService.setOwnedXuxemons(updated);
+          this.filteredXuxemons = this.filteredXuxemons.filter(x => x.owned_xuxemon_id !== xuxemon.owned_xuxemon_id);
+          this.closeDetail();
+        },
+        error: (err) => console.log("Error al alliberar xuxemon: ", err)
+      });
+    }
+  }
+
+
   //Filtra els xuxemons captirats segons l'element seleccionat, o mostra tots els xuxemons si el filtre és "all".
   filterXuxemonsByElement(element: string): void {
     this.activeElement = element;
@@ -228,6 +256,7 @@ export class XuxedexComponent {
     this.showModal = false;
     this.selectedXuxemon = owned ?? xuxemon;
     this.selectedXuxeType = 'verda';
+    this.selectedVaccine = null;
     this.loadInventory();
   }
 
@@ -303,13 +332,17 @@ export class XuxedexComponent {
     this.motxillaService.getInventory().subscribe((data: any[]) => {
       // Reinicia el comptador de xuxes a 0, per evitar problemes al actualitzar la vista de la motxilla.
       this.userXuxes = { verda: 0, blava: 0, vermella: 0 };
+      this.userVaccines = [];
 
       //Carrega les xuxes, condicionals per identificar el tipus de xuxe segons el seu color, asigna la quantitat de cada item a la variable userXuxes per mostrar-la a la vista.
       data.forEach(item => {
         const name = item.item.name.toLowerCase();
         if (name.includes('verda')) this.userXuxes['verda'] = item.quantity;
-        if (name.includes('blava')) this.userXuxes['blava'] = item.quantity;
-        if (name.includes('vermella')) this.userXuxes['vermella'] = item.quantity;
+        else if (name.includes('blava')) this.userXuxes['blava'] = item.quantity;
+        else if (name.includes('vermella')) this.userXuxes['vermella'] = item.quantity;
+        else if (!item.item.stackable) {
+          this.userVaccines.push(item);
+        }
       });
 
       //Reinicia les vacunes de l'usuari

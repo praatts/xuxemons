@@ -68,6 +68,7 @@ export class XuxemonsService {
     return this.ownedXuxemonsSubject.value;
   }
 
+
   //Mètode per afegir una malaltia a un xuxemon propietat de l'usuari autenticat (s'ha de ser admin per accedir-hi) i retorna un observable amb la resposta del backend.
   addIllness(owned_id: number, illness: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/xuxedex/${owned_id}/illness`, { illness });
@@ -81,5 +82,10 @@ export class XuxemonsService {
   //Mètode per vacunar un xuxemon propietat de l'usuari autenticat.
   giveVaccine(owned_xuxemon_id: number, item_id: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/xuxemons/${owned_xuxemon_id}/vaccinate`, { item_id });
+  }
+
+  //Mètode per eliminar un xuxemon capturat específic de l'usuari autenticat.
+  deleteOwnedXuxemon(owned_id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/xuxedex/owned/${owned_id}`);
   }
 }

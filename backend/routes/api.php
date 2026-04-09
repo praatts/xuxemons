@@ -49,7 +49,6 @@ Route::middleware([JwtMiddleware::class])->group(function () {
         Route::get('/xuxedex/owned/{user_id}', [XuxedexController::class, 'ownedXuxemonsByUser']); //ver los owned xuxemons de cada usuario
         Route::get('/settings', [SettingsController::class, 'index']);
         Route::put('/settings/update', [SettingsController::class, 'update']);
-
         Route::get('/illnesses', [IllnessController::class, 'index']);
         Route::put('/illnesses/update', [IllnessController::class, 'update']);
     });
@@ -66,6 +65,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/inventory', [InventoryController::class, 'getUserInventory']);
     Route::get('/inventory/items', [InventoryController::class, 'getAllItems']);
     Route::post('/xuxemons/{owned_id}/vaccinate', [XuxemonsController::class, 'giveVaccine']);
+    Route::delete('/inventory/delete/item/{slot_id}', [InventoryController::class, 'deleteItem']);
 
     //XUXEDEX
     Route::get('/xuxedex/all', [XuxedexController::class, 'allXuxemons']);
@@ -73,6 +73,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/xuxedex/users', [XuxedexController::class, 'users']);
     Route::post('/xuxedex/add-random/{user_id}', [XuxedexController::class, 'addRandom']);
     Route::get('/xuxedex/owned', [XuxedexController::class, 'ownedXuxemons']);
+    Route::delete('/xuxedex/owned/{owned_id}', [XuxedexController::class, 'deleteOwnedXuxemon']);
 
     //XUXEMONS
     Route::post('/xuxemons/{id}/xuxe', [XuxemonsController::class, 'giveXuxe']);
