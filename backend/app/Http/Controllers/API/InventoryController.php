@@ -93,6 +93,7 @@ class InventoryController extends Controller
                 'added' => $finalQuantity,
             ]);
         } else {
+            //vaccines
             //Si la quantitat a afegir és superior als slots disponibles (quan l'item no es apilable), retorna un error indicant quants slots hi ha disponibles
             if ($availableSlots < $quantity) {
                 return response()->json([
