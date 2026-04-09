@@ -147,4 +147,30 @@ class XuxedexController extends Controller
         });
         return response()->json($owned);
     }
+
+    //Mètode per eliminar un xuxemon capturat de la xuxedex de l'usuari autenticat
+
+    public function deleteOwnedXuxemon($owned_id): JsonResponse
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+
+            $owned = OwnedXuxemon::where('id', $owned_id)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if (!$owned) {
+                return response()->json(['message' => 'Xuxemon no trobat'], 404);
+            }
+
+            $owned->delete();
+
+            return response()->json(['message' => 'Xuxemon eliminat correctament']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 500);
+        }
+    }
 }

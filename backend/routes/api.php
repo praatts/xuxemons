@@ -72,6 +72,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/xuxedex/users', [XuxedexController::class, 'users']);
     Route::post('/xuxedex/add-random/{user_id}', [XuxedexController::class, 'addRandom']);
     Route::get('/xuxedex/owned', [XuxedexController::class, 'ownedXuxemons']);
+    Route::delete('/xuxedex/owned/{owned_id}', [XuxedexController::class, 'deleteOwnedXuxemon']);
 
     //XUXEMONS
     Route::post('/xuxemons/{id}/xuxe', [XuxemonsController::class, 'giveXuxe']);

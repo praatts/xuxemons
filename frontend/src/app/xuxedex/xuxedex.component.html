@@ -161,6 +161,10 @@
         }
 
         <div class="modal-actions">
+            <button class="action-btn vermella" (click)="deleteOwnedXuxemon(selectedXuxemon)"
+                [disabled]="!selectedXuxemon.owned_xuxemon_id">
+                Eliminar Xuxemon
+            </button>
             <button class="cancel-btn" (click)="closeDetail()">
                 Tancar
             </button>

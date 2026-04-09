@@ -7,5 +7,4 @@ WORKDIR /app
 COPY . . 
 RUN composer install 
 RUN composer update
-RUN chmod +x /app/start.sh
-CMD ["/app/start.sh"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

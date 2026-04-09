@@ -154,6 +154,28 @@ export class XuxedexComponent {
     }
   }
 
+  //Mètode per eliminar un xuxemon capturat específic
+  deleteOwnedXuxemon(xuxemon: Xuxemon): void {
+    if (!xuxemon.owned_xuxemon_id) {
+      alert('No es pot eliminar un xuxemon que no has capturat!');
+      return;
+    }
+    
+    if (confirm(`Estàs segur que vols alliberar a ${xuxemon.name}?`)) {
+      this.xuxemonsService.deleteOwnedXuxemon(xuxemon.owned_xuxemon_id).subscribe({
+        next: () => {
+          alert(`${xuxemon.name} ha sigut eliminat!`);
+          const updated = this.xuxemonsService.getCurrentOwnedXuxemons().filter(x => x.owned_xuxemon_id !== xuxemon.owned_xuxemon_id);
+          this.xuxemonsService.setOwnedXuxemons(updated);
+          this.filteredXuxemons = this.filteredXuxemons.filter(x => x.owned_xuxemon_id !== xuxemon.owned_xuxemon_id);
+          this.closeDetail();
+        },
+        error: (err) => console.log("Error al alliberar xuxemon: ", err)
+      });
+    }
+  }
+
+
   //Filtra els xuxemons captirats segons l'element seleccionat, o mostra tots els xuxemons si el filtre és "all".
   filterXuxemonsByElement(element: string): void {
     this.activeElement = element;

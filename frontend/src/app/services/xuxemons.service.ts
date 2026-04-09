@@ -83,4 +83,9 @@ export class XuxemonsService {
   giveVaccine(owned_xuxemon_id: number, item_id: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/xuxemons/${owned_xuxemon_id}/vaccinate`, { item_id });
   }
+
+  //Mètode per eliminar un xuxemon capturat específic de l'usuari autenticat.
+  deleteOwnedXuxemon(owned_id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/xuxedex/owned/${owned_id}`);
+  }
 }
