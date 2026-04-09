@@ -65,6 +65,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/inventory', [InventoryController::class, 'getUserInventory']);
     Route::get('/inventory/items', [InventoryController::class, 'getAllItems']);
     Route::post('/xuxemons/{owned_id}/vaccinate', [XuxemonsController::class, 'giveVaccine']);
+    Route::delete('/inventory/delete/item/{slot_id}', [InventoryController::class, 'deleteItem']);
 
     //XUXEDEX
     Route::get('/xuxedex/all', [XuxedexController::class, 'allXuxemons']);

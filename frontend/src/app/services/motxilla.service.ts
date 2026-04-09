@@ -58,4 +58,9 @@ export class MotxillaService {
   getCurrentAllItems(): any[] {
     return this.allItemsSubject.value;
   }
+
+  //Elimina un ítem de la motxilla de l'usuari autenticat, identificat pel seu slot_id
+  deleteItemFromInventory(slot_id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/inventory/delete/item/${slot_id}`);
+  }
 }
