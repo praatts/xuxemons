@@ -1,4 +1,4 @@
-<main class="container">
+<section class="container">
     <nav class="search-wrapper">
         <img src="search-icon.png" alt="Icono de búsqueda">
         <input type="text" for="pokemon" placeholder="Cerca un xuxemon...">
@@ -29,6 +29,9 @@
 
         <article class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)"
             role="gridcell">
+            @if(xuxemon.illnesses && xuxemon.illnesses.length > 0) {
+            <img src="sick.png" alt="Xuxemon malalt" class="sick-indicator">
+            }
             @if(!xuxemon.owned) {
             <h2>???</h2>
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
@@ -54,7 +57,7 @@
         </article>
         }
     </section>
-</main>
+</section>
 
 @if (showModal) {
 <div class="modal-overlay" (click)="closeModal()">
@@ -100,6 +103,9 @@
 <div class="modal-overlay" (click)="closeDetail()" role="dialog" aria-modal="true" [attr.aria-label]="selectedXuxemon.name">
     <div class="modal" (click)="$event.stopPropagation()" cdkTrapFocus cdkTrapFocusAutoCapture>
 
+        @if(selectedXuxemon.illnesses && selectedXuxemon.illnesses.length > 0) {
+        <img src="sick.png" alt="Malalt" class="sick-indicator">
+        }
         <h2>{{ selectedXuxemon.name }}</h2>
         <img [src]="'xuxemons/' + selectedXuxemon.id + '.png'" class="detail-img">
         <p><strong>Tipus:</strong> {{ selectedXuxemon.type }}</p>

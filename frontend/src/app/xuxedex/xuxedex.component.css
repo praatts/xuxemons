@@ -140,6 +140,7 @@
     align-items: center;
     gap: 5px;
     padding: 10px;
+    position: relative;
 }
 
 .xuxemon-card h2 {
@@ -176,6 +177,16 @@
     color: var(--text-secondary) !important;
 }
 
+.xuxemon-card .sick-indicator {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 24px;
+    height: 24px;
+    filter: none !important;
+    z-index: 1;
+}
+
 /* Modal */
 .modal-overlay {
     position: fixed;
@@ -198,8 +209,19 @@
     max-height: 80vh;
     display: flex;
     flex-direction: column;
+    position: relative;
     gap: 20px;
     overflow: hidden;
+}
+
+.modal .sick-indicator {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    filter: none !important;
+    z-index: 1;
 }
 
 .modal h2 {
