@@ -58,13 +58,13 @@
     </div>
     <div class="object-wrapper">
         @if(!isAdmin){
-        <h2>Objectes</h2>
+        <h2 class="header-h2">Objectes</h2>
         } @else {
-        <a (click)="setView('items')" [class.active-tab]="activeView === 'items'">
-            <h2>Objectes</h2>
+        <a class="btn-h2" (click)="setView('items')" [class.active-tab]="activeView === 'items'">
+            Objectes
         </a>
-        <a (click)="setView('users')" [class.active-tab]="activeView === 'users'">
-            <h2>Usuaris</h2>
+        <a class="btn-h2" (click)="setView('users')" [class.active-tab]="activeView === 'users'">
+            Usuaris
         </a>
         }
         <div class="object-list">
@@ -113,7 +113,8 @@
 
         <div class="modal-items">
             @for (item of availableItems; track item.id) {
-            <div class="modal-item-card" [class.active]="selectedItem?.id === item.id" (click)="selectedItemOnModal(item)">
+            <div class="modal-item-card" [class.active]="selectedItem?.id === item.id"
+                (click)="selectedItemOnModal(item)">
                 <img [src]="'items/' + item.id + '.png'" [alt]="item.name" class="item-icon">
                 <p class="item-name">{{ item.name }}</p>
 
