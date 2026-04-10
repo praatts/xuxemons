@@ -93,6 +93,7 @@ class InventoryController extends Controller
                 'added' => $finalQuantity,
             ]);
         } else {
+            //vaccines
             //Si la quantitat a afegir és superior als slots disponibles (quan l'item no es apilable), retorna un error indicant quants slots hi ha disponibles
             if ($availableSlots < $quantity) {
                 return response()->json([
@@ -175,5 +176,43 @@ class InventoryController extends Controller
 
         $items = Item::all();
         return response()->json($items);
+    }
+
+    //Mètode per eliminar items de l'inventari de l'usuari autenticat
+
+    public function deleteItem($slot_id)
+    {
+        try {
+            $user = Auth::guard('api')->user();
+
+            $inventory = Inventory::where('id', $slot_id)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if (!$inventory) {
+                return response()->json(['message' => 'Slot no encontrado'], 404);
+            }
+
+            $item = Item::find($inventory->item_id);
+
+            if ($item->stackable) {
+                if ($inventory->quantity > 1) {
+                    $inventory->quantity -= 1;
+                    $inventory->save();
+                } else {
+                    $inventory->delete();
+                }
+            } else {
+                $inventory->delete();
+            }
+
+            return response()->json([
+                'message' => 'Item eliminado correctamente',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

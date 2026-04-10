@@ -61,7 +61,7 @@ export class MotxillaComponent implements OnInit {
   }
   //Mètode per mostrar els slots de l'inventari correctament, dividint els slots segons si son apilables o no.
   expandSlots(motxilla: any[]): any[] {
-   const result: any[] = [];
+    const result: any[] = [];
     for (let slot of motxilla) {
       let remaining = slot.quantity;
       while (remaining > 0) {
@@ -180,18 +180,45 @@ export class MotxillaComponent implements OnInit {
     if (!this.selectedUser || !this.selectedItem || this.itemQuantity < 0) return;
 
     this.motxillaService.giveItemToUser(this.selectedUser.id, this.selectedItem.id, this.itemQuantity).subscribe({
-    next: () => {
-      this.motxillaService.getInventory().subscribe({
-        next: (data) => {
-          const expanded = this.expandSlots(data);
-          this.motxillaService.setInventory(expanded);
-          this.filteredMotxilla = expanded;
-        }
-      });
-      alert('Item afegit correctament a l\'usuari ' + this.selectedUser.player_id);
-      this.closeModal();
-    },
-    error: (err) => console.log('Error afegint item:', err)
-  });
+      next: () => {
+        this.motxillaService.getInventory().subscribe({
+          next: (data) => {
+            const expanded = this.expandSlots(data);
+            this.motxillaService.setInventory(expanded);
+            this.filteredMotxilla = expanded;
+          }
+        });
+        alert('Item afegit correctament a l\'usuari ' + this.selectedUser.player_id);
+        this.closeModal();
+      },
+      error: (err) => console.log('Error afegint item:', err)
+    });
+  }
+
+  //Elimina l'item de l'inventari
+  deleteItem(slot_id: number) {
+    if(!confirm('Estàs segur que vols eliminar aquest item de la motxilla?')) return; //Cancela l'acció si l'usuari no confirma
+    this.motxillaService.deleteItemFromInventory(slot_id).subscribe({
+      next: () => {
+        this.motxillaService.getInventory().subscribe({
+          next: (data) => {
+            //Actualitza l'inventari després d'eliminar l'item, comprovant si el slot eliminat encara existeix per actualitzar la selecció del slot.
+            const expanded = this.expandSlots(data); 
+            this.motxillaService.setInventory(expanded); 
+            this.filteredMotxilla = expanded; 
+            //Busca el slot, si la quantitat es més gran que 0, actualitza la selecció, si no, deselecciona el slot.
+            const stillExists = expanded.find(s => s.id === slot_id); 
+            if (!stillExists) {
+              this.selectedSlot = null;
+              this.selectedIndex = -1;
+            } else {
+              this.selectedSlot = stillExists;
+            }
+          }
+        });
+        alert('Item eliminat correctament');
+      },
+      error: (err) => console.log('Error eliminant item:', err)
+    });
   }
 }
