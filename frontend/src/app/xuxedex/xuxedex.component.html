@@ -29,9 +29,16 @@
 
         <article class="xuxemon-card" [ngClass]="{'owned': xuxemon.owned}" (click)="openXuxemon(xuxemon)"
             role="gridcell">
-            @if(xuxemon.illnesses && xuxemon.illnesses.length > 0) {
-            <img src="sick.png" alt="Xuxemon malalt" class="sick-indicator">
-            }
+            <div class="card-icons">
+                @if(xuxemon.illnesses && xuxemon.illnesses.length > 0) {
+                <img src="sick.png" alt="Xuxemon malalt" class="card-icon">
+                }
+                @if(xuxemon.owned && xuxemon.size === 'gran') {
+                <img src="gran.png" alt="Forma gran" class="card-icon">
+                } @else if(xuxemon.owned && xuxemon.size === 'mitja') {
+                <img src="mitja.png" alt="Forma mitjana" class="card-icon">
+                }
+            </div>
             @if(!xuxemon.owned) {
             <h2>???</h2>
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
@@ -39,15 +46,6 @@
             <img [src]="'xuxemons/' + xuxemon.id + '.png'" alt="Xuxemon desconegut">
             <span class="xuxemon-base"></span>
             } @else {
-            @if(xuxemon.size === 'gran') {
-            <span class="xuxemon-base gran" aria-label="Forma gran">
-                <img src="public/gran.png" alt="Forma gran" width="30" height="30">
-            </span>
-            } @else if(xuxemon.size === 'mitja') {
-            <span class="xuxemon-base mitja" aria-label="Forma mitjana">
-                <img src="public/mitja.png" alt="Forma mitjana" width="30" height="30">
-            </span>
-            }
             <h2>{{ xuxemon.name }}</h2>
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
             <p class="xuxemon-status">Capturat</p>
@@ -100,12 +98,20 @@
 }
 
 @if (selectedXuxemon) {
-<div class="modal-overlay" (click)="closeDetail()" role="dialog" aria-modal="true" [attr.aria-label]="selectedXuxemon.name">
+<div class="modal-overlay" (click)="closeDetail()" role="dialog" aria-modal="true"
+    [attr.aria-label]="selectedXuxemon.name">
     <div class="modal" (click)="$event.stopPropagation()" cdkTrapFocus cdkTrapFocusAutoCapture>
 
-        @if(selectedXuxemon.illnesses && selectedXuxemon.illnesses.length > 0) {
-        <img src="sick.png" alt="Malalt" class="sick-indicator">
-        }
+        <div class="modal-icons">
+            @if(selectedXuxemon.illnesses && selectedXuxemon.illnesses.length > 0) {
+            <img src="sick.png" alt="Malalt" class="modal-icon">
+            }
+            @if(selectedXuxemon.size === 'gran') {
+            <img src="gran.png" alt="Forma gran" class="modal-icon">
+            } @else if(selectedXuxemon.size === 'mitja') {
+            <img src="mitja.png" alt="Forma mitjana" class="modal-icon">
+            }
+        </div>
         <h2>{{ selectedXuxemon.name }}</h2>
         <img [src]="'xuxemons/' + selectedXuxemon.id + '.png'" class="detail-img">
         <p><strong>Tipus:</strong> {{ selectedXuxemon.type }}</p>

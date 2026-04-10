@@ -177,14 +177,20 @@
     color: var(--text-secondary) !important;
 }
 
-.xuxemon-card .sick-indicator {
+.xuxemon-card .card-icons {
     position: absolute;
-    top: 30px;
-    left: 30px;
+    top: 50%;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 1;
+}
+
+.xuxemon-card .card-icons .card-icon {
     width: 24px;
     height: 24px;
     filter: none !important;
-    z-index: 1;
 }
 
 /* Modal */
@@ -214,14 +220,20 @@
     overflow: hidden;
 }
 
-.modal .sick-indicator {
+.modal .modal-icons {
     position: absolute;
-    top: 12px;
-    right: 16px;
+    top: 16px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1;
+}
+
+.modal .modal-icons .modal-icon {
     width: 32px;
     height: 32px;
     filter: none !important;
-    z-index: 1;
 }
 
 .modal h2 {
