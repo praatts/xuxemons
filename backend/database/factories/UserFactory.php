@@ -24,7 +24,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'player_id' => fake()->unique()->regexify('[A-Za-z]{4}#[0-9]{4}'),
+            'player_id' => fake()->unique()->regexify('#[A-Za-z]{4}[0-9]{4}'),
             'name' => fake()->name(),
             'surname' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
@@ -36,7 +36,7 @@ class UserFactory extends Factory
             'active_friends' => fake()->numberBetween(0, 10),
             'streak' => fake()->numberBetween(0, 50),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= Hash::make('123456'),
             'remember_token' => Str::random(10),
         ];
     }

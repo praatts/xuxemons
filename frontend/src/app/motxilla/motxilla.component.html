@@ -39,7 +39,7 @@
             <!-- INFO USER (ADMIN) -->
             @if (activeView === 'users' && selectedUser) {
             <h2>{{selectedUser.username}}</h2>
-            <img src="test-item.png" alt="{{selectedUser.username}}" class="item-icon">
+            <img [src]="selectedUser.pfp" alt="{{selectedUser.username}}" class="item-icon">
             <span class="item-base"></span>
 
             <div class="item-stats-wrapper">
@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="item-actions">
-                    <button (click)="giveItem()" [disabled]="!selectedSlot">Donar Xuxe</button>
+                    <button (click)="openModal()" [disabled]="!selectedUser">Donar Xuxes</button>
                 </div>
             </div>
             }
@@ -58,13 +58,13 @@
     </div>
     <div class="object-wrapper">
         @if(!isAdmin){
-        <h2>Objectes</h2>
+        <h2 class="header-h2">Objectes</h2>
         } @else {
-        <a (click)="setView('items')" [class.active-tab]="activeView === 'items'">
-            <h2>Objectes</h2>
+        <a class="btn-h2" (click)="setView('items')" [class.active-tab]="activeView === 'items'">
+            Objectes
         </a>
-        <a (click)="setView('users')" [class.active-tab]="activeView === 'users'">
-            <h2>Usuaris</h2>
+        <a class="btn-h2" (click)="setView('users')" [class.active-tab]="activeView === 'users'">
+            Usuaris
         </a>
         }
         <div class="object-list">
@@ -94,8 +94,9 @@
             @if(activeView === 'users') {
             <div class="items" role="grid">
                 @for(user of users; track user.id){
-                <div class="item-card" role="gridcell" [class.active]="selectedUser?.id === user.id" (click)="selectUser(user)">
-                    <img src="test-item.png" [alt]="user.username" class="item-icon">
+
+                <div class="item-card" [class.active]="selectedUser?.id === user.id" (click)="selectUser(user)">
+                    <img [src]="user.pfp" [alt]="user.username" class="item-icon">
                     <p class="item-name">{{user.player_id}}</p>
                 </div>
                 }
@@ -113,7 +114,8 @@
 
         <div class="modal-items">
             @for (item of availableItems; track item.id) {
-            <div class="modal-item-card" [class.active]="selectedItem?.id === item.id" (click)="selectedItemOnModal(item)">
+            <div class="modal-item-card" [class.active]="selectedItem?.id === item.id"
+                (click)="selectedItemOnModal(item)">
                 <img [src]="'items/' + item.id + '.png'" [alt]="item.name" class="item-icon">
                 <p class="item-name">{{ item.name }}</p>
 
