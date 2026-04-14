@@ -3,14 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Illness;
-use App\Models\OwnedXuxemonIllness;
 use App\Models\Setting;
 use Exception;
 use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Http\Controllers\API\inventoryController;
-use App\Http\Controllers\UserController;
-use App\Models\Xuxemon;
 use App\Models\Item;
 use App\Models\Inventory;
 use App\Models\OwnedXuxemon;
