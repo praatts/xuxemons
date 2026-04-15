@@ -57,6 +57,8 @@ export class XuxedexComponent {
   successUserId: number | null = null;
   searchUser = new FormControl('');
   activeElement: string = 'all';
+  activeViewFilter: 'all' | 'owned' = 'all';
+  searchTerm: string = '';
   littleToMid: number = 0;
   midToBig: number = 0;
   userVaccines: any[] = [];
@@ -69,7 +71,7 @@ export class XuxedexComponent {
   modalStep: 'users' | 'vaccines' = 'users'; // Pas actual del modal d'administració de vacunes
 
 
-  
+
   constructor(private xuxemonsService: XuxemonsService, public theme: ThemeService, private authService: AuthService, private userService: UserService, private motxillaService: MotxillaService, private settingsService: SettingsService) {
     this.userXuxemon$ = this.xuxemonsService.userXuxemons$;
     this.ownedXuxemon$ = this.xuxemonsService.ownedXuxemons$;
@@ -109,8 +111,8 @@ export class XuxedexComponent {
 
     //búsqueda de un xuxemon específic segons el nom, actualitza la llista de xuxemons mostrada a la vista segons el terme de cerca introduït per l'usuari al camp de cerca. La cerca es fa sobre la llista de xuxemons disponibles per l'usuari autenticat, i es filtra per nom del xuxemon que inclogui el terme de cerca (ignorant mayúsculas/minúsculas).
     this.searchXuxemon.valueChanges.subscribe(value => {
-      const searchTerm = value?.toLowerCase() ?? '';
-      this.filteredXuxemons = this.xuxemonsService.getCurrentUserXuxemons().filter(x => x.name.toLowerCase().includes(searchTerm));
+      this.searchTerm = value?.toLowerCase() ?? '';
+      this.applyFilters();
     });
 
     //Carrega la configuració de l'aplicació i assigna els valors corresponents a les variables locals.
@@ -167,7 +169,7 @@ export class XuxedexComponent {
       alert('No es pot eliminar un xuxemon que no has capturat!');
       return;
     }
-    
+
     if (confirm(`Estàs segur que vols alliberar a ${xuxemon.name}?`)) {
       this.xuxemonsService.deleteOwnedXuxemon(xuxemon.owned_xuxemon_id).subscribe({
         next: () => {
@@ -186,11 +188,7 @@ export class XuxedexComponent {
   //Filtra els xuxemons captirats segons l'element seleccionat, o mostra tots els xuxemons si el filtre és "all".
   filterXuxemonsByElement(element: string): void {
     this.activeElement = element;
-    if (element === 'all') {
-      this.filteredXuxemons = this.xuxemonsService.getCurrentOwnedXuxemons();
-    } else {
-      this.filteredXuxemons = this.xuxemonsService.getCurrentOwnedXuxemons().filter(x => x.type === element);
-    }
+    this.applyFilters();
   }
 
   //Carrega tots els usuaris del sistema per mostrar-los al modal d'administració de xuxemons, i configurar el filtre de cerca per player_id.
@@ -368,7 +366,7 @@ export class XuxedexComponent {
       });
     });
   }
-  
+
   //Donar vacuna al xuxemon seleccionat, actualitza les dades del xuxemon a la vista i al servei, recarrega la motxilla de l'usuari per actualitzar la quantitat de vacunes disponibles.
   useVaccine(xuxemon: Xuxemon, item_id: number): void {
     this.xuxemonsService.giveVaccine(xuxemon.owned_xuxemon_id!, item_id).subscribe({
@@ -386,6 +384,35 @@ export class XuxedexComponent {
         alert(err.error.message);
       }
     });
+  }
+
+  applyFilters(): void {
+    let list = this.xuxemonsService.getCurrentUserXuxemons();
+
+    //búsqueda
+    if (this.searchTerm) {
+      list = list.filter(x =>
+        x.name.toLowerCase().includes(this.searchTerm)
+      );
+    }
+
+    //filtro por tipo (aire, agua, tierra)
+    if (this.activeElement !== 'all') {
+      list = list.filter(x => x.type === this.activeElement);
+    }
+
+    //filtro por capturados
+    if (this.activeViewFilter === 'owned') {
+      list = list.filter(x => x.owned);
+    }
+
+    this.filteredXuxemons = list;
+  }
+
+  //filtra els xuxemons segons els obtinguts o tots
+  filterByView(view: 'all' | 'owned'): void {
+    this.activeViewFilter = view;
+    this.applyFilters();
   }
 
   //Tancar modal amb Escape
