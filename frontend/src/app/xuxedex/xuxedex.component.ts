@@ -27,6 +27,7 @@ export class XuxedexComponent {
   xuxemons: Xuxemon[] = [];
 
   filteredXuxemons: Xuxemon[] = [];
+  searchXuxemon = new FormControl('');
   showOwnedXuxemons: boolean = false;
   userXuxemon$;
   ownedXuxemon$;
@@ -104,6 +105,12 @@ export class XuxedexComponent {
       } else if (this.activeElement !== 'all') {
         this.filteredXuxemons = data.filter(x => x.type === this.activeElement);
       }
+    });
+
+    //búsqueda de un xuxemon específic segons el nom, actualitza la llista de xuxemons mostrada a la vista segons el terme de cerca introduït per l'usuari al camp de cerca. La cerca es fa sobre la llista de xuxemons disponibles per l'usuari autenticat, i es filtra per nom del xuxemon que inclogui el terme de cerca (ignorant mayúsculas/minúsculas).
+    this.searchXuxemon.valueChanges.subscribe(value => {
+      const searchTerm = value?.toLowerCase() ?? '';
+      this.filteredXuxemons = this.xuxemonsService.getCurrentUserXuxemons().filter(x => x.name.toLowerCase().includes(searchTerm));
     });
 
     //Carrega la configuració de l'aplicació i assigna els valors corresponents a les variables locals.
