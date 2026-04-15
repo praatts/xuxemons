@@ -12,6 +12,9 @@
     --background-item-base: rgba(255, 68, 0, 0.25);
     --bg-object-list: rgba(255, 68, 0, 0.6);
     --bg-button: #FF4400;
+    --bg-item-card: #C1BBBB;
+    --bg-item-card-active: #898989;
+    --bg-item-icon: #D9D9D9;
 
 
     background-color: var(--bg-container);
@@ -32,6 +35,9 @@
     --background-item-base: rgba(255, 68, 0, 0.25);
     --bg-object-list: rgba(75, 75, 75, 0.6);
     --bg-button: #121212;
+    --bg-item-card: #C1BBBB;
+    --bg-item-card-active: #898989;
+    --bg-item-icon: #D9D9D9;
 
     background-color: var(--bg-container);
     color: var(--text-main);
@@ -264,7 +270,7 @@ p {
 }
 
 .items .item-card {
-    background-color: #C1BBBB;
+    background-color: var(--bg-item-card);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -278,7 +284,7 @@ p {
 }
 
 .item-card.active {
-    background-color: #898989 !important;
+    background-color: var(--bg-item-card-active) !important;
     transition: 0.3s;
 }
 
@@ -291,7 +297,7 @@ p {
     width: 50px;
     height: 50px;
     margin-left: 10px;
-    background-color: #D9D9D9;
+    background-color: var(--bg-item-icon);
 }
 
 .item-card .item-name {
@@ -366,7 +372,7 @@ p {
     border-radius: 50%;
     width: 45px;
     height: 45px;
-    background-color: #D9D9D9;
+    background-color: var(--bg-item-icon);
 }
 
 .modal-item-card .item-name {
