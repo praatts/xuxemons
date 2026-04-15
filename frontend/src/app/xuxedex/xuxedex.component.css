@@ -140,6 +140,7 @@
     align-items: center;
     gap: 5px;
     padding: 10px;
+    position: relative;
 }
 
 .xuxemon-card h2 {
@@ -176,6 +177,22 @@
     color: var(--text-secondary) !important;
 }
 
+.xuxemon-card .card-icons {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 1;
+}
+
+.xuxemon-card .card-icons .card-icon {
+    width: 24px;
+    height: 24px;
+    filter: none !important;
+}
+
 /* Modal */
 .modal-overlay {
     position: fixed;
@@ -198,8 +215,25 @@
     max-height: 80vh;
     display: flex;
     flex-direction: column;
+    position: relative;
     gap: 20px;
     overflow: hidden;
+}
+
+.modal .modal-icons {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1;
+}
+
+.modal .modal-icons .modal-icon {
+    width: 32px;
+    height: 32px;
+    filter: none !important;
 }
 
 .modal h2 {

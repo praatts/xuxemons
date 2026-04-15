@@ -1,4 +1,4 @@
-<div class="motxilla-container">
+<section class="motxilla-container">
     <div class="search-wrapper">
 
         <div class="search-bar">
@@ -21,13 +21,7 @@
                     <p>X{{ selectedSlot.quantity }}</p>
                 </div>
 
-                <p class="item-description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a type specimen book. It has survived not
-                    only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-                    It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-                    and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem
-                    Ipsum</p>
+                <p class="item-description">{{ selectedSlot.item.description }}</p>
             </div>
 
             <div class="item-actions">
@@ -76,9 +70,9 @@
                 <button (click)="filterItems('stackable')">Apilables</button>
                 <button (click)="filterItems('non-stackable')">No Apilables</button>
             </div>
-            <div class="items">
+            <div class="items" role="grid">
                 @for (slot of filteredMotxilla; track $index; let i = $index) {
-                <div class="item-card" [ngClass]="{'active': selectedIndex === i}" (click)="selectSlot(slot, i)">
+                <div class="item-card" role="gridcell" [ngClass]="{'active': selectedIndex === i}" (click)="selectSlot(slot, i)">
                     <img [src]="'items/' + slot.item.id + '.png'" [alt]="slot.item.name" class="item-icon">
                     <p class="item-name">{{ slot.item.name }}</p>
                     @if (slot.item.stackable) {
@@ -92,8 +86,9 @@
             }
 
             @if(activeView === 'users') {
-            <div class="items">
+            <div class="items" role="grid">
                 @for(user of users; track user.id){
+
                 <div class="item-card" [class.active]="selectedUser?.id === user.id" (click)="selectUser(user)">
                     <img [src]="user.pfp" [alt]="user.username" class="item-icon">
                     <p class="item-name">{{user.player_id}}</p>
@@ -103,7 +98,7 @@
             }
         </div>
     </div>
-</div>
+</section>
 
 <!-- Modal para añadir items a un usuario desde la vista admin -->
 @if (showModal) {
