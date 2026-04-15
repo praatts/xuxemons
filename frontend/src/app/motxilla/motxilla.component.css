@@ -35,7 +35,7 @@
     --background-item-base: rgba(255, 68, 0, 0.25);
     --bg-object-list: rgba(75, 75, 75, 0.6);
     --bg-button: #121212;
-    --bg-item-card: #C1BBBB;
+    --bg-item-card: #555555;
     --bg-item-card-active: #898989;
     --bg-item-icon: #D9D9D9;
 
@@ -472,4 +472,5 @@ p {
 
 .btn-h2.active-tab{
     background-color: var(--bg-button);
+    border: #FFFFFF solid 2px;
 }
