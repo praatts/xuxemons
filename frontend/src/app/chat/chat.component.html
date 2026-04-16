@@ -1,16 +1,30 @@
 <div class="chat-container">
     @if (conversation) {
-        <div class="conversation-header">
-            <h2>Chat amb {{ conversation.id }}</h2>
+    <div class="conversation-header">
+        <h2>Chat amb {{ conversation.id }}</h2>
+    </div>
+    <div class="messages-container">
+        @for (message of messages; track message.id) {
+        <div class="message" [ngClass]="{
+                    'my-message': message.sender_id === sender_id,
+                    'received-message': message.sender_id !== sender_id}">
+            <div class="message-bubble">
+                <p>{{ message.content }}</p>
+            </div>
         </div>
-        <div class="messages-container">
-            @for (message of messages; track message.id) {
-                <div class="message" [ngClass]="{'sent': message.sender_id === 'user', 'received': message.sender_id !== 'user'}">
-                    <p>{{ message.content }}</p>
-                </div>
-            } @empty {
-                <p>No hi ha missatges en aquesta conversa.</p>
-            }
-        </div>
+        } @empty {
+        <p>No hi ha missatges en aquesta conversa.</p>
+        }
+    </div>
+    }
+</div>
+<div class="friends-list">
+    <h3>Amics</h3>
+    @for (friend of friends; track friend.id) {
+    <div class="friend">
+        <p>{{ friend.name }}</p>
+    </div>
+    } @empty {
+    <p>No tens amics afegits.</p>
     }
 </div>

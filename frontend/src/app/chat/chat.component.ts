@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { ChatService } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
+import { FriendshipService } from '../services/friendship.service';
 import { Message } from '../../../interfaces/message';
 import { Conversation } from '../../../interfaces/conversation';
+import { Friend } from '../../../interfaces/friend';
 import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
 
@@ -16,14 +18,15 @@ import { NgClass } from '@angular/common';
 })
 export class ChatComponent {
   messages: Message[] = [];
-  conversation: Conversation | null = null
+  conversation: Conversation | null = null;
+  friends: Friend[] = [];
   messages$;
   conversation$;
   newMessage: string = '';
   subscription = new Subscription();
   sender_id: number = 0;
 
-  constructor(public chatService: ChatService, private authService: AuthService) { 
+  constructor(public chatService: ChatService, private authService: AuthService, private friendshipService: FriendshipService) { 
     this.messages$ = this.chatService.messages$;
     this.conversation$ = this.chatService.conversation$;
   }
@@ -86,5 +89,11 @@ export class ChatComponent {
     }
   }
 
-  
+  //Carrega la llista d'amics de l'usuari autenticat.
+  getFriends() {
+    this.friendshipService.getFriends().subscribe({
+      next: (friends) => this.friends = friends,
+      error: (error) => console.error('Error al carregar amics:', error)
+    });
+  }
 }
