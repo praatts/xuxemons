@@ -121,6 +121,7 @@ export class XuxedexComponent {
       next: (data) => {
         this.xuxemonsService.setUserXuxemons(data);
         this.filteredXuxemons = data;
+        this.xuxemons = this.xuxemonsService.getCurrentUserXuxemons();
         console.log("Xuxedex cargada: ", data);
       },
       error: (err) => console.log("Error al cargar xuxedex: ", err)
