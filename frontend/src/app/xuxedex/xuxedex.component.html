@@ -9,8 +9,8 @@
             }
         </select>
         <div class="xuxemon-filter">
-            <button class="action-btn" (click)="filterByView('all')">Tots</button>
-            <button class="action-btn" (click)="filterByView('owned')">Capturat</button>
+            <button class="action-btn" [class.active]="activeViewFilter === 'all'" (click)="filterByView('all')">Tots</button>
+            <button class="action-btn" [class.active]="activeViewFilter === 'owned'" (click)="filterByView('owned')">Capturat</button>
         </div>
 
         @if (isAdmin) {

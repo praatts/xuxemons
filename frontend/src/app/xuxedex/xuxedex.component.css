@@ -8,6 +8,8 @@
     --text-secondary: #495057;
     --scrollbar-bg: #e0e0e0;
     --scrollbar-thumb: #b0b0b0;
+    --bg-filter-btn: #FF4400;
+    --xuxemon-base: #F4794F;
 
     background-color: var(--bg-container);
     color: var(--text-main);
@@ -15,14 +17,16 @@
 
 :host(.dark-mode) {
     --bg-container: #121212;
-    --bg-search: #FFFFFF;
+    --bg-search: #1e1e1e;
     --border-search: #333333;
-    --bg-select: #C1BBBB;
+    --bg-select: #555555;
     --bg-card: #2e2e2e;
     --text-main: #ffffff;
     --text-secondary: #ced4da;
     --scrollbar-bg: #1e1e1e;
     --scrollbar-thumb: #555555;
+    --bg-filter-btn: #FF4400;
+    --xuxemon-base: #555555;
 
     background-color: var(--bg-container);
     color: var(--text-main);
@@ -64,9 +68,9 @@
     height: fit-content;
     border: none;
     flex: 1;
+    background: transparent;
+    color: var(--text-main);
 }
-
-
 
 .search-wrapper input::placeholder {
     font-size: 20px;
@@ -80,6 +84,7 @@
     margin-left: auto;
     margin-right: 20px;
     background-color: var(--bg-select);
+    color: #FFFFFF;
     border-radius: 24px;
     padding: 8px;
 }
@@ -93,6 +98,11 @@
     display: flex;
     gap: 10px;
     margin-right: 15px;
+}
+
+.xuxemon-filter .action-btn.active {
+    background-color: var(--bg-filter-btn) !important;
+    color: var(--text-main) !important;
 }
 
 .admin-controls {
@@ -166,7 +176,7 @@
 }
 
 .xuxemon-card.owned .xuxemon-base {
-    background-color: rgba(255, 68, 0, 0.25);
+    background-color: var(--xuxemon-base);
 }
 
 .xuxemon-card.owned img {
@@ -480,4 +490,17 @@
     font-size: 13px;
     color: var(--text-main);
     margin: 0;
+}
+
+.container .xuxedex-wrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+.container .xuxedex-wrapper::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+}
+
+.container .xuxedex-wrapper::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 5px;
 }
