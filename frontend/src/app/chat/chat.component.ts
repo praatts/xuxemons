@@ -40,6 +40,7 @@ export class ChatComponent {
     //Quan canvia la conversa actual, es carrega els missatges d'aquesta conversa.
     this.subscription.add(
       this.conversation$.subscribe(conversation => {
+        this.conversation = conversation;
         if (conversation) {
           this.loadMessages(conversation.id);
         }

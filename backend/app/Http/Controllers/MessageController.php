@@ -44,7 +44,7 @@ class MessageController extends Controller
             'content' => $content,
         ]);
 
-        return response()->json();
+        return response()->json($message, 201);
     }
 
     //Funció per obtenir els missatges d'una conversa
