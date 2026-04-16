@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Message;
+use App\Models\Conversation;
+use App\Models\User;
+use Auth;
+
+class MessageController extends Controller
+{
+    public function store(Request $request)
+    {
+
+        $request->validate([
+            'content' => 'required|string',
+            'conversation_id' => 'required|exists:conversations,id',
+        ]);
+
+        //Obtenim usuari autenticat i dades del missatge
+        $user = Auth::guard('api')->user();
+        $conversation_id = $request->input('conversation_id');
+        $content = $request->input('content');
+
+        //Carregem la conversa
+        $conversation = Conversation::find($conversation_id);
+
+        //Comprovem que la conversa existeix
+        if (!$conversation) {
+            return response()->json(['error' => 'Conversa no trobada'], 404);
+        }
+
+        //Comprovem que l'usuari autenticat és part de la conversa (o sender o receiver)
+        if ($conversation->sender_id !== $user->id && $conversation->receiver_id !== $user->id) {
+            return response()->json(['error' => 'No tens permís per enviar missatges en aquesta conversa'], 403);
+        }
+
+        //Creem el missatge
+        $message = Message::create([
+            'conversation_id' => $conversation_id,
+            'sender_id' => $user->id,
+            'content' => $content,
+        ]);
+
+        return response()->json();
+    }
+}
