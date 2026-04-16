@@ -48,4 +48,10 @@ export class AuthService {
       map(user => user.role === 'admin')
     );
   }
+
+  getUserId(): Observable<number> {
+    return this.getProfile().pipe(
+      map(user => user.id)
+    );
+  }
 }

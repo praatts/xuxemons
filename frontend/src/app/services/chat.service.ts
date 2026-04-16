@@ -36,26 +36,24 @@ export class ChatService {
     return this.http.post<Message>(`${this.apiUrl}/messages`, { conversation_id, content });
   }
 
-  //Actualitza la conversa actual.
-  setConversation(conversation: Conversation) {
-    this.conversationSubject.next(conversation);
-  }
-
-  //Actualitza la llista de missatges de la conversa actual.
+  //Actualitza els missatges de la conversa actual.
   setMessages(messages: Message[]) {
     this.messagesSubject.next(messages);
   }
 
-  //Afgeix l'ultim missatge a la llista de missatges de la conversa actual.
-  addMessage(message: Message) {
-    const currentMessages = this.messagesSubject.getValue();
-    this.messagesSubject.next([...currentMessages, message]);
+  //Retorna l'estat actual dels missatges de la conversa.
+  getMessagesValue(): Message[] {
+    return this.messagesSubject.value;
   }
 
-  //Neteja la conversa i els missatges actuals.
-  clearChat() {
-    this.conversationSubject.next(null);
-    this.messagesSubject.next([]);
+  //Actualitza la conversa actual.
+  setConversation(conversation: Conversation | null) {
+    this.conversationSubject.next(conversation);
+  }
+
+  //Retorna l'estat actual de la conversa.
+  getConversationValue(): Conversation | null {
+    return this.conversationSubject.value;
   }
 }
 

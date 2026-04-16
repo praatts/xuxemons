@@ -1,0 +1,16 @@
+<div class="chat-container">
+    @if (conversation) {
+        <div class="conversation-header">
+            <h2>Chat amb {{ conversation.id }}</h2>
+        </div>
+        <div class="messages-container">
+            @for (message of messages; track message.id) {
+                <div class="message" [ngClass]="{'sent': message.sender_id === 'user', 'received': message.sender_id !== 'user'}">
+                    <p>{{ message.content }}</p>
+                </div>
+            } @empty {
+                <p>No hi ha missatges en aquesta conversa.</p>
+            }
+        </div>
+    }
+</div>
