@@ -1,30 +1,70 @@
-<div class="chat-container">
-    @if (conversation) {
-    <div class="conversation-header">
-        <h2>Chat amb {{ conversation.id }}</h2>
-    </div>
-    <div class="messages-container">
-        @for (message of messages; track message.id) {
-        <div class="message" [ngClass]="{
-                    'my-message': message.sender_id === sender_id,
-                    'received-message': message.sender_id !== sender_id}">
-            <div class="message-bubble">
-                <p>{{ message.content }}</p>
-            </div>
+<div class="main-layout">
+    <div class="sidebar-friend">
+        <div class="sidebar-title">
+            <h3>Els meus amics</h3>
         </div>
-        } @empty {
-        <p>No hi ha missatges en aquesta conversa.</p>
+        <div class="friends-list">
+            @for (friend of friends; track friend.id) {
+            <div class="friend-card" (click)="selectFriend(friend.id)"
+                [ngClass]="{'is-active': conversation?.id === friend.id}">
+                <div class="friend-details">
+                    <span class="name">{{ friend.name }}</span>
+                </div>
+            </div>
+            } @empty {
+            <div class="no-friends">
+                <p>No tens amics a la llista.</p>
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="chat-container">
+        @if (conversation) {
+        <div class="conversation-header">
+            <h2>Chat amb ???</h2> <!-- Afegir nom usuari -->
+        </div>
+        <div class="messages-container">
+            @for (message of messages; track message.id) {
+            <div class="message" [ngClass]="{
+            'my-message': message.sender_id === sender_id,
+            'received-message': message.sender_id !== sender_id
+          }">
+                <div class="message-bubble">
+                    <p>{{ message.content }}</p>
+                    <span class="message-time">{{ message.created_at }}</span> <!-- Format relatiu-->
+                </div>
+            </div>
+            } @empty {
+            <div class="empty-chat">
+                <p>No hi ha missatges en aquesta conversa.</p>
+            </div>
+            }
+        </div>
+
+        <div class="chat-input-box">
+        <div class="input-group">
+          <input 
+            type="text" 
+            [formControl]="messageControl" 
+            (keyup.enter)="sendMessage()"  
+            placeholder="Escriu el teu missatge aquí..."> <!-- permet enviar el missatge presionant Enter  -->
+          
+          <button 
+            class="send-button"
+            (click)="sendMessage()" 
+            [disabled]="messageControl.invalid">
+            Enviar
+          </button>
+        </div>
+      </div>
+
+        } @else {
+        <div class="no-conversation">
+            <div class="icon">💬</div>
+            <h2>Selecciona un amic per començar a parlar</h2>
+            <p>Tria algú de la llista per obrir una conversa.</p>
+        </div>
         }
     </div>
-    }
-</div>
-<div class="friends-list">
-    <h3>Amics</h3>
-    @for (friend of friends; track friend.id) {
-    <div class="friend">
-        <p>{{ friend.name }}</p>
-    </div>
-    } @empty {
-    <p>No tens amics afegits.</p>
-    }
 </div>

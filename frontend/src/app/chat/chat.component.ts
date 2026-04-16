@@ -7,12 +7,13 @@ import { Conversation } from '../../../interfaces/conversation';
 import { Friend } from '../../../interfaces/friend';
 import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, ReactiveFormsModule],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
@@ -24,7 +25,8 @@ export class ChatComponent {
   conversation$;
   newMessage: string = '';
   subscription = new Subscription();
-  sender_id: number = 0;
+  sender_id: number | null = null;
+  messageControl = new FormControl('');
 
   constructor(public chatService: ChatService, private authService: AuthService, private friendshipService: FriendshipService) { 
     this.messages$ = this.chatService.messages$;
@@ -33,6 +35,8 @@ export class ChatComponent {
 
   //Al iniciar el component, es subscriu als canvis de la conversa actual i recupera la id del usuari autenticat.
   ngOnInit() {
+    this.getFriends()
+
     //Quan canvia la conversa actual, es carrega els missatges d'aquesta conversa.
     this.subscription.add(
       this.conversation$.subscribe(conversation => {
@@ -72,15 +76,15 @@ export class ChatComponent {
 
   //Envia un missatge a la conversa actual i actualitza l'estat dels missatges després d'enviar-lo.
   sendMessage() {
-    const conversation = this.chatService.getConversationValue();
-    const content = this.newMessage.trim();
+    const currentConversation = this.chatService.getConversationValue();
+    const content = this.messageControl.value?.trim();
 
-    if (conversation && content) {
-      this.chatService.sendMessage(conversation.id, content).subscribe({
+    if (currentConversation && content) {
+      this.chatService.sendMessage(currentConversation.id, content).subscribe({
         next: (message) => {
           const updatedMessages = [...this.chatService.getMessagesValue(), message]; //Afegeix el nou missatge a l'estat actual dels missatges.
           this.chatService.setMessages(updatedMessages); //Actualitza els missatges
-          this.newMessage = ''; //Neteja el camp de text després d'enviar el missatge.
+          this.messageControl.reset(); //Neteja el camp de text després d'enviar el missatge.
         },
         error: (error) => {
           console.error('Error enviant missatge:', error);
@@ -94,6 +98,18 @@ export class ChatComponent {
     this.friendshipService.getFriends().subscribe({
       next: (friends) => this.friends = friends,
       error: (error) => console.error('Error al carregar amics:', error)
+    });
+  }
+
+  selectFriend(friend_id: number) {
+    //Quan es selecciona un amic, es crea una nova conversa amb aquest amic i es carrega aquesta conversa com a conversa actual.
+    this.chatService.createConversation(friend_id).subscribe({
+      next: (conversation) => {
+        this.chatService.setConversation(conversation);
+        this.chatService.setMessages([]);
+        this.loadMessages(conversation.id);
+      },
+      error: (error) => console.error('Error seleccionant amic:', error)
     });
   }
 }
