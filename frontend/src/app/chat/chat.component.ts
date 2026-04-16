@@ -5,7 +5,7 @@ import { FriendshipService } from '../services/friendship.service';
 import { Message } from '../../../interfaces/message';
 import { Conversation } from '../../../interfaces/conversation';
 import { Friend } from '../../../interfaces/friend';
-import { Subscription } from 'rxjs';
+import { EMPTY, Subscription, catchError, switchMap, timer } from 'rxjs';
 import { NgClass } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 
@@ -25,6 +25,7 @@ export class ChatComponent {
   conversation$;
   newMessage: string = '';
   subscription = new Subscription();
+  messagesPollingSubscription: Subscription | null = null;
   sender_id: number | null = null;
   messageControl = new FormControl('');
 
@@ -42,7 +43,10 @@ export class ChatComponent {
       this.conversation$.subscribe(conversation => {
         this.conversation = conversation;
         if (conversation) {
-          this.loadMessages(conversation.id);
+          this.startMessagesPolling(conversation.id);
+        } else {
+          this.stopMessagesPolling();
+          this.chatService.setMessages([]);
         }
       })
     );
@@ -64,7 +68,29 @@ export class ChatComponent {
 
   //Al destruir el component, es desubscriu de tots els observables per evitar fuites de memòria.
   ngOnDestroy() {
+    this.stopMessagesPolling();
     this.subscription.unsubscribe();
+  }
+
+  //Inicia un refresc periòdic dels missatges per mantenir el xat actualitzat en temps real.
+  startMessagesPolling(conversation_id: number) {
+    this.stopMessagesPolling();
+
+    //Subscripció que cada 1.5s recupera missatges i actualitza els missatges de la conversa actual. 
+    this.messagesPollingSubscription = timer(0, 1500).pipe(
+      switchMap(() => this.chatService.getMessages(conversation_id)),
+      catchError((error) => {
+        return EMPTY; //En cas d'error, no actualitza els missatges
+      })
+    ).subscribe(messages => {
+      this.chatService.setMessages(messages);
+    });
+  }
+
+  //Mètode per aturar el refresc de missatges periòdic.
+  stopMessagesPolling() {
+    this.messagesPollingSubscription?.unsubscribe();
+    this.messagesPollingSubscription = null;
   }
 
   //Carrega els missatges d'una conversa concreta i actualitza l'estat dels missatges a través del servei.
@@ -107,8 +133,6 @@ export class ChatComponent {
     this.chatService.createConversation(friend_id).subscribe({
       next: (conversation) => {
         this.chatService.setConversation(conversation);
-        this.chatService.setMessages([]);
-        this.loadMessages(conversation.id);
       },
       error: (error) => console.error('Error seleccionant amic:', error)
     });
