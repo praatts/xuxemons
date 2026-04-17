@@ -31,8 +31,26 @@
             'received-message': message.sender_id !== sender_id
           }">
                 <div class="message-bubble">
+                    @if (message.deleted) {
+                    <p class="deleted-message">Aquest missatge ha estat eliminat.</p>
+                    } @else {
                     <p>{{ message.content }}</p>
-                    <span class="message-time">{{ formatRelativeTime(message.created_at) }}</span> <!-- Format relatiu-->
+                    }
+                    <div class="message-meta">
+                        @if (!message.deleted) {
+                        <span class="message-time">{{ formatRelativeTime(message.created_at) }}</span>
+                        }
+                        @if (canDeleteMessage(message)) {
+                        <div class="message-actions">
+                            <button class="message-action edit" type="button" disabled title="Edició disponible properament">
+                                <span aria-hidden="true"></span>
+                            </button>
+                            <button class="message-action delete" type="button" (click)="deleteMessage(message.id)" title="Eliminar missatge">
+                                <span aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        }
+                    </div>
                 </div>
             </div>
             } @empty {

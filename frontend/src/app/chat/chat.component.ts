@@ -160,5 +160,44 @@ export class ChatComponent {
       const days = Math.floor(diffInSeconds / 86400);
       return `fa ${days} dia${days > 1 ? 's' : ''}`;
     }
-  }  
+  } 
+
+  //Indica si un missatge encara es pot eliminar (només missatges propis i dins del primer minut).
+  canDeleteMessage(message: Message): boolean {
+    if (message.deleted) {
+      return false;
+    }
+
+    //Comprovació usuari autenticat = remitent del missatge
+    if (this.sender_id === null || message.sender_id !== this.sender_id) {
+      return false;
+    }
+
+    const createdAt = new Date(message.created_at).getTime();
+    //Comprovació que la data de creació del missatge és vàlida i té un format de número correcte.
+    if (Number.isNaN(createdAt)) {
+      return false;
+    }
+
+    const difference = Date.now() - createdAt;
+    return difference >= 0 && difference < 60_000;
+  }
+  
+  //Mètode per eliminar un missatge concret de la conversa actual (temps màxim 1min després de enviarlo)
+  deleteMessage(message_id: number) {
+    this.chatService.deleteMessage(message_id).subscribe({
+      next: () => {
+        //Actualitzem el llistat de missatges, marcant com a 'deleted' el missatge seleccionat.
+        const updatedMessages = this.chatService.getMessagesValue().map(msg =>
+          msg.id === message_id
+            ? { ...msg, deleted: true }
+            : msg
+        );
+        this.chatService.setMessages(updatedMessages);
+      },
+      error: (error) => {
+        console.error('Error eliminant missatge:', error);
+      }
+    });
+  }
 }

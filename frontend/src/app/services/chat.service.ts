@@ -56,6 +56,11 @@ export class ChatService {
   getConversationValue(): Conversation | null {
     return this.conversationSubject.value;
   }
+
+  //Mètode per eliminar un missatge concret de la conversa actual.
+  deleteMessage(message_id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/messages/${message_id}`);
+  }
 }
 
 

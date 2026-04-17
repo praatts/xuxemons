@@ -5,4 +5,5 @@ export interface Message {
     content: string;
     created_at: string;
     updated_at: string;
+    deleted: boolean;
 }

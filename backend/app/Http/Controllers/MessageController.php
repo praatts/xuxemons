@@ -89,7 +89,9 @@ class MessageController extends Controller
             return response()->json(['error' => 'No tens permís per eliminar aquest missatge'], 403);
         }
 
-        $message->delete();
+        //Marquem el missatge com a eliminat
+        $message->deleted = true;
+        $message->save();
 
         return response()->json(['message' => 'Missatge eliminat correctament']);
     }

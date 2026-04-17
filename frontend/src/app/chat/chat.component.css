@@ -188,12 +188,13 @@ p {
 }
 
 .message-bubble {
-    max-width: 65%;
+    max-width: 78%;
+    min-width: 220px;
     padding: 10px 16px;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
 }
 
 .my-message .message-bubble {
@@ -216,7 +217,86 @@ p {
 .message-time {
     font-size: 11px;
     opacity: 0.7;
-    align-self: flex-end;
+}
+
+.message-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.message-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.message-action {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.18);
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.message-action:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.message-action:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.message-action.delete {
+    background: rgba(220, 53, 69, 0.18);
+}
+
+.message-action.delete span {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    background: url('/dark-mode/basura-blanca.png') no-repeat center;
+    background-size: contain;
+}
+
+.message-action.delete:hover:not(:disabled) {
+    background: rgba(220, 53, 69, 0.35);
+}
+
+.message-action.edit {
+    background: rgba(255, 193, 7, 0.16);
+}
+
+.message-action.edit:hover:not(:disabled) {
+    background: rgba(255, 193, 7, 0.3);
+}
+
+:host(.dark-mode) .message-action {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+:host(.dark-mode) .message-action.delete {
+    background: rgba(220, 53, 69, 0.26);
+}
+
+:host(.dark-mode) .message-action.edit {
+    background: rgba(255, 193, 7, 0.22);
+}
+
+@media (max-width: 992px) {
+    .message-bubble {
+        max-width: 86%;
+        min-width: 180px;
+    }
 }
 
 .empty-chat {
