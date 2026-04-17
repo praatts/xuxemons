@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -12,7 +12,7 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './user-login.component.html',
   styleUrl: './user-login.component.css'
 })
-export class UserLoginComponent {
+export class UserLoginComponent implements OnInit {
   
   loginForm: FormGroup;
   submitted = false;
@@ -33,6 +33,13 @@ export class UserLoginComponent {
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
 
+  }
+
+  ngOnInit(): void {
+    // Si l'usuari ja està loguejat i el token és vàlid, el redirigim automàticament a la pàgina principal
+    if (this.authService.isLogged()) {
+      this.router.navigateByUrl('/main/principal');
+    }
   }
 
   //Mètode per enviar les dades al login

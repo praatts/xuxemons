@@ -32,9 +32,30 @@ export class AuthService {
     return localStorage.getItem('access_token');
   }
 
-  //Retorna un boolean que indica si l'usuari està autenticat (true si hi ha un token d'accés vàlid, false en cas contrari).
+  // Verifica si el token ha expirat desxifrant el JWT
+  private isTokenExpired(token: string): boolean {
+    if (!token) return true;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const now = Math.floor(Date.now() / 1000);
+      return payload.exp < now;
+    } catch (e) {
+      return true; // Si no es pot desxifrar, el donem per invàlid/expirat
+    }
+  }
+
+  //Retorna un boolean que indica si l'usuari està autenticat (true si hi ha un token d'accés vàlid i no ha expirat, false en cas contrari).
   isLogged() : boolean {
-    return this.getToken() !== null;
+    const token = this.getToken();
+    if (!token) return false;
+
+    if (this.isTokenExpired(token)) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user_id'); // Per assegurar que netegem l'estat
+      return false;
+    }
+
+    return true;
   }
 
   //Retorna el perfil de l'usuari autenticat.
