@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../services/user.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
@@ -22,7 +21,6 @@ export class UserLoginComponent implements OnInit {
   
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
     private router: Router,
     private authService: AuthService
   ) {
@@ -55,7 +53,7 @@ export class UserLoginComponent implements OnInit {
     }
 
     //Fem el login amb els valors introduïts al formulari, i gestionem la resposta del backend per mostrar un missatge d'error o redirigir a la pàgina principal segons el resultat de l'operació.
-    this.userService.logIn(email, password).subscribe({
+    this.authService.login({ email, password }).subscribe({
 
       next: (response) => {
         console.log('Resposta rebuda al component:', response);

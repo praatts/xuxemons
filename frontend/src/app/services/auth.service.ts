@@ -1,21 +1,32 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
   private apiUrl = 'http://localhost:8000/api';
+  private jwtHelper = new JwtHelperService();
+  private autoLogoutTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {
+    this.initializeAutoLogout();
+  }
 
   //Envia les credencials de l'usuari al backend per autenticar-lo i, si és correcte, guarda el token d'accés retornat al localStorage.
-  login(credentials: any) : Observable<any> {
+  login(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       map(response => {
-        if (response && response.access_token) {
-          localStorage.setItem('access_token', response.access_token);
+        const token = response?.access_token ?? response?.token;
+        if (token) {
+          localStorage.setItem('access_token', token);
+          if (response?.user_id !== undefined && response?.user_id !== null) {
+            localStorage.setItem('user_id', String(response.user_id));
+          }
+          this.scheduleAutoLogout(token);
         }
         return response;
       })
@@ -23,14 +34,24 @@ export class AuthService {
   }
 
   //Elimina el token d'accés del localStorage per desautenticar l'usuari.
-  logout() : Observable<any> {
+  logout(): Observable<any> {
     return this.http.post(`${this.apiUrl}/logout`, {}).pipe(
       map(() => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('user_id');
+        this.forceLogout();
         return null;
+      }),
+      catchError(() => {
+        this.forceLogout();
+        return of(null);
       })
     );
+  }
+
+  forceLogout() {
+    this.clearAutoLogoutTimer();
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_id');
+    this.router.navigate(['/']);
   }
 
   //Retorna el token d'accés guardat al localStorage, o null si no existeix.
@@ -38,39 +59,73 @@ export class AuthService {
     return localStorage.getItem('access_token');
   }
 
-  // Verifica si el token ha expirat desxifrant el JWT
-  private isTokenExpired(token: string): boolean {
-    if (!token) return true;
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const now = Math.floor(Date.now() / 1000);
-      return payload.exp < now;
-    } catch (e) {
-      return true; // Si no es pot desxifrar, el donem per invàlid/expirat
-    }
-  }
-
   //Retorna un boolean que indica si l'usuari està autenticat (true si hi ha un token d'accés vàlid i no ha expirat, false en cas contrari).
-  isLogged() : boolean {
+  isLogged(): boolean {
     const token = this.getToken();
     if (!token) return false;
-
     if (this.isTokenExpired(token)) {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('user_id'); // Per assegurar que netegem l'estat
+      this.forceLogout();
       return false;
     }
-
     return true;
   }
 
+  private initializeAutoLogout(): void {
+    const token = this.getToken();
+    if (!token) {
+      return;
+    }
+
+    if (this.isTokenExpired(token)) {
+      this.forceLogout();
+      return;
+    }
+
+    this.scheduleAutoLogout(token);
+  }
+
+  private scheduleAutoLogout(token: string): void {
+    this.clearAutoLogoutTimer();
+
+    const expiration = this.jwtHelper.getTokenExpirationDate(token);
+    if (!expiration) {
+      this.forceLogout();
+      return;
+    }
+
+    const delay = expiration.getTime() - Date.now();
+    if (delay <= 0) {
+      this.forceLogout();
+      return;
+    }
+
+    this.autoLogoutTimer = setTimeout(() => {
+      this.forceLogout();
+    }, delay);
+  }
+
+  private clearAutoLogoutTimer(): void {
+    if (this.autoLogoutTimer) {
+      clearTimeout(this.autoLogoutTimer);
+      this.autoLogoutTimer = null;
+    }
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      return this.jwtHelper.isTokenExpired(token);
+    } catch {
+      return true;
+    }
+  }
+
   //Retorna el perfil de l'usuari autenticat.
-  getProfile() : Observable<any> {
+  getProfile(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/profile`);
   }
 
   //Retorna un boolean que indica si l'usuari autenticat té el rol d'administrador (admin).
-  isAdmin() : Observable<boolean> {
+  isAdmin(): Observable<boolean> {
     return this.getProfile().pipe(
       map(user => user.role === 'admin')
     );
