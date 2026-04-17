@@ -14,7 +14,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(authReq).pipe(
       catchError(error => {
         if (error.status === 401) {
-          // Token inválido o expirado
+          //Si existeix el error 401 (Unauthorized), es força el logout de l'usuari per eliminar el token i redirigir-lo a la pàgina de login.
           authService.forceLogout();
         }
         return throwError(() => error);
