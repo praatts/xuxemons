@@ -95,4 +95,28 @@ class MessageController extends Controller
 
         return response()->json(['message' => 'Missatge eliminat correctament']);
     }
+
+    public function editMessage(Request $request, $id) {
+        $user = Auth::guard('api')->user();
+        $message = Message::find($id);
+
+        if (!$message) {
+            return response()->json(['error' => 'Missatge no trobat'], 404);
+        }
+
+        //Comprovem que l'usuari autenticat és el sender del missatge
+        if ($message->sender_id !== $user->id) {
+            return response()->json(['error' => 'No tens permís per editar aquest missatge'], 403);
+        }
+
+        $request->validate([
+            'content' => 'required|string',
+        ]);
+
+        //Actualitzem el contingut del missatge
+        $message->content = $request->input('content');
+        $message->save();
+
+        return response()->json($message);
+    }
 }
