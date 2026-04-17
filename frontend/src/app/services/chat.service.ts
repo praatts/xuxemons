@@ -20,6 +20,7 @@ export class ChatService {
     this.messages$ = this.messagesSubject.asObservable();
     this.conversation$ = this.conversationSubject.asObservable();
   }
+  
 
   //Crea una nova conversa amb un altre usuari i retorna la conversa creada.
   createConversation(reciver_id: number): Observable<Conversation> {

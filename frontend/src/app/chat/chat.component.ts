@@ -137,6 +137,7 @@ export class ChatComponent {
       error: (error) => console.error('Error seleccionant amic:', error)
     });
   }
+  
   //Mètode per formatar la data de creació amb temps relatiu (ex: "fa 5 minuts", "fa 2 hores", etc.)
   formatRelativeTime(dateString: string): string {
     const date = new Date(dateString);
@@ -148,7 +149,7 @@ export class ChatComponent {
   //Mètode auxiliar per convertir els segons de diferència en un format de temps relatiu llegible.
   getRelativeTime(diffInSeconds: number): string {
     if (diffInSeconds < 60) {
-      return `fa ${diffInSeconds} segons`;
+      return `Ara mateix`;
     } else if (diffInSeconds < 3600) {
       const minutes = Math.floor(diffInSeconds / 60);
       return `fa ${minutes} minut${minutes > 1 ? 's' : ''}`;
