@@ -61,6 +61,11 @@ export class ChatService {
   deleteMessage(message_id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/messages/${message_id}`);
   }
+
+  //Mètode per editar el contingut d'un missatge concret de la conversa actual.
+  editMessage(message_id: number, newContent: string): Observable<Message> {
+    return this.http.patch<Message>(`${this.apiUrl}/messages/${message_id}/edit`, { content: newContent });
+  }
 }
 
 

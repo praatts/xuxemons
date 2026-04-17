@@ -237,7 +237,7 @@ p {
     height: 26px;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.35);
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.24);
     color: inherit;
     display: inline-flex;
     align-items: center;
@@ -246,17 +246,9 @@ p {
     transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
 }
 
-.message-action:hover:not(:disabled) {
+.message-action:hover {
     transform: translateY(-1px);
-}
-
-.message-action:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.message-action.delete {
-    background: rgba(220, 53, 69, 0.18);
+    background: rgba(255, 255, 255, 0.36);
 }
 
 .message-action.delete span {
@@ -267,16 +259,12 @@ p {
     background-size: contain;
 }
 
-.message-action.delete:hover:not(:disabled) {
-    background: rgba(220, 53, 69, 0.35);
-}
-
-.message-action.edit {
-    background: rgba(255, 193, 7, 0.16);
-}
-
-.message-action.edit:hover:not(:disabled) {
-    background: rgba(255, 193, 7, 0.3);
+.message-action.edit span {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    background: url('/dark-mode/edit-white.png') no-repeat center;
+    background-size: contain;
 }
 
 :host(.dark-mode) .message-action {
@@ -284,12 +272,9 @@ p {
     background: rgba(255, 255, 255, 0.08);
 }
 
-:host(.dark-mode) .message-action.delete {
-    background: rgba(220, 53, 69, 0.26);
-}
-
+:host(.dark-mode) .message-action.delete,
 :host(.dark-mode) .message-action.edit {
-    background: rgba(255, 193, 7, 0.22);
+    background: rgba(255, 255, 255, 0.14);
 }
 
 @media (max-width: 992px) {

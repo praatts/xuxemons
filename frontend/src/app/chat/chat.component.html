@@ -38,11 +38,15 @@
                     }
                     <div class="message-meta">
                         @if (!message.deleted) {
-                        <span class="message-time">{{ formatRelativeTime(message.created_at) }}</span>
+                            @if (message.created_at != message.updated_at) {
+                                <span class="message-time">{{ formatRelativeTime(message.updated_at) }} (editat)</span>
+                            } @else {
+                                <span class="message-time">{{ formatRelativeTime(message.created_at) }}</span>
+                            }
                         }
-                        @if (canDeleteMessage(message)) {
+                        @if (canModifyMessage(message)) {
                         <div class="message-actions">
-                            <button class="message-action edit" type="button" disabled title="Edició disponible properament">
+                            <button class="message-action edit" type="button" (click)="editMessage(message.id, 'Nou contingut')" title="Editar missatge">
                                 <span aria-hidden="true"></span>
                             </button>
                             <button class="message-action delete" type="button" (click)="deleteMessage(message.id)" title="Eliminar missatge">

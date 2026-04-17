@@ -162,8 +162,8 @@ export class ChatComponent {
     }
   } 
 
-  //Indica si un missatge encara es pot eliminar (només missatges propis i dins del primer minut).
-  canDeleteMessage(message: Message): boolean {
+  //Indica si un missatge encara es pot editar/eliminar (només missatges propis i dins del primer minut).
+  canModifyMessage(message: Message): boolean {
     if (message.deleted) {
       return false;
     }
@@ -180,10 +180,10 @@ export class ChatComponent {
     }
 
     const difference = Date.now() - createdAt;
-    return difference >= 0 && difference < 60_000;
+    return difference >= 0 && difference < 60000;
   }
   
-  //Mètode per eliminar un missatge concret de la conversa actual (temps màxim 1min després de enviarlo)
+  //Mètode per eliminar un missatge concret de la conversa actual (temps màxim 1min després de enviar-lo)
   deleteMessage(message_id: number) {
     this.chatService.deleteMessage(message_id).subscribe({
       next: () => {
@@ -197,6 +197,24 @@ export class ChatComponent {
       },
       error: (error) => {
         console.error('Error eliminant missatge:', error);
+      }
+    });
+  }
+
+  //Mètode per editar el contingut d'un missatge concret de la conversa actual (temps màxim 1min després de enviar-lo)
+  editMessage(message_id: number, newContent: string) {
+    this.chatService.editMessage(message_id, newContent).subscribe({
+      next: (updatedMessage) => {
+        //Actualitzem el llistat de missatges, reemplaçant el contingut del missatge editat pel nou contingut.
+        const updatedMessages = this.chatService.getMessagesValue().map(msg =>
+          msg.id === message_id
+            ? { ...msg, content: updatedMessage.content, updated_at: updatedMessage.updated_at }
+            : msg
+        );
+        this.chatService.setMessages(updatedMessages);
+      },
+      error: (error) => {
+        console.error('Error editant missatge:', error);
       }
     });
   }
