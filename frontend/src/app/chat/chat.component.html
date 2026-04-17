@@ -32,7 +32,7 @@
           }">
                 <div class="message-bubble">
                     <p>{{ message.content }}</p>
-                    <span class="message-time">{{ message.created_at }}</span> <!-- Format relatiu-->
+                    <span class="message-time">{{ formatRelativeTime(message.created_at) }}</span> <!-- Format relatiu-->
                 </div>
             </div>
             } @empty {
@@ -61,7 +61,6 @@
 
         } @else {
         <div class="no-conversation">
-            <div class="icon">💬</div>
             <h2>Selecciona un amic per començar a parlar</h2>
             <p>Tria algú de la llista per obrir una conversa.</p>
         </div>

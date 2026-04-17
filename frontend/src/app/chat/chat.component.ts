@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { ChatService } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
 import { FriendshipService } from '../services/friendship.service';
+import { UserService } from '../services/user.service';
 import { Message } from '../../../interfaces/message';
 import { Conversation } from '../../../interfaces/conversation';
 import { Friend } from '../../../interfaces/friend';
 import { EMPTY, Subscription, catchError, switchMap, timer } from 'rxjs';
 import { NgClass } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-
 
 @Component({
   selector: 'app-chat',
@@ -29,7 +29,7 @@ export class ChatComponent {
   sender_id: number | null = null;
   messageControl = new FormControl('');
 
-  constructor(public chatService: ChatService, private authService: AuthService, private friendshipService: FriendshipService) { 
+  constructor(public chatService: ChatService, private authService: AuthService, private friendshipService: FriendshipService, private userService: UserService) { 
     this.messages$ = this.chatService.messages$;
     this.conversation$ = this.chatService.conversation$;
   }
@@ -61,7 +61,7 @@ export class ChatComponent {
     //Quan canvia l'estat dels missatges, s'actualitza la llista de missatges de la conversa
     this.subscription.add(
       this.messages$.subscribe(messages => {
-        this.messages = messages;
+        this.messages = messages.slice().reverse();
       })
     );
   }
@@ -137,4 +137,27 @@ export class ChatComponent {
       error: (error) => console.error('Error seleccionant amic:', error)
     });
   }
+  //Mètode per formatar la data de creació amb temps relatiu (ex: "fa 5 minuts", "fa 2 hores", etc.)
+  formatRelativeTime(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000); //Calcula la diferència en segons entre la data actual i la data de creació del missatge.
+    return this.getRelativeTime(diffInSeconds);
+  }
+
+  //Mètode auxiliar per convertir els segons de diferència en un format de temps relatiu llegible.
+  getRelativeTime(diffInSeconds: number): string {
+    if (diffInSeconds < 60) {
+      return `fa ${diffInSeconds} segons`;
+    } else if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `fa ${minutes} minut${minutes > 1 ? 's' : ''}`;
+    } else if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `fa ${hours} hora${hours > 1 ? 's' : ''}`;
+    } else {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `fa ${days} dia${days > 1 ? 's' : ''}`;
+    }
+  }  
 }
