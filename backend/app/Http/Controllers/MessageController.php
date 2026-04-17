@@ -76,5 +76,21 @@ class MessageController extends Controller
         return response()->json($messages);
     }
 
-    
+    public function destroy($id) {
+        $user = Auth::guard('api')->user();
+        $message = Message::find($id);
+
+        if (!$message) {
+            return response()->json(['error' => 'Missatge no trobat'], 404);
+        }
+
+        //Comprovem que l'usuari autenticat és el sender del missatge
+        if ($message->sender_id !== $user->id) {
+            return response()->json(['error' => 'No tens permís per eliminar aquest missatge'], 403);
+        }
+
+        $message->delete();
+
+        return response()->json(['message' => 'Missatge eliminat correctament']);
+    }
 }

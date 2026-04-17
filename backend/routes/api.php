@@ -99,4 +99,5 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::post('/conversations', [ConversationController::class, 'createConversation']);
     Route::post('/messages', [MessageController::class, 'store']);
     Route::get('/messages', [MessageController::class, 'index']);
+    Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
 });
