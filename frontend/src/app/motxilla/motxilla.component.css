@@ -12,6 +12,9 @@
     --background-item-base: rgba(255, 68, 0, 0.25);
     --bg-object-list: rgba(255, 68, 0, 0.6);
     --bg-button: #FF4400;
+    --bg-item-card: #C1BBBB;
+    --bg-item-card-active: #898989;
+    --bg-item-icon: #D9D9D9;
 
 
     background-color: var(--bg-container);
@@ -32,6 +35,9 @@
     --background-item-base: rgba(255, 68, 0, 0.25);
     --bg-object-list: rgba(75, 75, 75, 0.6);
     --bg-button: #121212;
+    --bg-item-card: #555555;
+    --bg-item-card-active: #898989;
+    --bg-item-icon: #D9D9D9;
 
     background-color: var(--bg-container);
     color: var(--text-main);
@@ -251,6 +257,7 @@ p {
 }
 
 .items {
+    padding-top: 10px;
     width: 100%;
     display: flex;
     flex: 1;
@@ -263,7 +270,7 @@ p {
 }
 
 .items .item-card {
-    background-color: #C1BBBB;
+    background-color: var(--bg-item-card);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -277,7 +284,7 @@ p {
 }
 
 .item-card.active {
-    background-color: #898989 !important;
+    background-color: var(--bg-item-card-active) !important;
     transition: 0.3s;
 }
 
@@ -290,7 +297,7 @@ p {
     width: 50px;
     height: 50px;
     margin-left: 10px;
-    background-color: #D9D9D9;
+    background-color: var(--bg-item-icon);
 }
 
 .item-card .item-name {
@@ -365,7 +372,7 @@ p {
     border-radius: 50%;
     width: 45px;
     height: 45px;
-    background-color: #D9D9D9;
+    background-color: var(--bg-item-icon);
 }
 
 .modal-item-card .item-name {
@@ -428,7 +435,17 @@ p {
 }
 
 .header-h2{
-    
+    flex: 1;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    padding: 15px;
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .btn-h2{
@@ -444,7 +461,6 @@ p {
     color: var(--text-main);
     text-decoration: none;
     text-align: center;
-    display: inline-block;
     font-weight: bold;
     font-size: 24px;
 }
@@ -452,4 +468,9 @@ p {
 .btn-h2:hover{
     transform: scale(1.05);
     transition: 0.3s;
+}
+
+.btn-h2.active-tab{
+    background-color: var(--bg-button);
+    border: #FFFFFF solid 2px;
 }

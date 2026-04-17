@@ -1,7 +1,7 @@
 <section class="container">
     <nav class="search-wrapper">
         <img src="search-icon.png" alt="Icono de búsqueda">
-        <input type="text" for="pokemon" placeholder="Cerca un xuxemon...">
+        <input type="text" for="pokemon" [formControl]="searchXuxemon" placeholder="Cerca un xuxemon...">
         <select id="elements" #elementSelect (change)="filterXuxemonsByElement(elementSelect.value)"
             for="xuxemons-elements">
             @for (element of elements; track element.id) {
@@ -9,8 +9,8 @@
             }
         </select>
         <div class="xuxemon-filter">
-            <button class="action-btn" (click)="filterXuxemonsByType('all')">Tots</button>
-            <button class="action-btn" (click)="filterXuxemonsByType('owned')">Capturat</button>
+            <button class="action-btn" [class.active]="activeViewFilter === 'all'" (click)="filterByView('all')">Tots</button>
+            <button class="action-btn" [class.active]="activeViewFilter === 'owned'" (click)="filterByView('owned')">Capturat</button>
         </div>
 
         @if (isAdmin) {
