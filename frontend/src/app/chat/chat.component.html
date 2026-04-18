@@ -34,7 +34,33 @@
                     @if (message.deleted) {
                     <p class="deleted-message">Aquest missatge ha estat eliminat.</p>
                     } @else {
+                    @if (isEditingMessage(message)) {
+                    <div class="inline-edit">
+                        <input
+                            class="inline-edit-input"
+                            type="text"
+                            [formControl]="editingMessageControl"
+                            (keyup.enter)="saveEditedMessage(message)"
+                            placeholder="Edita el missatge...">
+                        <div class="inline-edit-actions">
+                            <button
+                                class="inline-edit-button save"
+                                type="button"
+                                [disabled]="!(editingMessageControl.value?.trim())"
+                                (click)="saveEditedMessage(message)">
+                                Guardar
+                            </button>
+                            <button
+                                class="inline-edit-button cancel"
+                                type="button"
+                                (click)="cancelEditingMessage()">
+                                Cancel.lar
+                            </button>
+                        </div>
+                    </div>
+                    } @else {
                     <p>{{ message.content }}</p>
+                    }
                     }
                     <div class="message-meta">
                         @if (!message.deleted) {
@@ -44,9 +70,9 @@
                                 <span class="message-time">{{ formatRelativeTime(message.created_at) }}</span>
                             }
                         }
-                        @if (canModifyMessage(message)) {
+                        @if (canModifyMessage(message) && !isEditingMessage(message)) {
                         <div class="message-actions">
-                            <button class="message-action edit" type="button" (click)="editMessage(message.id, 'Nou contingut')" title="Editar missatge">
+                            <button class="message-action edit" type="button" (click)="startEditingMessage(message)" title="Editar missatge">
                                 <span aria-hidden="true"></span>
                             </button>
                             <button class="message-action delete" type="button" (click)="deleteMessage(message.id)" title="Eliminar missatge">

@@ -28,6 +28,8 @@ export class ChatComponent {
   messagesPollingSubscription: Subscription | null = null;
   sender_id: number | null = null;
   messageControl = new FormControl('');
+  editingMessageId: number | null = null;
+  editingMessageControl = new FormControl('');
 
   constructor(public chatService: ChatService, private authService: AuthService, private friendshipService: FriendshipService, private userService: UserService) { 
     this.messages$ = this.chatService.messages$;
@@ -187,6 +189,10 @@ export class ChatComponent {
   deleteMessage(message_id: number) {
     this.chatService.deleteMessage(message_id).subscribe({
       next: () => {
+        if (this.editingMessageId === message_id) {
+          this.cancelEditingMessage();
+        }
+
         //Actualitzem el llistat de missatges, marcant com a 'deleted' el missatge seleccionat.
         const updatedMessages = this.chatService.getMessagesValue().map(msg =>
           msg.id === message_id
@@ -201,17 +207,51 @@ export class ChatComponent {
     });
   }
 
-  //Mètode per editar el contingut d'un missatge concret de la conversa actual (temps màxim 1min després de enviar-lo)
-  editMessage(message_id: number, newContent: string) {
-    this.chatService.editMessage(message_id, newContent).subscribe({
+  //Comprova si se està editant el missatge seleccionat, comparant la id del missatge amb la id del missatge en edició.
+  isEditingMessage(message: Message): boolean {
+    return this.editingMessageId === message.id;
+  }
+
+  //Mètode que inicia el proces de dició
+  startEditingMessage(message: Message) {
+    if (!this.canModifyMessage(message)) {
+      return;
+    }
+
+    this.editingMessageId = message.id;
+    this.editingMessageControl.setValue(message.content);
+  }
+
+  //Cancel·la el procés d'edició, resetejant la id del missatge en edició i el camp de text associat a l'edició.
+  cancelEditingMessage() {
+    this.editingMessageId = null;
+    this.editingMessageControl.reset('');
+  }
+
+  //Mètode que guarda el missatge editat.
+  saveEditedMessage(message: Message) {
+    if (!this.isEditingMessage(message) || !this.canModifyMessage(message)) {
+      return;
+    }
+
+    const finalContent = this.editingMessageControl.value?.trim() ?? '';
+    if (!finalContent || finalContent === message.content) {
+      if (finalContent === message.content) {
+        this.cancelEditingMessage();
+      }
+      return;
+    }
+
+    this.chatService.editMessage(message.id, finalContent).subscribe({
       next: (updatedMessage) => {
         //Actualitzem el llistat de missatges, reemplaçant el contingut del missatge editat pel nou contingut.
         const updatedMessages = this.chatService.getMessagesValue().map(msg =>
-          msg.id === message_id
+          msg.id === message.id
             ? { ...msg, content: updatedMessage.content, updated_at: updatedMessage.updated_at }
             : msg
         );
-        this.chatService.setMessages(updatedMessages);
+        this.chatService.setMessages(updatedMessages); //Actualitza els missatges amb el contingut editat.
+        this.cancelEditingMessage(); //Finalitza el procés d'edició
       },
       error: (error) => {
         console.error('Error editant missatge:', error);
