@@ -128,6 +128,11 @@ export class FriendsComponent implements OnInit, OnDestroy {
 
   //Elimina una amistat existent entre l'usuari autenticat i un altre usuari, mostrant un missatge d'èxit o error
   deleteFriend(friend_id: number) {
+    const shouldDelete = window.confirm('Estàs segur que vols eliminar aquest amic?');
+    if (!shouldDelete) {
+      return;
+    }
+
     this.friendshipService.deleteFriend(friend_id).subscribe({
       next: () => {
         alert('Amic eliminat correctament!');
