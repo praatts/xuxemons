@@ -3,7 +3,10 @@
     <!-- TABS -->
     <div class="tabs">
         <button [class.active]="activeTab === 'search'" (click)="activeTab = 'search'">Usuaris</button>
-        <button [class.active]="activeTab === 'requests'" (click)="activeTab = 'requests'">Sol·licituds</button>
+        <button [class.active]="activeTab === 'requests'" (click)="activeTab = 'requests'">Sol·licituds <span class="badge"> 
+            @if (pendingRequestsCount > 0) {
+                {{ pendingRequestsCount }}
+            }</span></button>
         <button [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'">Amics</button>
     </div>
 

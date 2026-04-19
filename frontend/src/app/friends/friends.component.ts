@@ -68,7 +68,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
     );
   }
 
-  
   ngOnDestroy() {
     //Atura el polling i les suscripcions per evitar crides innecessàries al canviar/destruir el component.
     this.friendshipService.stopPolling();
@@ -149,5 +148,10 @@ export class FriendsComponent implements OnInit, OnDestroy {
       },
       error: (err) => console.log('Error revocant sol·licitud:', err)
     });
+  }
+
+  //Mètode auxiliar per mostrar el número de sol·licituts pendents a un badge
+  get pendingRequestsCount(): number {
+    return this.requests.length;
   }
 }

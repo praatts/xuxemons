@@ -131,14 +131,6 @@
     transition: background-color 0.2s;
 }
 
-.action-btn.accept {
-    background-color: var(--color-success);
-}
-
-.action-btn.reject {
-    background-color: var(--color-danger);
-}
-
 .action-btn {
     background-color: var(--color-accent);
 }
@@ -165,4 +157,13 @@
     font-weight: bold;
     padding: 5px 0;
     color: var(--text-secondary);
+}
+
+.badge {
+    background-color: var(--color-danger);
+    color: var(--text-on-accent);
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 12px;
+    margin-left: 5px;
 }
