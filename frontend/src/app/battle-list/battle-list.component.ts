@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { BattleService } from '../services/battle.service';
+import { XuxemonsService } from '../services/xuxemons.service';
 import { Battle } from '../../../interfaces/battle';
+import { Xuxemon } from '../../../interfaces/xuxemon';
 
 @Component({
   selector: 'app-battle-list',
@@ -12,8 +14,9 @@ export class BattleListComponent {
 
   battles$;
   activeTab: 'pending' | 'completed' = 'pending';
-
-  constructor(private battleService: BattleService) {
+  modalOpen = false;
+  availableXuxemons: Xuxemon[] = []; 
+  constructor(private battleService: BattleService, private xuxemonsService: XuxemonsService) {
     this.battles$ = this.battleService.battles$;
   }
 
@@ -40,6 +43,19 @@ export class BattleListComponent {
       },
       error: (error) => console.error('Error acceptant batalla:', error)
     });
+  }
+
+  //Mètode per carregar Xuxemons saludables
+  loadHealthyXuxemons() {
+    this.xuxemonsService.getOwnedXuxemons().subscribe({
+      next: (xuxemons) => this.availableXuxemons = xuxemons.filter(x => !x.illnesses || x.illnesses.length === 0),
+      error: (error) => console.error('Error carregant Xuxemons saludables:', error)
+    });
+  }
+
+  openModal() {
+    this.loadHealthyXuxemons();
+    this.modalOpen = true;
   }
 
 }
