@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Models\Conversation;
 use App\Models\User;
 use Auth;
+use App\Events\MessageSent;
 
 class MessageController extends Controller
 {
@@ -43,6 +44,7 @@ class MessageController extends Controller
             'sender_id' => $user->id,
             'content' => $content,
         ]);
+        broadcast(new MessageSent($message, $conversation_id))->toOthers();
 
         return response()->json($message, 201);
     }
