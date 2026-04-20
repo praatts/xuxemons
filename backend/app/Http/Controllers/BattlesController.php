@@ -45,6 +45,38 @@ class BattlesController extends Controller
         return response()->json($battle);
     }
 
+    //Mètode per acceptar una batalla pendent (canvia l'estat de la batalla a "accepted" i permet iniciar la batalla)
+    public function acceptBattle($id) {
+        $user = Auth::guard('api')->user();
+
+        //Comprovem que l'usuari està autenticat i que és el jugador dos de la batalla que vol acceptar, i que la batalla està pendent
+        if (!$user) {
+            return response()->json(['error' => 'No autoritzat'], 401);
+        }
+        $battle = Battle::find($id);
+
+        //Retorna error si no s'ha trobat la batalla
+        if (!$battle) {
+            return response()->json(['error' => 'No s\'ha trobat la batalla'], 404);
+        }
+
+        //Comprovem que l'usuari autenticat és el jugador dos de la batalla (el invitat)
+        if ($battle->player_two_id !== $user->id) {
+            return response()->json(['error' => 'No tens permís per acceptar aquesta batalla'], 403);
+        }
+
+        //Comprovem que la batalla està pendent (no s'ha acceptat ni completat encara)
+        if ($battle->status !== 'pending') {
+            return response()->json(['error' => 'La batalla ja ha estat acceptada o completada'], 400);
+        }
+
+        //Actualitzem l'estat de la batalla a "accepted" per permetre iniciar la batalla
+        $battle->status = 'accepted';
+        $battle->save();
+
+        return response()->json($battle);
+    }
+
     public function fight($id)
     {
         //Carreguem la batalla amb els Xuxemons associats segons la id de la batalla
@@ -55,7 +87,7 @@ class BattlesController extends Controller
             return response()->json(['error' => 'No s\'ha trobat la batalla'], 404);
         }
 
-        if ($battle->status !== 'pending') {
+        if ($battle->status !== 'accepted') {
             return response()->json(['error' => 'La batalla ja ha començat o s\'ha completat'], 400);
         }
 
@@ -140,6 +172,7 @@ class BattlesController extends Controller
     //Comprovem si el tipus del primer Xuxemon té avantatge sobre el segon
     private function hasAdvantage($type1, $type2)
     {
+        //Map [element => element amb avantatge sobre ell]
         $advantages = [
             'tierra' => 'aire',
             'aire' => 'agua',

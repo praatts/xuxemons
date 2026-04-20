@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('modifier_player_one')->nullable();
             $table->integer('modifier_player_two')->nullable();
             $table->foreignId('winner_id')->nullable()->constrained('users');
-            $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'completed'])->default('pending');
             $table->timestamps();
         });
     }
