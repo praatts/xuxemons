@@ -116,8 +116,10 @@ class BattlesController extends Controller
         //Declarem el guanyador segons el resultat final (sumació de dau i modificador)
         if ($score_p1 > $score_p2) {
             $winner_id = $battle->player_one_id;
-        } else {
+        } elseif ($score_p2 > $score_p1) {
             $winner_id = $battle->player_two_id;
+        } else {
+            $winner_id = -1; //Empat, no hi ha guanyador
         }
 
         //Actualitzem la batalla amb els resultats i el guanyador
@@ -131,12 +133,17 @@ class BattlesController extends Controller
         ]);
 
         //Lançem error si no s'ha pogut determinar el guanyador (en cas d'empat, per exemple)
-        if (!$winner_id) {
-            return response()->json(['error' => 'Error al determinar el guanyador'], 500);
+        if ($winner_id === -1) {
+            return response()->json(['error' => 'Empat, no hi ha guanyador'], 201);
         }
 
         //El usuari guanyador roba el xuxemon perdedor (actualitzem el propietari del Xuxemon perdedor al guanyador)
-        $loserXuxemon = $winner_id === $battle->player_one_id ? $xuxemonTwo : $xuxemonOne;
+        if ($winner_id === $battle->player_one_id) {
+            $loserXuxemon = $xuxemonTwo;
+        } else {
+            $loserXuxemon = $xuxemonOne;
+        }
+        
         $loserXuxemon->owner_id = $winner_id;
         $loserXuxemon->save();
 
