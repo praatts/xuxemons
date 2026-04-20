@@ -8,6 +8,8 @@ use App\Models\Conversation;
 use App\Models\User;
 use Auth;
 use App\Events\MessageSent;
+use App\Events\MessageDeleted;
+use App\Events\MessageUpdated;
 
 class MessageController extends Controller
 {
@@ -95,6 +97,8 @@ class MessageController extends Controller
         $message->deleted = true;
         $message->save();
 
+        broadcast(new MessageDeleted($message->id, $message->conversation_id))->toOthers();
+
         return response()->json(['message' => 'Missatge eliminat correctament']);
     }
 
@@ -118,6 +122,8 @@ class MessageController extends Controller
         //Actualitzem el contingut del missatge
         $message->content = $request->input('content');
         $message->save();
+
+        broadcast(new MessageUpdated($message, $message->conversation_id))->toOthers();
 
         return response()->json($message);
     }

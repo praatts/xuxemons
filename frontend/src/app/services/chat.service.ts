@@ -104,14 +104,32 @@ export class ChatService {
 
   //Mètode per escoltar els missatges nous que arriben a la conversa actual.
   subscribeToConversation(conversation_id: number) {
-    if (!this.initializeEcho() || !this.echo) {
-      return;
-    }
-    console.log('Subscrivint a la conversa:', conversation_id);
+    if (!this.initializeEcho() || !this.echo) return;
+
     this.echo.private(`chat.${conversation_id}`)
-  .listen('.message.sent', (event: any) => {
-    this.realTimeMessageSubject.next(event.message);
-  });
+      .listen('.message.sent', (event: any) => {
+        this.realTimeMessageSubject.next(event.message);
+      })
+      .listen('.message.deleted', (event: any) => {
+        const updated = this.messagesSubject.value.map(msg => {
+          if (msg.id === event.message_id) {
+            return { ...msg, deleted: true };
+          } else {
+            return msg;
+          }
+        });
+        this.messagesSubject.next(updated);
+      })
+      .listen('.message.updated', (event: any) => {
+        const updated = this.messagesSubject.value.map(msg => {
+          if (msg.id === event.message.id) {
+            return { ...msg, content: event.message.content, updated_at: event.message.updated_at };
+          } else {
+            return msg;
+          }
+        });
+        this.messagesSubject.next(updated);
+      });
   }
 
   //Mètode per deixar d'escoltar els missatges nous de la conversa actual.
