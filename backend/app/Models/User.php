@@ -90,4 +90,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return 20 - $this->getUsedSlots();
     }
+
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class);
+    }
 }
