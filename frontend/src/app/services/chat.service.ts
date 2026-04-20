@@ -29,11 +29,11 @@ export class ChatService {
   }
 
   private initializeEcho(): boolean {
-    Pusher.logToConsole = true;
     const token = localStorage.getItem('access_token');
     if (!token) return false;
     if (this.echo) return true;
 
+    //Inicialitza Laravel Echo, utilitzant Pusher per broadcasting (https://pusher.com/).
     (window as any).Pusher = Pusher;
     this.echo = new Echo({
       broadcaster: 'pusher',
@@ -43,7 +43,7 @@ export class ChatService {
       authEndpoint: 'http://localhost:8000/broadcasting/auth',
       auth: {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}` //Afegim token de l'usuari autenticat per validar les converses a les que té accés.
         }
       }
     });
@@ -102,20 +102,20 @@ export class ChatService {
     return this.http.patch<Message>(`${this.apiUrl}/messages/${message_id}/edit`, { content: newContent });
   }
 
-  //Mètode per escoltar els missatges nous que arriben a la conversa actual.
+  //Mètode per escoltar els missatges nous que arriben a la conversa actual, així com les actualitzacions i eliminacions de missatges existents.
   subscribeToConversation(conversation_id: number) {
     if (!this.initializeEcho() || !this.echo) return;
 
-    this.echo.private(`chat.${conversation_id}`)
+    this.echo.private(`chat.${conversation_id}`) //escolta el event MessageSent del backend
       .listen('.message.sent', (event: any) => {
-        this.realTimeMessageSubject.next(event.message);
+        this.realTimeMessageSubject.next(event.message); //Actualitza el missatge rebut en temps real.
       })
       .listen('.message.deleted', (event: any) => {
-        const updated = this.messagesSubject.value.map(msg => {
+        const updated = this.messagesSubject.value.map(msg => { //Marca el missatge que es desitja borrar com a eliminat.
           if (msg.id === event.message_id) {
             return { ...msg, deleted: true };
           } else {
-            return msg;
+            return msg; //retorna els missatges que no han sigut eliminats sense modificar-los.
           }
         });
         this.messagesSubject.next(updated);
@@ -125,7 +125,7 @@ export class ChatService {
           if (msg.id === event.message.id) {
             return { ...msg, content: event.message.content, updated_at: event.message.updated_at };
           } else {
-            return msg;
+            return msg; //retorna els missatges que no han sigut actualitzats sense modificar-los.
           }
         });
         this.messagesSubject.next(updated);
@@ -140,6 +140,7 @@ export class ChatService {
     this.echo.leave(`chat.${conversation_id}`);
   }
 
+  //Mètode per obtenir el socket ID, s'utilitza al interceptor per afegir-lo a les peticions d'edició i eliminació de missatges.
   getSocketId(): string | null {
     return this.echo?.socketId() ?? null;
   }
