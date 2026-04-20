@@ -1,1 +1,44 @@
-<p>battle-list works!</p>
+<div class="battles-container">
+
+	<div class="tabs">
+		<button [class.active]="activeTab === 'pending'" (click)="activeTab = 'pending'">Pendents</button>
+		<button [class.active]="activeTab === 'completed'" (click)="activeTab = 'completed'">Completades</button>
+	</div>
+
+	@if(activeTab === 'pending') {
+	<div class="list">
+		@if(pendingBattles.length === 0) {
+		<p class="no-results">No tens batalles pendents</p>
+		}
+
+		@for(battle of pendingBattles; track battle.id) {
+		<div class="card">
+			<div class="card-info">
+				<p class="card-name">{{ battle.playerOne?.name ?? 'Jugador 1' }} vs {{ battle.playerTwo?.name ?? 'Jugador 2' }}</p>
+				<p class="card-player-id">{{ battle.xuxemonOne?.name ?? 'Xuxemon 1' }} vs {{ battle.xuxemonTwo?.name ?? 'Xuxemon 2' }}</p>
+			</div>
+			<button class="action-btn accept" (click)="acceptBattle(battle.id)">Acceptar</button>
+		</div>
+		}
+	</div>
+	}
+
+	@if(activeTab === 'completed') {
+	<div class="list">
+		@if(completedBattles.length === 0) {
+		<p class="no-results">No tens batalles completades</p>
+		}
+
+		@for(battle of completedBattles; track battle.id) {
+		<div class="card">
+			<div class="card-info">
+				<p class="card-name">{{ battle.playerOne?.name ?? 'Jugador 1' }} vs {{ battle.playerTwo?.name ?? 'Jugador 2' }}</p>
+				<p class="card-player-id">Guanyador: {{ battle.winner?.name ?? 'Sense resultat' }}</p>
+			</div>
+			<span class="status-badge">Finalitzada</span>
+		</div>
+		}
+	</div>
+	}
+
+</div>

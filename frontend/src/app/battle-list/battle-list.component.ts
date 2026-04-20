@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { BattleService } from '../services/battle.service';
+import { Battle } from '../../../interfaces/battle';
 
 @Component({
   selector: 'app-battle-list',
@@ -10,6 +11,7 @@ import { BattleService } from '../services/battle.service';
 export class BattleListComponent {
 
   battles$;
+  activeTab: 'pending' | 'completed' = 'pending';
 
   constructor(private battleService: BattleService) {
     this.battles$ = this.battleService.battles$;
@@ -17,6 +19,14 @@ export class BattleListComponent {
 
   ngOnInit() {
     this.battleService.loadBattles();
+  }
+
+  get pendingBattles(): Battle[] {
+    return this.battleService.getBattles().filter(battle => battle.status === 'pending');
+  }
+
+  get completedBattles(): Battle[] {
+    return this.battleService.getBattles().filter(battle => battle.status === 'completed');
   }
 
   acceptBattle(battle_id: number) {
@@ -32,16 +42,4 @@ export class BattleListComponent {
     });
   }
 
-  fightBattle(battle_id: number) {
-    this.battleService.fightBattle(battle_id).subscribe({
-      next: (updated) => {
-        const updatedList = this.battleService.getBattles().map(b =>
-          b.id === battle_id ? updated : b
-        );
-
-        this.battleService.setBattles(updatedList);
-      },
-      error: (error) => console.error('Error iniciant batalla:', error)
-    });
-  }
 }

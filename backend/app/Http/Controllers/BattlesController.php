@@ -35,14 +35,41 @@ class BattlesController extends Controller
 
     public function store(Request $request)
     {
+        //Obtenim l'id del jugador autenticat i l'id del jugador dos des de la petició
+        $p1_id = Auth::guard('api')->id();
+        $p2_id = (int) $request->player_two_id;
+
+        //Comprovem si el jugador autenticat es vàlid
+        if (!$p1_id) {
+            return response()->json(['error' => 'No autoritzat'], 401);
+        }
+
+        //Comprovem que el jugador dos és vàlid i que no és el mateix que el jugador 1
+        if (!$p2_id || $p1_id === $p2_id) {
+            return response()->json(['error' => 'Jugador invàlid'], 400);
+        }
+
+        //Carreguem el xuxemon seleccionat pel jugador
+        $xuxemon_p1 = OwnedXuxemon::where('user_id', $p1_id)->inRandomOrder()->first();
+        $xuxemon_p2 = OwnedXuxemon::where('user_id', $p2_id)->inRandomOrder()->first();
+
+        //Comprovem que els 2 jugadors han seleccionat un xuxemon
+        if (!$xuxemon_p1 || !$xuxemon_p2) {
+            return response()->json(['error' => 'No hi ha xuxemons disponibles per iniciar la batalla'], 400);
+        }
+
+        //Creem la petició de batalla
         $battle = Battle::create([
-            'player_one_id' => Auth::guard('api')->id(),
-            'player_two_id' => $request->player_two_id,
-            'xuxemon_player_one_id' => $request->xuxemon_player_one_id,
-            'xuxemon_player_two_id' => $request->xuxemon_player_two_id,
+            'player_one_id' => $p1_id,
+            'player_two_id' => $p2_id,
+            'xuxemon_player_one_id' => $xuxemon_p1->id,
+            'xuxemon_player_two_id' => $xuxemon_p2->id,
             'status' => 'pending'
         ]);
-        return response()->json($battle);
+
+        return response()->json(
+            $battle->load(['playerOne', 'playerTwo', 'xuxemonOne', 'xuxemonTwo', 'winner'])
+        );
     }
 
     //Mètode per acceptar una batalla pendent (canvia l'estat de la batalla a "accepted" i permet iniciar la batalla)
@@ -144,6 +171,7 @@ class BattlesController extends Controller
             $loserXuxemon = $xuxemonOne;
         }
         
+        //Actualitzem el propietari del Xuxemon perdedor al guanyador
         $loserXuxemon->owner_id = $winner_id;
         $loserXuxemon->save();
 

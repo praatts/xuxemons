@@ -43,4 +43,9 @@ export class BattleService {
   fightBattle(battle_id: number): Observable<Battle> {
     return this.http.post<Battle>(`${this.apiUrl}/battles/${battle_id}/fight`, {});
   }
+
+  //Mètode per enviar una petició de batalla a un amic.
+  createBattleRequest(player_two_id: number): Observable<Battle> {
+    return this.http.post<Battle>(`${this.apiUrl}/battles`, { player_two_id });
+  }
 }
