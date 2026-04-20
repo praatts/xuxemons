@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('battles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('player1')->constrained('users');
-            $table->foreignId('player2')->constrained('users');
-            $table->foreignId('xuxemon_player1')->constrained('owned_xuxemons');
-            $table->foreignId('xuxemon_player2')->constrained('owned_xuxemons');
-            $table->integer('dice_player1')->nullable();
-            $table->integer('dice_player2')->nullable();
-            $table->integer('modifier_player1')->nullable();
-            $table->integer('modifier_player2')->nullable();
-            $table->foreignId('winner')->nullable()->constrained('users');
+            $table->foreignId('player_one_id')->constrained('users');
+            $table->foreignId('player_two_id')->constrained('users');
+            $table->foreignId('xuxemon_player_one_id')->constrained('owned_xuxemons');
+            $table->foreignId('xuxemon_player_two_id')->constrained('owned_xuxemons');
+            $table->integer('dice_player_one')->nullable();
+            $table->integer('dice_player_two')->nullable();
+            $table->integer('modifier_player_one')->nullable();
+            $table->integer('modifier_player_two')->nullable();
+            $table->foreignId('winner_id')->nullable()->constrained('users');
             $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
             $table->timestamps();
         });
