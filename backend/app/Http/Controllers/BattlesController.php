@@ -8,12 +8,33 @@ use App\Models\OwnedXuxemon;
 use Auth;
 class BattlesController extends Controller
 {
-    public function index() {
-            $battles = Battle::with(['playerOne', 'playerTwo', 'xuxemonOne', 'xuxemonTwo', 'winner'])->get();
-            return response()->json($battles);
+    public function index()
+    {
+        $user = Auth::guard('api')->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'No autoritzat'], 401);
+        }
+
+        $battles = Battle::with([
+            'playerOne',
+            'playerTwo',
+            'xuxemonOne',
+            'xuxemonTwo',
+            'winner'
+        ])
+            ->where(function ($query) use ($user) {
+                $query->where('player_one_id', $user->id)
+                    ->orWhere('player_two_id', $user->id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($battles);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $battle = Battle::create([
             'player_one_id' => Auth::guard('api')->id(),
             'player_two_id' => $request->player_two_id,
@@ -24,9 +45,10 @@ class BattlesController extends Controller
         return response()->json($battle);
     }
 
-    public function fight($id) {
+    public function fight($id)
+    {
         //Carreguem la batalla amb els Xuxemons associats segons la id de la batalla
-        $battle = Battle::with(['xuxemonOne', 'xuxemonTwo'])->find($id); 
+        $battle = Battle::with(['xuxemonOne', 'xuxemonTwo'])->find($id);
 
         //Retorna error si no s'ha trobat la batalla
         if (!$battle) {
@@ -92,12 +114,13 @@ class BattlesController extends Controller
     }
 
     //Mètode per calcular el modificador de cada jugador segons els avantatges de tipus i mida dels seus Xuxemons
-    private function calculateModifier($xuxemon, $opponent) {
+    private function calculateModifier($xuxemon, $opponent)
+    {
         $modifier = 0;
 
         //Comprovem avantatges/desavantatges de tipus
-        if($this->hasAdvantage($xuxemon->type, $opponent->type)) {
-            $modifier += 1; 
+        if ($this->hasAdvantage($xuxemon->type, $opponent->type)) {
+            $modifier += 1;
         } elseif ($this->hasAdvantage($opponent->type, $xuxemon->type)) {
             $modifier -= 1;
         }
@@ -115,13 +138,14 @@ class BattlesController extends Controller
     }
 
     //Comprovem si el tipus del primer Xuxemon té avantatge sobre el segon
-    private function hasAdvantage($type1, $type2) {
+    private function hasAdvantage($type1, $type2)
+    {
         $advantages = [
             'tierra' => 'aire',
             'aire' => 'agua',
             'agua' => 'tierra',
         ];
         //Retorna true si el tipus 1 té avantatge sobre el tipus 2 Ex: 'tierra' => 'aire
-        return isset($advantages[$type1]) && $advantages[$type1] === $type2; 
+        return isset($advantages[$type1]) && $advantages[$type1] === $type2;
     }
 }
