@@ -24,7 +24,6 @@ export class BattleComponent implements OnInit, OnDestroy {
   loading = false; //Indicador de càrrega per botons
   
   waitingForOpponent = false; //Indica si estem esperant que el rival cliqui a lluitar
-  private pollingInterval: any = null;
   private battleSub: Subscription | null = null;
 
   constructor(
@@ -48,10 +47,12 @@ export class BattleComponent implements OnInit, OnDestroy {
     //Carreguem les dades de la batalla i els xuxemons sans de l'usuari
     this.loadBattle();
     this.loadMyHealthyXuxemons();
+    //Subscripció al canal Pusher per rebre el resultat en temps real
+    this.subscribeToBattleSocket();
   }
 
   ngOnDestroy() {
-    this.stopPolling();
+    this.battleService.unsubscribeFromBattleChannel(this.battleId);
     if (this.battleSub) {
       this.battleSub.unsubscribe();
     }
@@ -67,15 +68,11 @@ export class BattleComponent implements OnInit, OnDestroy {
         if (found) {
           this.battle = found;
           
-          //Si la batalla ha acabat, deixem de fer polling
           if (this.battle.status === 'completed') {
-            this.stopPolling();
             this.waitingForOpponent = false;
             this.refreshOwnedXuxemons();
           } else if (this.isReady) {
-            //Si ja estem preparats però la batalla no ha acabat, activem el polling
             this.waitingForOpponent = true;
-            this.startPolling();
           }
         }
       });
@@ -101,6 +98,19 @@ export class BattleComponent implements OnInit, OnDestroy {
         this.myXuxemons = xuxemons.filter(x => !x.illnesses || x.illnesses.length === 0);
       },
       error: (err) => console.error('Error refrescant xuxemons:', err)
+    });
+  }
+
+  //Subscriu el component al canal Pusher de la batalla per rebre el resultat en temps real sense polling
+  subscribeToBattleSocket() {
+    this.battleService.subscribeToBattleChannel(this.battleId, (battle: Battle) => {
+      this.battle = battle;
+      if (battle.status === 'completed') {
+        this.battleResult = battle;
+        this.waitingForOpponent = false;
+        this.refreshOwnedXuxemons();
+        this.battleService.loadBattles();
+      }
     });
   }
 
@@ -169,14 +179,12 @@ export class BattleComponent implements OnInit, OnDestroy {
       next: (result) => {
         this.loading = false;
         if (result.waiting) {
-          //L'altre jugador encara no està llest
+          //L'altre jugador encara no està llest — el socket Pusher notificarà quan estigui llest
           this.waitingForOpponent = true;
-          this.startPolling();
         } else {
           //Guardem el resultat de la batalla per mostrar-lo a la vista
           this.battleResult = result;
           this.waitingForOpponent = false;
-          this.stopPolling();
           this.refreshOwnedXuxemons();
         }
         //Recarreguem les batalles per actualitzar la llista amb el format correcte
@@ -188,21 +196,6 @@ export class BattleComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     });
-  }
-
-  //Inicia un polling cada 3 segons per comprovar si el rival ja ha acceptat lluitar
-  startPolling() {
-    if (this.pollingInterval) return;
-    this.pollingInterval = setInterval(() => {
-      this.battleService.loadBattles();
-    }, 3000);
-  }
-
-  stopPolling() {
-    if (this.pollingInterval) {
-      clearInterval(this.pollingInterval);
-      this.pollingInterval = null;
-    }
   }
 
   //Torna a la llista de batalles

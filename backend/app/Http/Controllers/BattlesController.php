@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Battle;
 use App\Models\OwnedXuxemon;
+use App\Events\BattleUpdated;
 use Auth;
 class BattlesController extends Controller
 {
@@ -268,10 +269,13 @@ class BattlesController extends Controller
             $loserXuxemon->save();
         }
 
+        $freshBattle = $battle->fresh()->load(['playerOne', 'playerTwo', 'xuxemonOne.xuxemon', 'xuxemonTwo.xuxemon', 'winner']);
+
+        //Emitim l'event de batalla actualitzada via Pusher perquè ambdós jugadors rebin el resultat en temps real
+        broadcast(new BattleUpdated($battle->id, $freshBattle));
+
         //Retornem la batalla actualitzada amb els resultats
-        return response()->json(
-            $battle->fresh()->load(['playerOne', 'playerTwo', 'xuxemonOne.xuxemon', 'xuxemonTwo.xuxemon', 'winner'])
-        );
+        return response()->json($freshBattle);
     }
 
     //Mètode per calcular el modificador de cada jugador segons els avantatges de tipus i mida
