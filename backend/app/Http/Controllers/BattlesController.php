@@ -219,8 +219,7 @@ class BattlesController extends Controller
             ]);
         }
 
-        //====== ELS DOS JUGADORS ESTAN PREPARATS — RESOLEM LA BATALLA ======
-
+    
         //Obtenim els Xuxemons dels jugadors
         $xuxemonOne = $battle->xuxemonOne;
         $xuxemonTwo = $battle->xuxemonTwo;

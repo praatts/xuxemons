@@ -71,6 +71,7 @@ export class BattleComponent implements OnInit, OnDestroy {
           if (this.battle.status === 'completed') {
             this.stopPolling();
             this.waitingForOpponent = false;
+            this.refreshOwnedXuxemons();
           } else if (this.isReady) {
             //Si ja estem preparats però la batalla no ha acabat, activem el polling
             this.waitingForOpponent = true;
@@ -89,6 +90,17 @@ export class BattleComponent implements OnInit, OnDestroy {
         this.myXuxemons = xuxemons.filter(x => !x.illnesses || x.illnesses.length === 0);
       },
       error: (err) => console.error('Error carregant xuxemons:', err)
+    });
+  }
+
+  //Refresca la llista de xuxemons propietat de l'usuari des del backend i actualitza el BehaviorSubject
+  refreshOwnedXuxemons() {
+    this.xuxemonsService.getOwnedXuxemons().subscribe({
+      next: (xuxemons) => {
+        this.xuxemonsService.setOwnedXuxemons(xuxemons);
+        this.myXuxemons = xuxemons.filter(x => !x.illnesses || x.illnesses.length === 0);
+      },
+      error: (err) => console.error('Error refrescant xuxemons:', err)
     });
   }
 
@@ -165,6 +177,7 @@ export class BattleComponent implements OnInit, OnDestroy {
           this.battleResult = result;
           this.waitingForOpponent = false;
           this.stopPolling();
+          this.refreshOwnedXuxemons();
         }
         //Recarreguem les batalles per actualitzar la llista amb el format correcte
         this.battleService.loadBattles();
@@ -200,9 +213,9 @@ export class BattleComponent implements OnInit, OnDestroy {
   //Retorna el text descriptiu del tipus d'un xuxemon per mostrar a la vista
   getTypeLabel(type: string): string {
     switch (type) {
-      case 'tierra': return '🌍 Tierra';
-      case 'aigua': return '💧 Aigua';
-      case 'aire': return '💨 Aire';
+      case 'tierra': return 'Tierra';
+      case 'aigua': return 'Aigua';
+      case 'aire': return 'Aire';
       default: return type;
     }
   }
