@@ -46,6 +46,7 @@ class MessageController extends Controller
             'sender_id' => $user->id,
             'content' => $content,
         ]);
+        
         broadcast(new MessageSent($message, $conversation_id))->toOthers();
 
         return response()->json($message, 201);

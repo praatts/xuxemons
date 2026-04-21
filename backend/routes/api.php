@@ -14,6 +14,7 @@ use App\Http\Middleware\JwtMiddleware;
 use App\Http\Controllers\API\FriendshipController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\BattlesController;
 
 //http://localhost:8000/api/
 //Comprobar si el email ya existe
@@ -101,4 +102,9 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/messages', [MessageController::class, 'index']);
     Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
     Route::patch('/messages/{id}/edit', [MessageController::class, 'editMessage']);
+
+    //BATALLES
+    Route::get('/battles', [BattlesController::class, 'index']);
+    Route::post('/battles', [BattlesController::class, 'store']);
+    Route::post('/battles/{id}/fight', [BattlesController::class, 'fight']);
 });

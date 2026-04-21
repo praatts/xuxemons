@@ -13,6 +13,7 @@ import { adminGuardGuard } from './guards/admin-guard.guard';
 import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
 import { FriendsComponent } from './friends/friends.component';
 import { ChatComponent } from './chat/chat.component';
+import { BattleListComponent } from './battle-list/battle-list.component';
 
 
 export const routes: Routes = [
@@ -87,6 +88,12 @@ export const routes: Routes = [
                         path: 'chat',
                         title: 'Chat',
                         component: ChatComponent,
+                        canActivate: [authGuard]
+                    },
+                    {
+                        path: 'battles',
+                        title: 'Batalles',
+                        component: BattleListComponent,
                         canActivate: [authGuard]
                     }
                 ]
