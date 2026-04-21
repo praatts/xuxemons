@@ -14,6 +14,7 @@ import { AdminSettingsComponent } from './admin-settings/admin-settings.componen
 import { FriendsComponent } from './friends/friends.component';
 import { ChatComponent } from './chat/chat.component';
 import { BattleListComponent } from './battle-list/battle-list.component';
+import { BattleComponent } from './battle/battle.component';
 
 
 export const routes: Routes = [
@@ -94,6 +95,12 @@ export const routes: Routes = [
                         path: 'battles',
                         title: 'Batalles',
                         component: BattleListComponent,
+                        canActivate: [authGuard]
+                    },
+                    {
+                        path: 'battle/:id',
+                        title: 'Batalla',
+                        component: BattleComponent,
                         canActivate: [authGuard]
                     }
                 ]

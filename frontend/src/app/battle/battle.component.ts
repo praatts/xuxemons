@@ -45,7 +45,7 @@ export class BattleComponent implements OnInit {
     this.loadMyHealthyXuxemons();
   }
 
-  //Carrega la batalla actual des del backend
+  //Carrega la batalla actual des del backend via el BehaviorSubject de batalles
   loadBattle() {
     this.battleService.loadBattles();
     //Ens subscrivim als canvis de les batalles per obtenir la batalla actual
@@ -78,33 +78,13 @@ export class BattleComponent implements OnInit {
     return this.battle?.player_two_id === this.currentUserId;
   }
 
-  //Retorna el nom del xuxemon seleccionat pel jugador 1
-  get mySelectedXuxemonName(): string {
-    if (!this.battle) return '?';
-    if (this.isPlayerOne) {
-      return this.battle.xuxemon_one_name || '?';
-    } else {
-      return this.battle.xuxemon_two_name || '?';
-    }
-  }
-
-  //Retorna el nom del xuxemon seleccionat pel rival
-  get opponentXuxemonName(): string {
-    if (!this.battle) return '?';
-    if (this.isPlayerOne) {
-      return this.battle.xuxemon_two_name || '?';
-    } else {
-      return this.battle.xuxemon_one_name || '?';
-    }
-  }
-
-  //Retorna el nom del rival
+  //Retorna el nom del rival (snake_case perquè Laravel serialitza així)
   get opponentName(): string {
     if (!this.battle) return 'Rival';
     if (this.isPlayerOne) {
-      return this.battle.playerTwo?.name || 'Rival';
+      return this.battle.player_two?.name || 'Rival';
     } else {
-      return this.battle.playerOne?.name || 'Rival';
+      return this.battle.player_one?.name || 'Rival';
     }
   }
 
@@ -112,9 +92,9 @@ export class BattleComponent implements OnInit {
   get myName(): string {
     if (!this.battle) return 'Tu';
     if (this.isPlayerOne) {
-      return this.battle.playerOne?.name || 'Tu';
+      return this.battle.player_one?.name || 'Tu';
     } else {
-      return this.battle.playerTwo?.name || 'Tu';
+      return this.battle.player_two?.name || 'Tu';
     }
   }
 
@@ -125,10 +105,8 @@ export class BattleComponent implements OnInit {
 
     //Enviem la selecció al backend
     this.battleService.selectXuxemon(this.battleId, xuxemon.owned_xuxemon_id).subscribe({
-      next: (updated) => {
-        //Actualitzem la batalla local amb la resposta del backend
-        this.battle = updated;
-        //Recarreguem les batalles per actualitzar la llista
+      next: () => {
+        //Recarreguem les batalles per actualitzar la llista amb el format correcte del index()
         this.battleService.loadBattles();
       },
       error: (err) => {
@@ -147,8 +125,7 @@ export class BattleComponent implements OnInit {
       next: (result) => {
         //Guardem el resultat de la batalla per mostrar-lo a la vista
         this.battleResult = result;
-        this.battle = result;
-        //Recarreguem les batalles per actualitzar la llista
+        //Recarreguem les batalles per actualitzar la llista amb el format correcte
         this.battleService.loadBattles();
         this.loading = false;
       },

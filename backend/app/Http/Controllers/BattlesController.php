@@ -191,10 +191,6 @@ class BattlesController extends Controller
             return response()->json(['error' => 'La batalla ja ha començat o s\'ha completat'], 400);
         }
 
-        //Marquem la batalla com a "in_progress" per evitar que es pugui iniciar més d'una vegada
-        $battle->status = 'in_progress';
-        $battle->save();
-
         //Obtenim els Xuxemons dels jugadors (OwnedXuxemon amb la relació al xuxemon base per obtenir el tipus)
         $xuxemonOne = $battle->xuxemonOne;
         $xuxemonTwo = $battle->xuxemonTwo;

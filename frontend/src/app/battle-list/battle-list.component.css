@@ -1,3 +1,4 @@
+/* Variables de color per mode clar (per defecte) */
 :host {
 	--bg-primary: #ffffff;
 	--bg-secondary: #E6CCCC;
@@ -6,12 +7,14 @@
 	--color-accent: #FF4400;
 	--color-success: #16a34a;
 	--color-danger: #FF0000;
+	--color-warning: #f59e0b;
 
 	--text-primary: #000000;
 	--text-secondary: #888;
 	--text-on-accent: #ffffff;
 }
 
+/* Variables de color per mode fosc */
 :host(.dark-mode) {
 	--bg-primary: #1a1a1a;
 	--bg-secondary: #505050;
@@ -20,12 +23,14 @@
 	--color-accent: #FF4400;
 	--color-success: #22c55e;
 	--color-danger: #ef4444;
+	--color-warning: #fbbf24;
 
 	--text-primary: #f5f5f5;
 	--text-secondary: #ffffff;
 	--text-on-accent: #ffffff;
 }
 
+/* Contenidor principal de la llista de batalles */
 .battles-container {
 	display: flex;
 	flex-direction: column;
@@ -35,6 +40,7 @@
 	box-sizing: border-box;
 }
 
+/* Pestanyes de filtratge */
 .tabs {
 	display: flex;
 	gap: 10px;
@@ -56,6 +62,7 @@
 	color: var(--text-on-accent);
 }
 
+/* Llista de batalles */
 .list {
 	display: flex;
 	flex-direction: column;
@@ -64,6 +71,7 @@
 	flex: 1;
 }
 
+/* Cada targeta de batalla */
 .card {
 	background-color: var(--bg-secondary);
 	border-radius: 15px;
@@ -72,7 +80,7 @@
 	flex-direction: row;
 	align-items: center;
 	gap: 15px;
-	padding: 0 15px;
+	padding: 10px 15px;
 }
 
 .card-info {
@@ -87,12 +95,30 @@
 	margin: 0;
 }
 
-.card-player-id {
+.card-status {
 	font-size: 12px;
 	color: var(--text-secondary);
 	margin: 0;
 }
 
+.card-winner {
+	font-size: 13px;
+	color: var(--color-success);
+	font-weight: bold;
+	margin: 0;
+}
+
+.card-winner.draw {
+	color: var(--color-warning);
+}
+
+.card-dice {
+	font-size: 12px;
+	color: var(--text-secondary);
+	margin: 0;
+}
+
+/* Botons d'acció (acceptar, lluitar) */
 .action-btn {
 	padding: 8px 16px;
 	border-radius: 50px;
@@ -109,15 +135,28 @@
 	background-color: var(--color-success);
 }
 
+.action-btn.fight {
+	background-color: var(--color-danger);
+}
+
+/* Badges d'estat */
 .status-badge {
 	padding: 6px 12px;
 	border-radius: 999px;
 	font-size: 12px;
 	font-weight: bold;
 	color: var(--text-on-accent);
+}
+
+.status-badge.pending {
+	background-color: var(--color-warning);
+}
+
+.status-badge.completed {
 	background-color: var(--color-danger);
 }
 
+/* Missatge quan no hi ha resultats */
 .no-results {
 	text-align: center;
 	color: var(--text-secondary);

@@ -1,15 +1,13 @@
 <div class="battles-container">
 
+	<!-- Pestanyes per filtrar les batalles per estat -->
 	<div class="tabs">
 		<button [class.active]="activeTab === 'pending'" (click)="activeTab = 'pending'">Pendents</button>
 		<button [class.active]="activeTab === 'accepted'" (click)="activeTab = 'accepted'">Acceptades</button>
 		<button [class.active]="activeTab === 'completed'" (click)="activeTab = 'completed'">Completades</button>
 	</div>
 
-	<div class="actions">
-		<button class="request-btn" (click)="openRequestModal()">Sol·licitar Batalla</button>
-	</div>
-
+	<!-- BATALLES PENDENTS: esperant que el rival accepti -->
 	@if(activeTab === 'pending') {
 	<div class="list">
 		@if(pendingBattles.length === 0) {
@@ -19,15 +17,21 @@
 		@for(battle of pendingBattles; track battle.id) {
 		<div class="card">
 			<div class="card-info">
-				<p class="card-name">{{ battle.playerOne?.name ?? 'Jugador 1' }} vs {{ battle.playerTwo?.name ?? 'Jugador 2' }}</p>
-				<p class="card-player-id">{{ battle.xuxemonOne?.name ?? 'Xuxemon 1' }} vs {{ battle.xuxemonTwo?.name ?? 'Xuxemon 2' }}</p>
+				<p class="card-name">{{ battle.player_one?.name ?? 'Jugador 1' }} vs {{ battle.player_two?.name ?? 'Jugador 2' }}</p>
+				<p class="card-status">Esperant acceptació</p>
 			</div>
+			<!-- Només el jugador 2 (el convidat) pot acceptar la batalla -->
+			@if(isPlayerTwo(battle)) {
 			<button class="action-btn accept" (click)="acceptBattle(battle.id)">Acceptar</button>
+			} @else {
+			<span class="status-badge pending">Pendent</span>
+			}
 		</div>
 		}
 	</div>
 	}
 
+	<!-- BATALLES ACCEPTADES: preparades per lluitar (seleccionar xuxemon i lluitar) -->
 	@if(activeTab === 'accepted') {
 	<div class="list">
 		@if(acceptedBattles.length === 0) {
@@ -37,15 +41,17 @@
 		@for(battle of acceptedBattles; track battle.id) {
 		<div class="card">
 			<div class="card-info">
-				<p class="card-name">{{ battle.playerOne?.name ?? 'Jugador 1' }} vs {{ battle.playerTwo?.name ?? 'Jugador 2' }}</p>
-				<p class="card-player-id">{{ battle.xuxemonOne?.name ?? 'Xuxemon 1' }} vs {{ battle.xuxemonTwo?.name ?? 'Xuxemon 2' }}</p>
+				<p class="card-name">{{ battle.player_one?.name ?? 'Jugador 1' }} vs {{ battle.player_two?.name ?? 'Jugador 2' }}</p>
+				<p class="card-status">Preparada per lluitar</p>
 			</div>
-			<button class="action-btn fight" (click)="fightBattle(battle.id)">Lluitar</button>
+			<!-- Botó per anar a la pàgina de batalla i seleccionar xuxemon -->
+			<button class="action-btn fight" (click)="goToBattle(battle.id)">Lluitar</button>
 		</div>
 		}
 	</div>
 	}
 
+	<!-- BATALLES COMPLETADES: ja finalitzades amb resultats -->
 	@if(activeTab === 'completed') {
 	<div class="list">
 		@if(completedBattles.length === 0) {
@@ -55,40 +61,22 @@
 		@for(battle of completedBattles; track battle.id) {
 		<div class="card">
 			<div class="card-info">
-				<p class="card-name">{{ battle.playerOne?.name ?? 'Jugador 1' }} vs {{ battle.playerTwo?.name ?? 'Jugador 2' }}</p>
-				<p class="card-player-id">Guanyador: {{ battle.winner?.name ?? 'Empat' }}</p>
-				@if(battle.dice_player_one && battle.dice_player_two) {
-				<p>Dau P1: {{ battle.dice_player_one }} (Mod: {{ battle.modifier_player_one }}) vs Dau P2: {{ battle.dice_player_two }} (Mod: {{ battle.modifier_player_two }})</p>
+				<p class="card-name">{{ battle.player_one?.name ?? 'Jugador 1' }} vs {{ battle.player_two?.name ?? 'Jugador 2' }}</p>
+				<!-- Mostra el guanyador o empat -->
+				@if(battle.winner) {
+				<p class="card-winner">🏆 {{ battle.winner.name }}</p>
+				} @else {
+				<p class="card-winner draw">🤝 Empat</p>
+				}
+				<!-- Mostra daus i modificadors si existeixen -->
+				@if(battle.dice_player_one !== null && battle.dice_player_two !== null) {
+				<p class="card-dice">🎲 {{ battle.dice_player_one }} (+{{ battle.modifier_player_one }}) vs {{ battle.dice_player_two }} (+{{ battle.modifier_player_two }})</p>
 				}
 			</div>
-			<span class="status-badge">Finalitzada</span>
+			<span class="status-badge completed">Finalitzada</span>
 		</div>
 		}
 	</div>
 	}
 
 </div>
-
-<!-- Modal for requesting battle -->
-@if(requestModalOpen) {
-<div class="modal-overlay" (click)="closeModals()">
-	<div class="modal" (click)="$event.stopPropagation()">
-		<h3>Selecciona un amic per lluitar</h3>
-		@if(friends.length === 0) {
-		<p>No tens amics disponibles.</p>
-		} @else {
-		<ul class="friends-list">
-			@for(friend of friends; track friend.id) {
-			<li [class.selected]="selectedFriendId === friend.id" (click)="selectedFriendId = friend.id">
-				{{ friend.name }}
-			</li>
-			}
-		</ul>
-		}
-		<div class="modal-actions">
-			<button (click)="requestBattle()" [disabled]="!selectedFriendId">Sol·licitar</button>
-			<button (click)="closeModals()">Cancel·lar</button>
-		</div>
-	</div>
-</div>
-}
