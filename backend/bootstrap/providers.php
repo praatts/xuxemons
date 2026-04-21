@@ -2,5 +2,6 @@
 
 return [
     App\Providers\AppServiceProvider::class,
+    App\Providers\BroadcastServiceProvider::class,
     Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 ];

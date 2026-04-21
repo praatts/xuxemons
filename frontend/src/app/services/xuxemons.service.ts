@@ -51,11 +51,16 @@ export class XuxemonsService {
     this.ownedXuxemonsSubject.next(xuxemons);
   }
 
-  //Mètode per afegir un xuxemon a la llista de xuxemons propietat de l'usuari autenticat i emetre els canvis als components subscrits.
+  //Mètode per afegir un xuxemon a la llista de xuxemons propietat de l'usuari autenticat , torna a recorrer la llista i actualitza el estat de owned a true per al xuxemon afegit i emet els canvis als components subscrits.
   addToOwnedXuxemons(xuxemon: Xuxemon): void {
     const updated = [...this.ownedXuxemonsSubject.value, xuxemon];
     this.ownedXuxemonsSubject.next(updated);
-    console.log('Xuxemon afegit correctament');
+    const updatedAll = this.userXuxemonsSubject.value.map(x =>
+      x.id === xuxemon.id ? { ...x, owned: true } : x
+    );
+    this.xuxemons = updatedAll;
+    this.userXuxemonsSubject.next(updatedAll);
+
   }
 
   //Mètode per obtenir la llista actual de xuxemons de l'usuari autenticat.
@@ -67,7 +72,6 @@ export class XuxemonsService {
   getCurrentOwnedXuxemons(): Xuxemon[] {
     return this.ownedXuxemonsSubject.value;
   }
-
 
   //Mètode per afegir una malaltia a un xuxemon propietat de l'usuari autenticat (s'ha de ser admin per accedir-hi) i retorna un observable amb la resposta del backend.
   addIllness(owned_id: number, illness: string): Observable<any> {

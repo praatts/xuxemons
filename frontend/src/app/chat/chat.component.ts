@@ -1,0 +1,256 @@
+import { Component } from '@angular/core';
+import { ChatService } from '../services/chat.service';
+import { AuthService } from '../services/auth.service';
+import { FriendshipService } from '../services/friendship.service';
+import { UserService } from '../services/user.service';
+import { Message } from '../../../interfaces/message';
+import { Conversation } from '../../../interfaces/conversation';
+import { Friend } from '../../../interfaces/friend';
+import { Subscription } from 'rxjs';
+import { NgClass } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-chat',
+  standalone: true,
+  imports: [NgClass, ReactiveFormsModule],
+  templateUrl: './chat.component.html',
+  styleUrl: './chat.component.css'
+})
+export class ChatComponent {
+  messages: Message[] = [];
+  conversation: Conversation | null = null;
+  friends: Friend[] = [];
+  messages$;
+  conversation$;
+  realTimeMessage$;
+  newMessage: string = '';
+  subscription = new Subscription();
+  messagesPollingSubscription: Subscription | null = null;
+  sender_id: number | null = null;
+  messageControl = new FormControl('');
+  editingMessageId: number | null = null;
+  editingMessageControl = new FormControl('');
+  activeConversationId: number | null = null;
+
+  constructor(public chatService: ChatService, private authService: AuthService, private friendshipService: FriendshipService, private userService: UserService) { 
+    this.messages$ = this.chatService.messages$;
+    this.conversation$ = this.chatService.conversation$;
+    this.realTimeMessage$ = this.chatService.realTimeMessage$;
+  }
+
+  //Al iniciar el component, es subscriu als canvis de la conversa actual i recupera la id del usuari autenticat.
+  ngOnInit() {
+    this.getFriends()
+
+    //Quan canvia la conversa actual, es carrega els missatges d'aquesta conversa.
+    this.subscription.add(
+      this.conversation$.subscribe(conversation => {
+        if (this.activeConversationId) {
+          this.chatService.unsubscribeFromConversation(this.activeConversationId);
+        }
+
+        this.conversation = conversation;
+        if (conversation) {
+          this.activeConversationId = conversation.id;
+          this.loadMessages(conversation.id);
+          this.chatService.subscribeToConversation(conversation.id);
+        }
+      })
+    );
+
+    //Recupera la id de l'usuari autenticat per identificar qui envia els missatges.
+    this.subscription.add(
+      this.authService.getUserId().subscribe(user_id => {
+        this.sender_id = user_id;
+      })
+    );
+
+    this.subscription.add(
+    this.messages$.subscribe(messages => {
+      this.messages = messages.slice().reverse();
+    })
+  );
+
+    this.subscription.add(
+      this.realTimeMessage$.subscribe(message => {
+        if (!message) return;
+        if (message.conversation_id !== this.activeConversationId) return;
+        this.chatService.addMessage(message);
+      })
+    );
+  }
+
+  //Al destruir el component, es desubscriu de tots els observables per evitar fuites de memòria.
+  ngOnDestroy() {
+    if (this.activeConversationId) {
+      this.chatService.unsubscribeFromConversation(this.activeConversationId);
+    }
+    this.subscription.unsubscribe();
+  }
+
+  //Carrega els missatges d'una conversa concreta i actualitza l'estat dels missatges a través del servei.
+  loadMessages(conversation_id: number) {
+    this.chatService.getMessages(conversation_id).subscribe({
+      next: (messages) => this.chatService.setMessages(messages),
+      error: (error) => console.error('Error al carregar missatges:', error)
+    });
+  }
+
+  //Envia un missatge a la conversa actual i actualitza l'estat dels missatges després d'enviar-lo.
+  sendMessage() {
+    const currentConversation = this.chatService.getConversationValue();
+    const content = this.messageControl.value?.trim();
+
+    if (!currentConversation || !content) return;
+
+      this.chatService.sendMessage(currentConversation.id, content).subscribe({
+        next: (message) => {
+          const updatedMessages = [...this.chatService.getMessagesValue(), message]; //Afegeix el nou missatge a l'estat actual dels missatges.
+          this.chatService.setMessages(updatedMessages); //Actualitza els missatges
+          this.messageControl.reset(); //Neteja el camp de text després d'enviar el missatge.
+        },
+        error: (error) => {
+          console.error('Error enviant missatge:', error);
+        }
+      });
+    
+  }
+
+  //Carrega la llista d'amics de l'usuari autenticat.
+  getFriends() {
+    this.friendshipService.getFriends().subscribe({
+      next: (friends) => this.friends = friends,
+      error: (error) => console.error('Error al carregar amics:', error)
+    });
+  }
+
+  selectFriend(friend_id: number) {
+    //Quan es selecciona un amic, es crea una nova conversa amb aquest amic i es carrega aquesta conversa com a conversa actual.
+    this.chatService.createConversation(friend_id).subscribe({
+      next: (conversation) => {
+        this.chatService.setConversation(conversation);
+      },
+      error: (error) => console.error('Error seleccionant amic:', error)
+    });
+  }
+  
+  //Mètode per formatar la data de creació amb temps relatiu (ex: "fa 5 minuts", "fa 2 hores", etc.)
+  formatRelativeTime(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000); //Calcula la diferència en segons entre la data actual i la data de creació del missatge.
+    return this.getRelativeTime(diffInSeconds);
+  }
+
+  //Mètode auxiliar per convertir els segons de diferència en un format de temps relatiu llegible.
+  getRelativeTime(diffInSeconds: number): string {
+    if (diffInSeconds < 60) {
+      return `Ara mateix`;
+    } else if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `fa ${minutes} minut${minutes > 1 ? 's' : ''}`;
+    } else if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `fa ${hours} hora${hours > 1 ? 's' : ''}`;
+    } else {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `fa ${days} dia${days > 1 ? 's' : ''}`;
+    }
+  } 
+
+  //Indica si un missatge encara es pot editar/eliminar (només missatges propis i dins del primer minut).
+  canModifyMessage(message: Message): boolean {
+    if (message.deleted) {
+      return false;
+    }
+
+    //Comprovació usuari autenticat = remitent del missatge
+    if (this.sender_id === null || message.sender_id !== this.sender_id) {
+      return false;
+    }
+
+    const createdAt = new Date(message.created_at).getTime();
+    //Comprovació que la data de creació del missatge és vàlida i té un format de número correcte.
+    if (Number.isNaN(createdAt)) {
+      return false;
+    }
+
+    const difference = Date.now() - createdAt;
+    return difference >= 0 && difference < 60000;
+  }
+  
+  //Mètode per eliminar un missatge concret de la conversa actual (temps màxim 1min després de enviar-lo)
+  deleteMessage(message_id: number) {
+    this.chatService.deleteMessage(message_id).subscribe({
+      next: () => {
+        if (this.editingMessageId === message_id) {
+          this.cancelEditingMessage();
+        }
+
+        //Actualitzem el llistat de missatges, marcant com a 'deleted' el missatge seleccionat.
+        const updatedMessages = this.chatService.getMessagesValue().map(msg =>
+          msg.id === message_id
+            ? { ...msg, deleted: true }
+            : msg
+        );
+        this.chatService.setMessages(updatedMessages);
+      },
+      error: (error) => {
+        console.error('Error eliminant missatge:', error);
+      }
+    });
+  }
+
+  //Comprova si se està editant el missatge seleccionat, comparant la id del missatge amb la id del missatge en edició.
+  isEditingMessage(message: Message): boolean {
+    return this.editingMessageId === message.id;
+  }
+
+  //Mètode que inicia el proces de dició
+  startEditingMessage(message: Message) {
+    if (!this.canModifyMessage(message)) {
+      return;
+    }
+
+    this.editingMessageId = message.id;
+    this.editingMessageControl.setValue(message.content);
+  }
+
+  //Cancel·la el procés d'edició, resetejant la id del missatge en edició i el camp de text associat a l'edició.
+  cancelEditingMessage() {
+    this.editingMessageId = null;
+    this.editingMessageControl.reset('');
+  }
+
+  //Mètode que guarda el missatge editat.
+  saveEditedMessage(message: Message) {
+    if (!this.isEditingMessage(message) || !this.canModifyMessage(message)) {
+      return;
+    }
+
+    const finalContent = this.editingMessageControl.value?.trim() ?? '';
+    if (!finalContent || finalContent === message.content) {
+      if (finalContent === message.content) {
+        this.cancelEditingMessage();
+      }
+      return;
+    }
+
+    this.chatService.editMessage(message.id, finalContent).subscribe({
+      next: (updatedMessage) => {
+        //Actualitzem el llistat de missatges, reemplaçant el contingut del missatge editat pel nou contingut.
+        const updatedMessages = this.chatService.getMessagesValue().map(msg =>
+          msg.id === message.id
+            ? { ...msg, content: updatedMessage.content, updated_at: updatedMessage.updated_at }
+            : msg
+        );
+        this.chatService.setMessages(updatedMessages); //Actualitza els missatges amb el contingut editat.
+        this.cancelEditingMessage(); //Finalitza el procés d'edició
+      },
+      error: (error) => {
+        console.error('Error editant missatge:', error);
+      }
+    });
+  }
+}

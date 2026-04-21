@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { UserService } from '../services/user.service';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
@@ -12,7 +11,7 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './user-login.component.html',
   styleUrl: './user-login.component.css'
 })
-export class UserLoginComponent {
+export class UserLoginComponent implements OnInit {
   
   loginForm: FormGroup;
   submitted = false;
@@ -22,7 +21,6 @@ export class UserLoginComponent {
   
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
     private router: Router,
     private authService: AuthService
   ) {
@@ -33,6 +31,13 @@ export class UserLoginComponent {
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
 
+  }
+
+  ngOnInit(): void {
+    // Si l'usuari ja està loguejat i el token és vàlid, el redirigim automàticament a la pàgina principal
+    if (this.authService.isLogged()) {
+      this.router.navigateByUrl('/main/principal');
+    }
   }
 
   //Mètode per enviar les dades al login
@@ -48,7 +53,7 @@ export class UserLoginComponent {
     }
 
     //Fem el login amb els valors introduïts al formulari, i gestionem la resposta del backend per mostrar un missatge d'error o redirigir a la pàgina principal segons el resultat de l'operació.
-    this.userService.logIn(email, password).subscribe({
+    this.authService.login({ email, password }).subscribe({
 
       next: (response) => {
         console.log('Resposta rebuda al component:', response);

@@ -12,6 +12,7 @@ import { UserAdminComponent } from './user-admin/user-admin.component';
 import { adminGuardGuard } from './guards/admin-guard.guard';
 import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
 import { FriendsComponent } from './friends/friends.component';
+import { ChatComponent } from './chat/chat.component';
 
 
 export const routes: Routes = [
@@ -80,6 +81,12 @@ export const routes: Routes = [
                         path: 'friends',
                         title: 'Amics',
                         component: FriendsComponent,
+                        canActivate: [authGuard]
+                    },
+                    {
+                        path: 'chat',
+                        title: 'Chat',
+                        component: ChatComponent,
                         canActivate: [authGuard]
                     }
                 ]

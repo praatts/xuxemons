@@ -1,0 +1,130 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Message;
+use App\Models\Conversation;
+use App\Models\User;
+use Auth;
+use App\Events\MessageSent;
+use App\Events\MessageDeleted;
+use App\Events\MessageUpdated;
+
+class MessageController extends Controller
+{
+    //Funció per enviar un missatge en una conversa existent
+    public function store(Request $request)
+    {
+
+        $request->validate([
+            'content' => 'required|string',
+            'conversation_id' => 'required|exists:conversations,id',
+        ]);
+
+        //Obtenim usuari autenticat i dades del missatge
+        $user = Auth::guard('api')->user();
+        $conversation_id = $request->input('conversation_id');
+        $content = $request->input('content');
+
+        //Carregem la conversa
+        $conversation = Conversation::find($conversation_id);
+
+        //Comprovem que la conversa existeix
+        if (!$conversation) {
+            return response()->json(['error' => 'Conversa no trobada'], 404);
+        }
+
+        //Comprovem que l'usuari autenticat és part de la conversa (o sender o receiver)
+        if ($conversation->sender_id !== $user->id && $conversation->receiver_id !== $user->id) {
+            return response()->json(['error' => 'No tens permís per enviar missatges en aquesta conversa'], 403);
+        }
+
+        //Creem el missatge
+        $message = Message::create([
+            'conversation_id' => $conversation_id,
+            'sender_id' => $user->id,
+            'content' => $content,
+        ]);
+        broadcast(new MessageSent($message, $conversation_id))->toOthers();
+
+        return response()->json($message, 201);
+    }
+
+    //Funció per obtenir els missatges d'una conversa
+    public function index(Request $request) {
+        $request->validate([
+            'conversation_id' => 'required|exists:conversations,id',
+        ]);
+
+        //Obtenim usuari autenticat i id de la conversa
+        $user = Auth::guard('api')->user();
+        $conversation_id = $request->input('conversation_id');
+
+        //Carreguem la conversa
+        $conversation = Conversation::find($conversation_id);
+
+        //Comprovem que la conversa existeix
+        if (!$conversation) {
+            return response()->json(['error' => 'Conversa no trobada'], 404);
+        }
+
+        //Comprovem que l'usuari autenticat és part de la conversa (o sender o receiver)
+        if ($conversation->sender_id !== $user->id && $conversation->receiver_id !== $user->id) {
+            return response()->json(['error' => 'No tens permís per veure els missatges d\'aquesta conversa'], 403);
+        }
+
+        //Carreguem els missatges de la conversa de manera ordenada per data de creació (utilitzant la relació definida al model Conversation)
+        $messages =  $conversation->messages()->orderBy('created_at', 'asc')->get();
+       
+        return response()->json($messages);
+    }
+
+    public function destroy($id) {
+        $user = Auth::guard('api')->user();
+        $message = Message::find($id);
+
+        if (!$message) {
+            return response()->json(['error' => 'Missatge no trobat'], 404);
+        }
+
+        //Comprovem que l'usuari autenticat és el sender del missatge
+        if ($message->sender_id !== $user->id) {
+            return response()->json(['error' => 'No tens permís per eliminar aquest missatge'], 403);
+        }
+
+        //Marquem el missatge com a eliminat
+        $message->deleted = true;
+        $message->save();
+
+        broadcast(new MessageDeleted($message->id, $message->conversation_id))->toOthers();
+
+        return response()->json(['message' => 'Missatge eliminat correctament']);
+    }
+
+    public function editMessage(Request $request, $id) {
+        $user = Auth::guard('api')->user();
+        $message = Message::find($id);
+
+        if (!$message) {
+            return response()->json(['error' => 'Missatge no trobat'], 404);
+        }
+
+        //Comprovem que l'usuari autenticat és el sender del missatge
+        if ($message->sender_id !== $user->id) {
+            return response()->json(['error' => 'No tens permís per editar aquest missatge'], 403);
+        }
+
+        $request->validate([
+            'content' => 'required|string',
+        ]);
+
+        //Actualitzem el contingut del missatge
+        $message->content = $request->input('content');
+        $message->save();
+
+        broadcast(new MessageUpdated($message, $message->conversation_id))->toOthers();
+
+        return response()->json($message);
+    }
+}

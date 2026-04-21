@@ -45,7 +45,8 @@ export class UserPrincipalComponent {
     { label: 'Usuario', route: 'principal/userstats', exact: false, img: 'user.png' },
     { label: 'xuxedex', route: 'principal/xuxedex', exact: true, img: 'xuxedex.png' },
     { label: 'Motxilla', route: 'principal/motxilla', exact: true, img: 'inventari.png' },
-    { label: 'Amics', route: 'principal/friends', exact: true, img: 'friends.png' },    
+    { label: 'Amics', route: 'principal/friends', exact: true, img: 'friends.png' },
+    { label: 'Chat', route: 'principal/chat', exact: true, img: 'chat.png' },  
   ];
 
   //Funció per fer logout de l'usuari, eliminant el token d'autenticació i redirigint a la pàgina d'inici de sessió.

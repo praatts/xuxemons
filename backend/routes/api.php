@@ -11,10 +11,9 @@ use App\Http\Controllers\XuxemonsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
-use App\Models\Inventory;
-use App\Models\OwnedXuxemonIllness;
-use App\Models\OwnedXuxemon;
 use App\Http\Controllers\API\FriendshipController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\MessageController;
 
 //http://localhost:8000/api/
 //Comprobar si el email ya existe
@@ -95,4 +94,11 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::put('/friends/{id}/accept', [FriendshipController::class, 'acceptFriendRequest']);
     Route::put('/friends/{id}/reject', [FriendshipController::class, 'rejectFriendRequest']);
     Route::delete('/friends/{id}', [FriendshipController::class, 'destroy']);
+
+    //XAT
+    Route::post('/conversations', [ConversationController::class, 'createConversation']);
+    Route::post('/messages', [MessageController::class, 'store']);
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
+    Route::patch('/messages/{id}/edit', [MessageController::class, 'editMessage']);
 });

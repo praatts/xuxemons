@@ -1,0 +1,432 @@
+:host {
+    --bg-container: #FFD9A3;
+    --bg-sidebar: rgba(255, 68, 0, 0.6);
+    --bg-card: #E6CCCC;
+    --bg-card-active: #898989;
+    --bg-bubble-mine: #FF4400;
+    --bg-bubble-received: #C1BBBB;
+    --bg-input: #FFFFFF;
+    --bg-send-button: #FF4400;
+    --border-color: #C1BBBB;
+    --text-main: #000000;
+    --text-secondary: #495057;
+    --text-bubble-mine: #ffffff;
+    --scrollbar-bg: #e0e0e0;
+    --scrollbar-thumb: #b0b0b0;
+
+    background-color: var(--bg-container);
+    color: var(--text-main);
+}
+
+:host(.dark-mode) {
+    --bg-container: #121212;
+    --bg-sidebar: rgba(75, 75, 75, 0.6);
+    --bg-card: #2e2e2e;
+    --bg-card-active: #555555;
+    --bg-bubble-mine: #FF4400;
+    --bg-bubble-received: #3a3a3a;
+    --bg-input: #1e1e1e;
+    --bg-send-button: #FF4400;
+    --border-color: #333333;
+    --text-main: #ffffff;
+    --text-secondary: #ced4da;
+    --text-bubble-mine: #ffffff;
+    --scrollbar-bg: #1e1e1e;
+    --scrollbar-thumb: #555555;
+
+    background-color: var(--bg-container);
+    color: var(--text-main);
+}
+
+p {
+    margin: 0;
+}
+
+/* ── Layout principal ── */
+.main-layout {
+    display: flex;
+    flex-direction: row;
+    padding: 50px 25px;
+    gap: 30px;
+    max-height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* ── Sidebar d'amics ── */
+.sidebar-friend {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-title h3 {
+    font-size: 40px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.friends-list {
+    background-color: var(--bg-sidebar);
+    border-radius: 30px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px;
+}
+
+.friends-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.friends-list::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+    border-radius: 10px;
+}
+
+.friends-list::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.friend-card {
+    background-color: var(--bg-card);
+    border-radius: 15px;
+    min-height: 65px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.friend-card.is-active {
+    background-color: var(--bg-card-active);
+}
+
+.friend-card:last-child {
+    margin-bottom: 10px;
+}
+
+.friend-details .name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.no-friends {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    opacity: 0.6;
+}
+
+/* ── Contenidor del chat ── */
+.chat-container {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 30px;
+    background-color: rgba(255, 213, 197, 0.5);
+    border: 1px solid var(--text-main);
+    padding: 20px;
+    box-sizing: border-box;
+    height: calc(100vh - 100px);
+}
+
+.conversation-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* ── Missatges ── */
+.messages-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 12px;
+    overflow-y: auto;
+    overflow-anchor: none;
+    min-height: 0;
+    padding-right: 5px;
+}
+
+.messages-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+    border-radius: 10px;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.message {
+    display: flex;
+}
+
+.my-message {
+    justify-content: flex-end;
+}
+
+.received-message {
+    justify-content: flex-start;
+}
+
+.message-bubble {
+    max-width: 78%;
+    min-width: 220px;
+    padding: 10px 16px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.my-message .message-bubble {
+    background-color: var(--bg-bubble-mine);
+    color: var(--text-bubble-mine);
+    border-bottom-right-radius: 4px;
+}
+
+.received-message .message-bubble {
+    background-color: var(--bg-bubble-received);
+    color: var(--text-main);
+    border-bottom-left-radius: 4px;
+}
+
+.message-bubble p {
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.inline-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.inline-edit-input {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: inherit;
+    padding: 8px 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+.inline-edit-input::placeholder {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.received-message .inline-edit-input::placeholder {
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.inline-edit-input:focus {
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.inline-edit-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.inline-edit-button {
+    border: none;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.inline-edit-button.save {
+    background: rgba(255, 255, 255, 0.92);
+    color: #111;
+}
+
+.inline-edit-button.cancel {
+    background: rgba(255, 255, 255, 0.24);
+    color: inherit;
+}
+
+.inline-edit-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+:host(.dark-mode) .inline-edit-input {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+:host(.dark-mode) .received-message .inline-edit-input::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.message-time {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.message-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.message-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.message-action {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.24);
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.message-action:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.36);
+}
+
+.message-action.delete span {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    background: url('/dark-mode/basura-blanca.png') no-repeat center;
+    background-size: contain;
+}
+
+.message-action.edit span {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    background: url('/dark-mode/edit-white.png') no-repeat center;
+    background-size: contain;
+}
+
+:host(.dark-mode) .message-action {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+:host(.dark-mode) .message-action.delete,
+:host(.dark-mode) .message-action.edit {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+@media (max-width: 992px) {
+    .message-bubble {
+        max-width: 86%;
+        min-width: 180px;
+    }
+}
+
+.empty-chat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    opacity: 0.6;
+}
+
+/* ── Input d'enviament ── */
+.chat-input-box {
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    padding: 8px 8px 8px 20px;
+}
+
+.input-group input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    color: var(--text-main);
+    outline: none;
+}
+
+.input-group input::placeholder {
+    color: var(--text-secondary);
+}
+
+.send-button {
+    background-color: var(--bg-send-button);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px !important;
+    padding: 10px 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.send-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ── Estat sense conversa seleccionada ── */
+.no-conversation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 10px;
+    opacity: 0.6;
+    text-align: center;
+}
+
+.no-conversation .icon {
+    font-size: 60px;
+}
+
+.no-conversation h2 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.no-conversation p {
+    font-size: 15px;
+}

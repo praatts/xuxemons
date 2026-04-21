@@ -1,17 +1,16 @@
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn } from '@angular/router';
 import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
-
-  const router = inject(Router);
-  const token = localStorage.getItem('access_token');
+  const authService = inject(AuthService);
   
-  //verificar que hay token
-  if (token) {
+  //verificar que existeix el token i no ha expirat, permet l'accés a les rutes protegides si el token es vàlid.
+  if (authService.isLogged()) {
     return true;
   }
 
-  //si no hay token redirigir al login
-  router.navigate(['/']);
+  //si no existeix el token o ha expirat, fem automaticament el logout per eliminar el token i redirigir al usuari a la pàgina de login.
+  authService.forceLogout();
   return false;
 };
