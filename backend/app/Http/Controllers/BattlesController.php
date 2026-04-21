@@ -209,9 +209,9 @@ class BattlesController extends Controller
     {
         //Map [element => element amb avantatge sobre ell]
         $advantages = [
-            'tierra' => 'aire',
-            'aire' => 'agua',
-            'agua' => 'tierra',
+            'aire' => 'tierra',
+            'aigua' => 'aire',
+            'tierra' => 'aigua',
         ];
         //Retorna true si el tipus 1 té avantatge sobre el tipus 2 Ex: 'tierra' => 'aire
         return isset($advantages[$type1]) && $advantages[$type1] === $type2;

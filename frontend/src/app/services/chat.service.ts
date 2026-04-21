@@ -5,7 +5,6 @@ import { Message } from '../../../interfaces/message';
 import { Conversation } from '../../../interfaces/conversation';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
-import { P } from '@angular/cdk/keycodes';
 
 @Injectable({
   providedIn: 'root'
