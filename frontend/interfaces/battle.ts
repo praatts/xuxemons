@@ -5,8 +5,8 @@ export interface Battle {
     id: number;
     player_one_id: number;
     player_two_id: number;
-    player_one_xuxemon_id: number;
-    player_two_xuxemon_id: number;
+    xuxemon_player_one_id: number;
+    xuxemon_player_two_id: number;
     playerOne?: User;
     playerTwo?: User;
     xuxemonOne?: Xuxemon;

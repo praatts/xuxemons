@@ -106,5 +106,6 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     //BATALLES
     Route::get('/battles', [BattlesController::class, 'index']);
     Route::post('/battles', [BattlesController::class, 'store']);
+    Route::post('/battles/{id}/accept', [BattlesController::class, 'acceptBattle']);
     Route::post('/battles/{id}/fight', [BattlesController::class, 'fight']);
 });
