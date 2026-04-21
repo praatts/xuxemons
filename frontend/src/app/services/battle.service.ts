@@ -24,7 +24,7 @@ export class BattleService {
     });
   }
 
-  //Esctirua llista de batalles emesa pel BehaviorSubject.
+  //Escriptura llista de batalles emesa pel BehaviorSubject.
   setBattles(battles: Battle[]): void {
     this.battlesSubject.next(battles);
   }
@@ -39,13 +39,23 @@ export class BattleService {
     return this.http.post<Battle>(`${this.apiUrl}/battles/${battle_id}/accept`, {});
   }
 
-  //Mètode que inicia la batalla
-  fightBattle(battle_id: number): Observable<Battle> {
-    return this.http.post<Battle>(`${this.apiUrl}/battles/${battle_id}/fight`, {});
+  //Mètode per seleccionar un xuxemon per a una batalla acceptada (cada jugador tria el seu xuxemon sa)
+  selectXuxemon(battle_id: number, owned_xuxemon_id: number): Observable<Battle> {
+    return this.http.post<Battle>(`${this.apiUrl}/battles/${battle_id}/select-xuxemon`, { owned_xuxemon_id });
   }
 
-  //Mètode per enviar una petició de batalla a un amic.
+  //Mètode que inicia la batalla (tirada de daus + modificadors + determinar guanyador)
+  fightBattle(battle_id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/battles/${battle_id}/fight`, {});
+  }
+
+  //Mètode per enviar una petició de batalla a un amic (des de la pàgina d'amics).
   createBattleRequest(player_two_id: number): Observable<Battle> {
     return this.http.post<Battle>(`${this.apiUrl}/battles`, { player_two_id });
+  }
+
+  //Mètode per obtenir una batalla específica per la seva id
+  getBattleById(battle_id: number): Battle | undefined {
+    return this.battlesSubject.value.find(b => b.id === battle_id);
   }
 }

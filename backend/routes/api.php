@@ -107,5 +107,6 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('/battles', [BattlesController::class, 'index']);
     Route::post('/battles', [BattlesController::class, 'store']);
     Route::post('/battles/{id}/accept', [BattlesController::class, 'acceptBattle']);
+    Route::post('/battles/{id}/select-xuxemon', [BattlesController::class, 'selectXuxemon']); //Seleccionar xuxemon per a la batalla
     Route::post('/battles/{id}/fight', [BattlesController::class, 'fight']);
 });
