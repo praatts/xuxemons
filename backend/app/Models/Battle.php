@@ -16,7 +16,9 @@ class Battle extends Model
         'modifier_player_one',
         'modifier_player_two',
         'winner_id',
-        'status'
+        'status',
+        'player_one_ready',
+        'player_two_ready'
     ];
 
     public function playerOne() {

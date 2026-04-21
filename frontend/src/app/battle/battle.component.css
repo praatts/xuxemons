@@ -149,6 +149,37 @@
 	cursor: not-allowed;
 }
 
+/* Caixa d'espera quan un jugador està preparat però l'altre no */
+.waiting-box {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: var(--bg-tertiary);
+	padding: 15px 30px;
+	border-radius: 12px;
+	border: 2px dashed var(--color-warning);
+	color: var(--text-primary);
+	text-align: center;
+	animation: pulse 2s infinite;
+}
+
+.waiting-box .spinner {
+	font-size: 24px;
+	margin-bottom: 8px;
+}
+
+.waiting-box p {
+	margin: 0;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+@keyframes pulse {
+	0% { opacity: 0.8; transform: scale(0.98); }
+	50% { opacity: 1; transform: scale(1); }
+	100% { opacity: 0.8; transform: scale(0.98); }
+}
+
 /* Secció dels resultats de la batalla */
 .result-section {
 	background-color: var(--bg-secondary);

@@ -52,16 +52,23 @@
 		</div>
 	</div>
 
-	<!-- Botó de lluitar (només si la batalla està acceptada) -->
+	<!-- Botó de lluitar / Estat d'espera (només si la batalla està acceptada) -->
 	@if(battle.status === 'accepted') {
 	<div class="fight-section">
-		<button class="fight-btn" (click)="fight()" [disabled]="loading">
+		@if(waitingForOpponent || isReady) {
+		<div class="waiting-box">
+			<span class="spinner">⏳</span>
+			<p>Estàs preparat! Esperant que el rival seleccioni el seu Xuxemon i cliqui a lluitar...</p>
+		</div>
+		} @else {
+		<button class="fight-btn" (click)="fight()" [disabled]="loading || !selectedXuxemonId">
 			@if(loading) {
-			Lluitant...
+			Preparant...
 			} @else {
 			⚔️ Lluitar!
 			}
 		</button>
+		}
 	</div>
 	}
 

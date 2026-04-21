@@ -23,6 +23,8 @@ export interface Battle {
     xuxemon_two_type?: string;
     xuxemon_two_size?: string;
     status: 'pending' | 'accepted' | 'completed';
+    player_one_ready: boolean;
+    player_two_ready: boolean;
     winner_id: number | null;
     winner?: User;
     dice_player_one: number | null;

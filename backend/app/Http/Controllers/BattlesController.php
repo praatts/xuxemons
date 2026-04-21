@@ -82,7 +82,9 @@ class BattlesController extends Controller
             'player_two_id' => $p2_id,
             'xuxemon_player_one_id' => $xuxemon_p1->id,
             'xuxemon_player_two_id' => $xuxemon_p2->id,
-            'status' => 'pending'
+            'status' => 'pending',
+            'player_one_ready' => false,
+            'player_two_ready' => false
         ]);
 
         return response()->json(
@@ -90,17 +92,15 @@ class BattlesController extends Controller
         );
     }
 
-    //Mètode per acceptar una batalla pendent (canvia l'estat de la batalla a "accepted" i permet iniciar la batalla)
+    //Mètode per acceptar una batalla pendent (canvia l'estat de la batalla a "accepted" i permet entrar a la pàgina de batalla)
     public function acceptBattle($id) {
         $user = Auth::guard('api')->user();
 
-        //Comprovem que l'usuari està autenticat i que és el jugador dos de la batalla que vol acceptar, i que la batalla està pendent
         if (!$user) {
             return response()->json(['error' => 'No autoritzat'], 401);
         }
         $battle = Battle::find($id);
 
-        //Retorna error si no s'ha trobat la batalla
         if (!$battle) {
             return response()->json(['error' => 'No s\'ha trobat la batalla'], 404);
         }
@@ -110,12 +110,12 @@ class BattlesController extends Controller
             return response()->json(['error' => 'No tens permís per acceptar aquesta batalla'], 403);
         }
 
-        //Comprovem que la batalla està pendent (no s'ha acceptat ni completat encara)
+        //Comprovem que la batalla està pendent
         if ($battle->status !== 'pending') {
             return response()->json(['error' => 'La batalla ja ha estat acceptada o completada'], 400);
         }
 
-        //Actualitzem l'estat de la batalla a "accepted" per permetre iniciar la batalla
+        //Actualitzem l'estat de la batalla a "accepted" — ara els dos jugadors poden entrar a la pàgina de batalla
         $battle->status = 'accepted';
         $battle->save();
 
@@ -139,7 +139,7 @@ class BattlesController extends Controller
             return response()->json(['error' => 'No s\'ha trobat la batalla'], 404);
         }
 
-        //Només es pot seleccionar xuxemon en batalles acceptades (no pendents ni completades)
+        //Només es pot seleccionar xuxemon en batalles acceptades
         if ($battle->status !== 'accepted') {
             return response()->json(['error' => 'La batalla no està en estat acceptat'], 400);
         }
@@ -160,11 +160,13 @@ class BattlesController extends Controller
             return response()->json(['error' => 'El xuxemon està malalt i no pot lluitar'], 400);
         }
 
-        //Assignem el xuxemon al jugador corresponent segons si és jugador 1 o jugador 2
+        //Assignem el xuxemon al jugador corresponent i resetegem el flag "ready" (per si canvia de xuxemon)
         if ($battle->player_one_id === $user->id) {
             $battle->xuxemon_player_one_id = $owned_xuxemon_id;
+            $battle->player_one_ready = false;
         } elseif ($battle->player_two_id === $user->id) {
             $battle->xuxemon_player_two_id = $owned_xuxemon_id;
+            $battle->player_two_ready = false;
         } else {
             return response()->json(['error' => 'No ets part d\'aquesta batalla'], 403);
         }
@@ -176,13 +178,18 @@ class BattlesController extends Controller
         );
     }
 
-    //Mètode per executar la batalla (tirada de daus + modificadors + determinar guanyador + robar xuxemon)
+    //Mètode per marcar que un jugador està preparat per lluitar.
+    //Quan els DOS jugadors estan preparats, la batalla es resol automàticament.
     public function fight($id)
     {
-        //Carreguem la batalla amb els Xuxemons associats i el seu tipus base
+        $user = Auth::guard('api')->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'No autoritzat'], 401);
+        }
+
         $battle = Battle::with(['xuxemonOne.xuxemon', 'xuxemonTwo.xuxemon'])->find($id);
 
-        //Retorna error si no s'ha trobat la batalla
         if (!$battle) {
             return response()->json(['error' => 'No s\'ha trobat la batalla'], 404);
         }
@@ -191,11 +198,34 @@ class BattlesController extends Controller
             return response()->json(['error' => 'La batalla ja ha començat o s\'ha completat'], 400);
         }
 
-        //Obtenim els Xuxemons dels jugadors (OwnedXuxemon amb la relació al xuxemon base per obtenir el tipus)
+        //Marquem el jugador actual com a preparat ("ready")
+        if ($battle->player_one_id === $user->id) {
+            $battle->player_one_ready = true;
+        } elseif ($battle->player_two_id === $user->id) {
+            $battle->player_two_ready = true;
+        } else {
+            return response()->json(['error' => 'No ets part d\'aquesta batalla'], 403);
+        }
+
+        $battle->save();
+
+        //Si els dos jugadors encara NO estan preparats, retornem la batalla amb l'estat actual (esperant rival)
+        if (!$battle->player_one_ready || !$battle->player_two_ready) {
+            return response()->json([
+                'waiting' => true,
+                'message' => 'Esperant que l\'altre jugador estigui preparat...',
+                'player_one_ready' => $battle->player_one_ready,
+                'player_two_ready' => $battle->player_two_ready
+            ]);
+        }
+
+        //====== ELS DOS JUGADORS ESTAN PREPARATS — RESOLEM LA BATALLA ======
+
+        //Obtenim els Xuxemons dels jugadors
         $xuxemonOne = $battle->xuxemonOne;
         $xuxemonTwo = $battle->xuxemonTwo;
 
-        // Simulem el llançament dels daus (1D6)
+        //Simulem el llançament dels daus (1D6)
         $dice_p1 = rand(1, 6);
         $dice_p2 = rand(1, 6);
 
@@ -203,58 +233,49 @@ class BattlesController extends Controller
         $modifier_p1 = $this->calculateModifier($xuxemonOne, $xuxemonTwo);
         $modifier_p2 = $this->calculateModifier($xuxemonTwo, $xuxemonOne);
 
-        // Calculem el resultat final sumant el dau i el modificador
+        //Calculem el resultat final sumant el dau i el modificador
         $score_p1 = $dice_p1 + $modifier_p1;
         $score_p2 = $dice_p2 + $modifier_p2;
 
         $winner_id = null;
 
-        //Declarem el guanyador segons el resultat final (sumació de dau i modificador)
+        //Declarem el guanyador segons el resultat final
         if ($score_p1 > $score_p2) {
             $winner_id = $battle->player_one_id;
         } elseif ($score_p2 > $score_p1) {
             $winner_id = $battle->player_two_id;
-        } else {
-            $winner_id = -1; //Empat, no hi ha guanyador
         }
+        //Si els scores són iguals, winner_id queda null (empat)
 
-        //Actualitzem la batalla amb els resultats i el guanyador
+        //Actualitzem la batalla amb els resultats
         $battle->update([
             'dice_player_one' => $dice_p1,
             'dice_player_two' => $dice_p2,
             'modifier_player_one' => $modifier_p1,
             'modifier_player_two' => $modifier_p2,
-            'winner_id' => $winner_id === -1 ? null : $winner_id,
+            'winner_id' => $winner_id,
             'status' => 'completed'
         ]);
 
-        //En cas d'empat, retornem la batalla sense transferir cap xuxemon
-        if ($winner_id === -1) {
-            $result = $battle->fresh()->load(['playerOne', 'playerTwo', 'xuxemonOne.xuxemon', 'xuxemonTwo.xuxemon', 'winner']);
-            $data = $result->toArray();
-            $data['draw'] = true;
-            return response()->json($data);
+        //Si hi ha guanyador, el guanyador roba el xuxemon del perdedor
+        if ($winner_id) {
+            if ($winner_id === $battle->player_one_id) {
+                $loserXuxemon = $xuxemonTwo;
+            } else {
+                $loserXuxemon = $xuxemonOne;
+            }
+            //Actualitzem el propietari del Xuxemon perdedor al guanyador
+            $loserXuxemon->user_id = $winner_id;
+            $loserXuxemon->save();
         }
 
-        //El usuari guanyador roba el xuxemon perdedor (actualitzem el propietari del Xuxemon perdedor al guanyador)
-        if ($winner_id === $battle->player_one_id) {
-            $loserXuxemon = $xuxemonTwo;
-        } else {
-            $loserXuxemon = $xuxemonOne;
-        }
-        
-        //Actualitzem el propietari del Xuxemon perdedor al guanyador (camp user_id a owned_xuxemons)
-        $loserXuxemon->user_id = $winner_id;
-        $loserXuxemon->save();
-
-        //Retornem la batalla actualitzada amb els resultats i el guanyador
+        //Retornem la batalla actualitzada amb els resultats
         return response()->json(
             $battle->fresh()->load(['playerOne', 'playerTwo', 'xuxemonOne.xuxemon', 'xuxemonTwo.xuxemon', 'winner'])
         );
-
     }
 
-    //Mètode per calcular el modificador de cada jugador segons els avantatges de tipus i mida dels seus Xuxemons
+    //Mètode per calcular el modificador de cada jugador segons els avantatges de tipus i mida
     private function calculateModifier($ownedXuxemon, $opponentOwned)
     {
         $modifier = 0;
@@ -287,13 +308,12 @@ class BattlesController extends Controller
     //Comprovem si el tipus del primer Xuxemon té avantatge sobre el segon
     private function hasAdvantage($type1, $type2)
     {
-        //Map [element => element que venç]: tierra gana aigua, aigua gana aire, aire gana tierra
+        //tierra gana aigua, aigua gana aire, aire gana tierra
         $advantages = [
             'aire' => 'tierra',
             'aigua' => 'aire',
             'tierra' => 'aigua',
         ];
-        //Retorna true si el tipus 1 té avantatge sobre el tipus 2
         return isset($advantages[$type1]) && $advantages[$type1] === $type2;
     }
 }

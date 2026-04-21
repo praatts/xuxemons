@@ -1,10 +1,11 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BattleService } from '../services/battle.service';
 import { XuxemonsService } from '../services/xuxemons.service';
 import { ThemeService } from '../services/theme.service';
 import { Battle } from '../../../interfaces/battle';
 import { Xuxemon } from '../../../interfaces/xuxemon';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-battle',
@@ -12,7 +13,7 @@ import { Xuxemon } from '../../../interfaces/xuxemon';
   templateUrl: './battle.component.html',
   styleUrl: './battle.component.css'
 })
-export class BattleComponent implements OnInit {
+export class BattleComponent implements OnInit, OnDestroy {
 
   battle: Battle | null = null; //Batalla actual carregada
   myXuxemons: Xuxemon[] = []; //Llista de xuxemons sans de l'usuari autenticat
@@ -21,6 +22,10 @@ export class BattleComponent implements OnInit {
   currentUserId: number = 0; //ID de l'usuari autenticat
   battleResult: any = null; //Resultat de la batalla (després de lluitar)
   loading = false; //Indicador de càrrega per botons
+  
+  waitingForOpponent = false; //Indica si estem esperant que el rival cliqui a lluitar
+  private pollingInterval: any = null;
+  private battleSub: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,16 +50,35 @@ export class BattleComponent implements OnInit {
     this.loadMyHealthyXuxemons();
   }
 
+  ngOnDestroy() {
+    this.stopPolling();
+    if (this.battleSub) {
+      this.battleSub.unsubscribe();
+    }
+  }
+
   //Carrega la batalla actual des del backend via el BehaviorSubject de batalles
   loadBattle() {
     this.battleService.loadBattles();
     //Ens subscrivim als canvis de les batalles per obtenir la batalla actual
-    this.battleService.battles$.subscribe(battles => {
-      const found = battles.find(b => b.id === this.battleId);
-      if (found) {
-        this.battle = found;
-      }
-    });
+    if (!this.battleSub) {
+      this.battleSub = this.battleService.battles$.subscribe(battles => {
+        const found = battles.find(b => b.id === this.battleId);
+        if (found) {
+          this.battle = found;
+          
+          //Si la batalla ha acabat, deixem de fer polling
+          if (this.battle.status === 'completed') {
+            this.stopPolling();
+            this.waitingForOpponent = false;
+          } else if (this.isReady) {
+            //Si ja estem preparats però la batalla no ha acabat, activem el polling
+            this.waitingForOpponent = true;
+            this.startPolling();
+          }
+        }
+      });
+    }
   }
 
   //Carrega els xuxemons sans (sense malalties) de l'usuari autenticat per poder seleccionar-ne un
@@ -76,6 +100,14 @@ export class BattleComponent implements OnInit {
   //Comprova si l'usuari autenticat és el jugador 2 de la batalla
   get isPlayerTwo(): boolean {
     return this.battle?.player_two_id === this.currentUserId;
+  }
+
+  //Comprova si el jugador actual ja ha clicat a lluitar
+  get isReady(): boolean {
+    if (!this.battle) return false;
+    if (this.isPlayerOne) return !!this.battle.player_one_ready;
+    if (this.isPlayerTwo) return !!this.battle.player_two_ready;
+    return false;
   }
 
   //Retorna el nom del rival (snake_case perquè Laravel serialitza així)
@@ -116,18 +148,26 @@ export class BattleComponent implements OnInit {
     });
   }
 
-  //Inicia la batalla (tirada de daus + modificadors + determinar guanyador)
+  //Inicia la batalla (marca com a ready, si els dos ho estan es resol)
   fight() {
     if (!this.battle) return;
     this.loading = true;
 
     this.battleService.fightBattle(this.battleId).subscribe({
       next: (result) => {
-        //Guardem el resultat de la batalla per mostrar-lo a la vista
-        this.battleResult = result;
+        this.loading = false;
+        if (result.waiting) {
+          //L'altre jugador encara no està llest
+          this.waitingForOpponent = true;
+          this.startPolling();
+        } else {
+          //Guardem el resultat de la batalla per mostrar-lo a la vista
+          this.battleResult = result;
+          this.waitingForOpponent = false;
+          this.stopPolling();
+        }
         //Recarreguem les batalles per actualitzar la llista amb el format correcte
         this.battleService.loadBattles();
-        this.loading = false;
       },
       error: (err) => {
         console.error('Error lluitant:', err);
@@ -135,6 +175,21 @@ export class BattleComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  //Inicia un polling cada 3 segons per comprovar si el rival ja ha acceptat lluitar
+  startPolling() {
+    if (this.pollingInterval) return;
+    this.pollingInterval = setInterval(() => {
+      this.battleService.loadBattles();
+    }, 3000);
+  }
+
+  stopPolling() {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
   }
 
   //Torna a la llista de batalles
