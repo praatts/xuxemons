@@ -6,7 +6,7 @@ import { UserService } from '../services/user.service';
 import { Message } from '../../../interfaces/message';
 import { Conversation } from '../../../interfaces/conversation';
 import { Friend } from '../../../interfaces/friend';
-import { EMPTY, Subscription, catchError, switchMap, timer } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 
@@ -23,6 +23,7 @@ export class ChatComponent {
   friends: Friend[] = [];
   messages$;
   conversation$;
+  realTimeMessage$;
   newMessage: string = '';
   subscription = new Subscription();
   messagesPollingSubscription: Subscription | null = null;
@@ -30,10 +31,12 @@ export class ChatComponent {
   messageControl = new FormControl('');
   editingMessageId: number | null = null;
   editingMessageControl = new FormControl('');
+  activeConversationId: number | null = null;
 
   constructor(public chatService: ChatService, private authService: AuthService, private friendshipService: FriendshipService, private userService: UserService) { 
     this.messages$ = this.chatService.messages$;
     this.conversation$ = this.chatService.conversation$;
+    this.realTimeMessage$ = this.chatService.realTimeMessage$;
   }
 
   //Al iniciar el component, es subscriu als canvis de la conversa actual i recupera la id del usuari autenticat.
@@ -43,12 +46,15 @@ export class ChatComponent {
     //Quan canvia la conversa actual, es carrega els missatges d'aquesta conversa.
     this.subscription.add(
       this.conversation$.subscribe(conversation => {
+        if (this.activeConversationId) {
+          this.chatService.unsubscribeFromConversation(this.activeConversationId);
+        }
+
         this.conversation = conversation;
         if (conversation) {
-          this.startMessagesPolling(conversation.id);
-        } else {
-          this.stopMessagesPolling();
-          this.chatService.setMessages([]);
+          this.activeConversationId = conversation.id;
+          this.loadMessages(conversation.id);
+          this.chatService.subscribeToConversation(conversation.id);
         }
       })
     );
@@ -60,39 +66,27 @@ export class ChatComponent {
       })
     );
 
-    //Quan canvia l'estat dels missatges, s'actualitza la llista de missatges de la conversa
     this.subscription.add(
-      this.messages$.subscribe(messages => {
-        this.messages = messages.slice().reverse();
+    this.messages$.subscribe(messages => {
+      this.messages = messages.slice().reverse();
+    })
+  );
+
+    this.subscription.add(
+      this.realTimeMessage$.subscribe(message => {
+        if (!message) return;
+        if (message.conversation_id !== this.activeConversationId) return;
+        this.chatService.addMessage(message);
       })
     );
   }
 
   //Al destruir el component, es desubscriu de tots els observables per evitar fuites de memòria.
   ngOnDestroy() {
-    this.stopMessagesPolling();
+    if (this.activeConversationId) {
+      this.chatService.unsubscribeFromConversation(this.activeConversationId);
+    }
     this.subscription.unsubscribe();
-  }
-
-  //Inicia un refresc periòdic dels missatges per mantenir el xat actualitzat en temps real.
-  startMessagesPolling(conversation_id: number) {
-    this.stopMessagesPolling();
-
-    //Subscripció que cada 1.5s recupera missatges i actualitza els missatges de la conversa actual. 
-    this.messagesPollingSubscription = timer(0, 1500).pipe(
-      switchMap(() => this.chatService.getMessages(conversation_id)),
-      catchError((error) => {
-        return EMPTY; //En cas d'error, no actualitza els missatges
-      })
-    ).subscribe(messages => {
-      this.chatService.setMessages(messages);
-    });
-  }
-
-  //Mètode per aturar el refresc de missatges periòdic.
-  stopMessagesPolling() {
-    this.messagesPollingSubscription?.unsubscribe();
-    this.messagesPollingSubscription = null;
   }
 
   //Carrega els missatges d'una conversa concreta i actualitza l'estat dels missatges a través del servei.
@@ -108,7 +102,8 @@ export class ChatComponent {
     const currentConversation = this.chatService.getConversationValue();
     const content = this.messageControl.value?.trim();
 
-    if (currentConversation && content) {
+    if (!currentConversation || !content) return;
+
       this.chatService.sendMessage(currentConversation.id, content).subscribe({
         next: (message) => {
           const updatedMessages = [...this.chatService.getMessagesValue(), message]; //Afegeix el nou missatge a l'estat actual dels missatges.
@@ -119,7 +114,7 @@ export class ChatComponent {
           console.error('Error enviant missatge:', error);
         }
       });
-    }
+    
   }
 
   //Carrega la llista d'amics de l'usuari autenticat.

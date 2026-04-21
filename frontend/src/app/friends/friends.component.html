@@ -3,7 +3,10 @@
     <!-- TABS -->
     <div class="tabs">
         <button [class.active]="activeTab === 'search'" (click)="activeTab = 'search'">Usuaris</button>
-        <button [class.active]="activeTab === 'requests'" (click)="activeTab = 'requests'">Sol·licituds</button>
+        <button [class.active]="activeTab === 'requests'" (click)="activeTab = 'requests'">Sol·licituds <span class="badge"> 
+            @if (pendingRequestsCount > 0) {
+                {{ pendingRequestsCount }}
+            }</span></button>
         <button [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'">Amics</button>
     </div>
 
@@ -84,13 +87,16 @@
         @if(friends.length === 0) {
         <p class="no-results">Encara no tens amics</p>
         }
-        @for(friend of friends; track friend.friend_id) {
+        @for(friend of friends; track friend.id) {
         <div class="card">
             <div class="card-info">
                 <p class="card-name">{{ friend.name }}</p>
                 <p class="card-player-id">{{ friend.player_id }}</p>
             </div>
-            <button class="action-btn reject" (click)="deleteFriend(friend.friendship_id!)">Eliminar</button>
+            <div class="card-actions">
+                <button class="action-btn" (click)="sendBattleRequest(friend.id)">Batalla</button>
+                <button class="action-btn reject" (click)="deleteFriend(friend.friendship_id!)">Eliminar</button>
+            </div>
         </div>
         }
     </div>

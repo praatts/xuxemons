@@ -5,6 +5,7 @@ import { FriendshipService } from '../services/friendship.service';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ThemeService } from '../services/theme.service';
+import { BattleService } from '../services/battle.service';
 
 @Component({
   selector: 'app-friends',
@@ -24,7 +25,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
   searchControl = new FormControl('');
   private subscriptions = new Subscription(); // Subscripcions per gestionar els observables i evitar "memory leaks" quan el component es destrueix.
 
-  constructor(private friendshipService: FriendshipService, public theme: ThemeService) { }
+  constructor(private friendshipService: FriendshipService, private battleService: BattleService, public theme: ThemeService) { }
   @HostBinding('class.dark-mode')
   get darkMode() {
     return this.theme.darkMode;
@@ -68,7 +69,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
     );
   }
 
-  
   ngOnDestroy() {
     //Atura el polling i les suscripcions per evitar crides innecessàries al canviar/destruir el component.
     this.friendshipService.stopPolling();
@@ -128,6 +128,11 @@ export class FriendsComponent implements OnInit, OnDestroy {
 
   //Elimina una amistat existent entre l'usuari autenticat i un altre usuari, mostrant un missatge d'èxit o error
   deleteFriend(friend_id: number) {
+    const shouldDelete = window.confirm('Estàs segur que vols eliminar aquest amic?');
+    if (!shouldDelete) {
+      return;
+    }
+
     this.friendshipService.deleteFriend(friend_id).subscribe({
       next: () => {
         alert('Amic eliminat correctament!');
@@ -144,5 +149,24 @@ export class FriendsComponent implements OnInit, OnDestroy {
       },
       error: (err) => console.log('Error revocant sol·licitud:', err)
     });
+  }
+
+  //Envia una petició de batalla a un amic des de la llista d'amics.
+  sendBattleRequest(friendUserId: number) {
+    this.battleService.createBattleRequest(friendUserId).subscribe({
+      next: () => {
+        alert('Petició de batalla enviada!');
+      },
+      error: (err) => {
+        const message = err?.error?.error || 'Error enviant petició de batalla';
+        console.log('Error enviant petició de batalla:', err);
+        alert(message);
+      }
+    });
+  }
+
+  //Mètode auxiliar per mostrar el número de sol·licituts pendents a un badge
+  get pendingRequestsCount(): number {
+    return this.requests.length;
   }
 }
