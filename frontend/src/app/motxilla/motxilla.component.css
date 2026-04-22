@@ -166,11 +166,11 @@ p {
 }
 
 .delete-item::before {
-    background: url('/basura.png') center / contain no-repeat;
+    background: url('/basura.webp') center / contain no-repeat;
 }
 
 .use-item::before {
-    background: url('/seleccionar.png') center / contain no-repeat;
+    background: url('/seleccionar.webp') center / contain no-repeat;
 }
 
 .item-actions .delete-item {

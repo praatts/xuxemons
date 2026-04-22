@@ -1,6 +1,6 @@
 <section class="container">
     <nav class="search-wrapper">
-        <img src="search-icon.png" alt="Icono de búsqueda">
+        <img src="search-icon.webp" alt="Icono de búsqueda">
         <input type="text" for="pokemon" [formControl]="searchXuxemon" placeholder="Cerca un xuxemon...">
         <select id="elements" #elementSelect (change)="filterXuxemonsByElement(elementSelect.value)"
             for="xuxemons-elements">
@@ -31,25 +31,25 @@
             role="gridcell">
             <div class="card-icons">
                 @if(xuxemon.illnesses && xuxemon.illnesses.length > 0) {
-                <img src="sick.png" alt="Xuxemon malalt" class="card-icon">
+                <img src="sick.webp" alt="Xuxemon malalt" class="card-icon">
                 }
                 @if(xuxemon.owned && xuxemon.size === 'gran') {
-                <img src="gran.png" alt="Forma gran" class="card-icon">
+                <img src="gran.webp" alt="Forma gran" class="card-icon">
                 } @else if(xuxemon.owned && xuxemon.size === 'mitja') {
-                <img src="mitja.png" alt="Forma mitjana" class="card-icon">
+                <img src="mitja.webp" alt="Forma mitjana" class="card-icon">
                 }
             </div>
             @if(!xuxemon.owned) {
             <h2>???</h2>
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
             <p class="xuxemon-status">No Capturat</p>
-            <img [src]="'xuxemons/' + xuxemon.id + '.png'" alt="Xuxemon desconegut">
+            <img [src]="'xuxemons/' + xuxemon.id + '.webp'" alt="Xuxemon desconegut">
             <span class="xuxemon-base"></span>
             } @else {
             <h2>{{ xuxemon.name }}</h2>
             <p class="text-secondary">{{ alterXuxemonId(xuxemon.id) }}</p>
             <p class="xuxemon-status">Capturat</p>
-            <img [src]="'xuxemons/' + xuxemon.id + '.png'" [alt]="xuxemon.name">
+            <img [src]="'xuxemons/' + xuxemon.id + '.webp'" [alt]="xuxemon.name">
             <span class="xuxemon-base"></span>
             }
         </article>
@@ -104,16 +104,16 @@
 
         <div class="modal-icons">
             @if(selectedXuxemon.illnesses && selectedXuxemon.illnesses.length > 0) {
-            <img src="sick.png" alt="Malalt" class="modal-icon">
+            <img src="sick.webp" alt="Malalt" class="modal-icon">
             }
             @if(selectedXuxemon.size === 'gran') {
-            <img src="gran.png" alt="Forma gran" class="modal-icon">
+            <img src="gran.webp" alt="Forma gran" class="modal-icon">
             } @else if(selectedXuxemon.size === 'mitja') {
-            <img src="mitja.png" alt="Forma mitjana" class="modal-icon">
+            <img src="mitja.webp" alt="Forma mitjana" class="modal-icon">
             }
         </div>
         <h2>{{ selectedXuxemon.name }}</h2>
-        <img [src]="'xuxemons/' + selectedXuxemon.id + '.png'" class="detail-img">
+        <img [src]="'xuxemons/' + selectedXuxemon.id + '.webp'" class="detail-img">
         <p><strong>Tipus:</strong> {{ selectedXuxemon.type }}</p>
         <p><strong>Mida:</strong> <span [class.evolving]="isEvolving">{{ selectedXuxemon.size }}</span></p>
 

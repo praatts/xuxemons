@@ -2,7 +2,7 @@
     <div class="search-wrapper">
 
         <div class="search-bar">
-            <img src="search-icon.png" alt="Icono de búsqueda">
+            <img src="search-icon.webp" alt="Icono de búsqueda">
             <input type="text" for="pokemon" placeholder="Cerca un object..." [formControl]="searchControl">
         </div>
 
@@ -11,7 +11,7 @@
             <!-- INFO ITEM -->
             @if (activeView === 'items' && selectedSlot) {
             <h2>{{ selectedSlot.item.name }}</h2>
-            <img [src]="'items/' + selectedSlot.item.id + '.png'" [alt]="selectedSlot.item.name" class="item-icon">
+            <img [src]="'items/' + selectedSlot.item.id + '.webp'" [alt]="selectedSlot.item.name" class="item-icon">
             <span class="item-base"></span>
 
             <div class="item-stats-wrapper">
@@ -73,7 +73,7 @@
             <div class="items" role="grid">
                 @for (slot of filteredMotxilla; track $index; let i = $index) {
                 <div class="item-card" role="gridcell" [ngClass]="{'active': selectedIndex === i}" (click)="selectSlot(slot, i)">
-                    <img [src]="'items/' + slot.item.id + '.png'" [alt]="slot.item.name" class="item-icon">
+                    <img [src]="'items/' + slot.item.id + '.webp'" [alt]="slot.item.name" class="item-icon">
                     <p class="item-name">{{ slot.item.name }}</p>
                     @if (slot.item.stackable) {
                     <p class="amount-item">X{{ slot.quantity }}</p>
@@ -110,7 +110,7 @@
             @for (item of availableItems; track item.id) {
             <div class="modal-item-card" [class.active]="selectedItem?.id === item.id"
                 (click)="selectedItemOnModal(item)">
-                <img [src]="'items/' + item.id + '.png'" [alt]="item.name" class="item-icon">
+                <img [src]="'items/' + item.id + '.webp'" [alt]="item.name" class="item-icon">
                 <p class="item-name">{{ item.name }}</p>
 
                 @if (selectedItem?.id === item.id) {

@@ -1,6 +1,6 @@
 <div class="panel-container" [ngClass]="{'dark-mode': theme.darkMode}">
   <nav class="panel-menu">
-    <img src="logo_xuxemons.png" alt="Xuxemons Logo" class="logo-img">
+    <img src="logo_xuxemons.webp" alt="Xuxemons Logo" class="logo-img">
     <div class="link-wrapper">
       @for(ruta of rutas; track ruta.label){
       <div class="link-nav">
@@ -14,7 +14,7 @@
     </div>
 
     <div class="dark-toggle">
-      <img [src]="theme.darkMode ? 'dark-mode/whitemode.png' : 'modo_oscuro.png'" alt="modo oscuro icon">
+      <img [src]="theme.darkMode ? 'dark-mode/whitemode.webp' : 'modo_oscuro.webp'" alt="modo oscuro icon">
       <span class="dark-text">Mode fosc</span>
       <label class="switch">
         <input type="checkbox" [checked]="theme.darkMode" (change)="theme.toggleDarkMode()">
@@ -29,7 +29,7 @@
       </div>
 
       <a (click)="logout()">
-        <img [src]="theme.darkMode ? 'dark-mode/logout.png' : 'logout.png'" alt="Logout" class="logout-icon">
+        <img [src]="theme.darkMode ? 'dark-mode/logout.webp' : 'logout.webp'" alt="Logout" class="logout-icon">
       </a>
     </div>
   </nav>

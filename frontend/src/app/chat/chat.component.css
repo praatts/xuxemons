@@ -323,7 +323,7 @@ p {
     width: 14px;
     height: 14px;
     display: inline-block;
-    background: url('/dark-mode/basura-blanca.png') no-repeat center;
+    background: url('/dark-mode/basura-blanca.webp') no-repeat center;
     background-size: contain;
 }
 
@@ -331,7 +331,7 @@ p {
     width: 14px;
     height: 14px;
     display: inline-block;
-    background: url('/dark-mode/edit-white.png') no-repeat center;
+    background: url('/dark-mode/edit-white.webp') no-repeat center;
     background-size: contain;
 }
 
