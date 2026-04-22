@@ -19,9 +19,11 @@
 			<h3>{{ myName }}</h3>
 			<div class="xuxemon-display">
 				@if(isPlayerOne && battle.xuxemon_one_name) {
+				<img class="arena-xuxemon-img" [src]="'xuxemons/' + battle.xuxemon_one?.xuxemon?.id + '.webp'" alt="{{ battle.xuxemon_one_name }}">
 				<p class="xuxemon-name">{{ battle.xuxemon_one_name }}</p>
 				<p class="xuxemon-detail">{{ getTypeLabel(battle.xuxemon_one_type || '') }} · {{ getSizeLabel(battle.xuxemon_one_size || '') }}</p>
 				} @else if(isPlayerTwo && battle.xuxemon_two_name) {
+				<img class="arena-xuxemon-img" [src]="'xuxemons/' + battle.xuxemon_two?.xuxemon?.id + '.webp'" alt="{{ battle.xuxemon_two_name }}">
 				<p class="xuxemon-name">{{ battle.xuxemon_two_name }}</p>
 				<p class="xuxemon-detail">{{ getTypeLabel(battle.xuxemon_two_type || '') }} · {{ getSizeLabel(battle.xuxemon_two_size || '') }}</p>
 				} @else {
@@ -40,9 +42,11 @@
 			<h3>{{ opponentName }}</h3>
 			<div class="xuxemon-display">
 				@if(isPlayerOne && battle.xuxemon_two_name) {
+				<img class="arena-xuxemon-img" [src]="'xuxemons/' + battle.xuxemon_two?.xuxemon?.id + '.webp'" alt="{{ battle.xuxemon_two_name }}">
 				<p class="xuxemon-name">{{ battle.xuxemon_two_name }}</p>
 				<p class="xuxemon-detail">{{ getTypeLabel(battle.xuxemon_two_type || '') }} · {{ getSizeLabel(battle.xuxemon_two_size || '') }}</p>
 				} @else if(isPlayerTwo && battle.xuxemon_one_name) {
+				<img class="arena-xuxemon-img" [src]="'xuxemons/' + battle.xuxemon_one?.xuxemon?.id + '.webp'" alt="{{ battle.xuxemon_one_name }}">
 				<p class="xuxemon-name">{{ battle.xuxemon_one_name }}</p>
 				<p class="xuxemon-detail">{{ getTypeLabel(battle.xuxemon_one_type || '') }} · {{ getSizeLabel(battle.xuxemon_one_size || '') }}</p>
 				} @else {
@@ -81,8 +85,8 @@
 			<!-- Daus i modificadors del jugador 1 -->
 			<div class="result-player">
 				<p class="result-name">{{ battle.player_one?.name || 'Jugador 1' }}</p>
-				<p class="result-dice">🎲 Dau: {{ battle.dice_player_one }}</p>
-				<p class="result-mod">📊 Modificador: {{ battle.modifier_player_one }}</p>
+				<p class="result-dice">Dau: {{ battle.dice_player_one }}</p>
+				<p class="result-mod">Modificador: {{ battle.modifier_player_one }}</p>
 				<p class="result-total">Total: {{ (battle.dice_player_one || 0) + (battle.modifier_player_one || 0) }}</p>
 			</div>
 
@@ -91,17 +95,17 @@
 			<!-- Daus i modificadors del jugador 2 -->
 			<div class="result-player">
 				<p class="result-name">{{ battle.player_two?.name || 'Jugador 2' }}</p>
-				<p class="result-dice">🎲 Dau: {{ battle.dice_player_two }}</p>
-				<p class="result-mod">📊 Modificador: {{ battle.modifier_player_two }}</p>
+				<p class="result-dice">Dau: {{ battle.dice_player_two }}</p>
+				<p class="result-mod">Modificador: {{ battle.modifier_player_two }}</p>
 				<p class="result-total">Total: {{ (battle.dice_player_two || 0) + (battle.modifier_player_two || 0) }}</p>
 			</div>
 		</div>
 
 		<!-- Guanyador o empat -->
 		@if(battleResult?.draw || (battle.winner_id === null && battle.status === 'completed')) {
-		<p class="winner-text draw">🤝 Empat! No hi ha guanyador.</p>
+		<p class="winner-text draw">Empat! No hi ha guanyador.</p>
 		} @else if(battle.winner) {
-		<p class="winner-text">🏆 Guanyador: {{ battle.winner.name }}</p>
+		<p class="winner-text">Guanyador: {{ battle.winner.name }}</p>
 		<p class="stolen-text">El guanyador ha robat un Xuxemon al perdedor!</p>
 		}
 	</div>
@@ -123,6 +127,7 @@
 				 [class.selected]="selectedXuxemonId === xuxemon.owned_xuxemon_id"
 				 (click)="selectXuxemon(xuxemon)">
 				<p class="xuxemon-card-name">{{ xuxemon.name }}</p>
+				<img class="xuxemon-card-image" [src]="'xuxemons/' + xuxemon.id + '.webp'" alt="{{ xuxemon.name }}">
 				<p class="xuxemon-card-type">{{ getTypeLabel(xuxemon.type) }}</p>
 				<p class="xuxemon-card-size">{{ getSizeLabel(xuxemon.size) }}</p>
 			</div>

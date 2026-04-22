@@ -53,6 +53,7 @@ export class BattleComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    //Desuscrivim del canal Pusher i de les subscripcions al canviar de component
     this.battleService.unsubscribeFromBattleChannel(this.battleId);
     if (this.battleSubBattles) {
       this.battleSubBattles.unsubscribe();
@@ -68,10 +69,11 @@ export class BattleComponent implements OnInit, OnDestroy {
     //Ens subscrivim als canvis de les batalles per obtenir la batalla actual
     if (!this.battleSubBattles) {
       this.battleSubBattles = this.battleService.battles$.subscribe(battles => {
+        //Busquem a la llista de batalles la que coincideixi amb l'ID de la batalla actual
         const found = battles.find(b => b.id === this.battleId);
         if (found) {
-          this.battle = found;
-          
+          this.battle = found; //Asignem la batalla trobada
+          //Comprovem primer si està completada perquè si és així ja tenim el resultat i no cal esperar a que l'altre jugador estigui ready
           if (this.battle.status === 'completed') {
             this.waitingForOpponent = false;
             this.refreshOwnedXuxemons();
@@ -99,7 +101,7 @@ export class BattleComponent implements OnInit, OnDestroy {
     this.xuxemonsService.getOwnedXuxemons().subscribe({
       next: (xuxemons) => {
         this.xuxemonsService.setOwnedXuxemons(xuxemons);
-        this.myXuxemons = xuxemons.filter(x => !x.illnesses || x.illnesses.length === 0);
+        this.myXuxemons = xuxemons.filter(x => !x.illnesses || x.illnesses.length === 0); //Filtrem per xuxemons amb el camp 'illnesses' buit o no definit (sans)
       },
       error: (err) => console.error('Error refrescant xuxemons:', err)
     });
@@ -110,6 +112,7 @@ export class BattleComponent implements OnInit, OnDestroy {
     this.battleService.subscribeToBattleChannel(this.battleId);
     this.battleSocketSub = this.battleService.battleSocketUpdate$.subscribe((battle: Battle) => {
       this.battle = battle;
+      //Si la batalla ja està completada, guardem el resultat per mostrar-lo a la vista i refresquem els xuxemons propietat de l'usuari (ja que es perd/guanya el xuxemon seleccionat)
       if (battle.status === 'completed') {
         this.battleResult = battle;
         this.waitingForOpponent = false;
@@ -130,15 +133,16 @@ export class BattleComponent implements OnInit, OnDestroy {
 
   //Comprova si el jugador actual ja ha clicat a lluitar
   get isReady(): boolean {
-    if (!this.battle) return false;
-    if (this.isPlayerOne) return !!this.battle.player_one_ready;
-    if (this.isPlayerTwo) return !!this.battle.player_two_ready;
+    if (!this.battle) return false; //Si no tenim la batalla carregada, no comença la batalla
+    if (this.isPlayerOne) return !!this.battle.player_one_ready; //Si som el jugador 1, comprovem si està llest
+    if (this.isPlayerTwo) return !!this.battle.player_two_ready; //Si som el jugador 2, comprovem si està llest
     return false;
   }
 
-  //Retorna el nom del rival (snake_case perquè Laravel serialitza així)
+  //Retorna el nom del rival (snake_case perquè Laravel guarda així el nom del jugador rival a la batalla) o "Rival" si no està disponible
   get opponentName(): string {
     if (!this.battle) return 'Rival';
+    //Si som el jugador 1, el rival és el jugador 2, i viceversa
     if (this.isPlayerOne) {
       return this.battle.player_two?.name || 'Rival';
     } else {
@@ -149,6 +153,7 @@ export class BattleComponent implements OnInit, OnDestroy {
   //Retorna el nom de l'usuari autenticat
   get myName(): string {
     if (!this.battle) return 'Tu';
+    //Si som el jugador 1, el nostre nom és el del jugador 1, i viceversa
     if (this.isPlayerOne) {
       return this.battle.player_one?.name || 'Tu';
     } else {
@@ -181,12 +186,12 @@ export class BattleComponent implements OnInit, OnDestroy {
 
     this.battleService.fightBattle(this.battleId).subscribe({
       next: (result) => {
-        this.loading = false;
+        this.loading = false; //Desactivem el loading un cop rebem la resposta del backend
         if (result.waiting) {
           //L'altre jugador encara no està llest — el socket Pusher notificarà quan estigui llest
           this.waitingForOpponent = true;
         } else {
-          //Guardem el resultat de la batalla per mostrar-lo a la vista
+          //Guardem el resultat de la batalla per mostrar-lo a la vista i refresquem els xuxemons propietat de l'usuari (ja que es perd/guanya el xuxemon seleccionat)
           this.battleResult = result;
           this.waitingForOpponent = false;
           this.refreshOwnedXuxemons();

@@ -97,6 +97,14 @@
 	gap: 4px;
 }
 
+.arena-xuxemon-img,
+.xuxemon-card-image {
+	width: 100px;
+	height: 100px;
+	object-fit: contain;
+	image-rendering: pixelated;
+}
+
 .xuxemon-name {
 	font-weight: bold;
 	font-size: 16px;

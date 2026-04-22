@@ -21,7 +21,8 @@ export class BattleService {
     this.battles$ = this.battlesSubject.asObservable();
   }
 
-  //Subscriu al canal privat de la batalla per rebre actualitzacions en temps real.
+  //Subscriu al canal privat de la batalla per rebre actualitzacions en t
+  // emps real.
   //Quan arriba un event, actualitza el BehaviorSubject de batalles i emet per battleSocketUpdate$
   subscribeToBattleChannel(battleId: number): void {
     const echo = this.socketService.getEcho();
