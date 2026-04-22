@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Message } from '../../../interfaces/message';
 import { Conversation } from '../../../interfaces/conversation';
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+import { SocketService } from './socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +11,6 @@ import Pusher from 'pusher-js';
 export class ChatService {
 
   private apiUrl = 'http://localhost:8000/api';
-  private echo: Echo<any> | null = null;
 
   private messagesSubject = new BehaviorSubject<Message[]>([]);
   private conversationSubject = new BehaviorSubject<Conversation | null>(null);
@@ -21,33 +19,10 @@ export class ChatService {
   public conversation$;
   public realTimeMessage$;
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private socketService: SocketService) { 
     this.messages$ = this.messagesSubject.asObservable();
     this.conversation$ = this.conversationSubject.asObservable();
     this.realTimeMessage$ = this.realTimeMessageSubject.asObservable();
-  }
-
-  private initializeEcho(): boolean {
-    const token = localStorage.getItem('access_token');
-    if (!token) return false;
-    if (this.echo) return true;
-
-    //Inicialitza Laravel Echo, utilitzant Pusher per broadcasting (https://pusher.com/).
-    (window as any).Pusher = Pusher;
-    this.echo = new Echo({
-      broadcaster: 'pusher',
-      key: '8a9ee89cc6e88037db28',
-      cluster: 'eu',
-      forceTLS: true,
-      authEndpoint: 'http://localhost:8000/broadcasting/auth',
-      auth: {
-        headers: {
-          Authorization: `Bearer ${token}` //Afegim token de l'usuari autenticat per validar les converses a les que té accés.
-        }
-      }
-    });
-
-    return true;
   }
   
 
@@ -103,9 +78,10 @@ export class ChatService {
 
   //Mètode per escoltar els missatges nous que arriben a la conversa actual, així com les actualitzacions i eliminacions de missatges existents.
   subscribeToConversation(conversation_id: number) {
-    if (!this.initializeEcho() || !this.echo) return;
+    const echo = this.socketService.getEcho();
+    if (!echo) return;
 
-    this.echo.private(`chat.${conversation_id}`) //escolta el event MessageSent del backend
+    echo.private(`chat.${conversation_id}`) //escolta el event MessageSent del backend
       .listen('.message.sent', (event: any) => {
         this.realTimeMessageSubject.next(event.message); //Actualitza el missatge rebut en temps real.
       })
@@ -133,14 +109,11 @@ export class ChatService {
 
   //Mètode per deixar d'escoltar els missatges nous de la conversa actual.
   unsubscribeFromConversation(conversation_id: number) {
-    if (!this.echo) {
-      return;
-    }
-    this.echo.leave(`chat.${conversation_id}`);
+    this.socketService.leaveChannel(`chat.${conversation_id}`);
   }
 
   //Mètode per obtenir el socket ID, s'utilitza al interceptor per afegir-lo a les peticions d'edició i eliminació de missatges.
   getSocketId(): string | null {
-    return this.echo?.socketId() ?? null;
+    return this.socketService.getSocketId();
   }
 }

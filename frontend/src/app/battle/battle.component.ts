@@ -24,7 +24,8 @@ export class BattleComponent implements OnInit, OnDestroy {
   loading = false; //Indicador de càrrega per botons
   
   waitingForOpponent = false; //Indica si estem esperant que el rival cliqui a lluitar
-  private battleSub: Subscription | null = null;
+  private battleSubBattles: Subscription | null = null; //Subscripció al BehaviorSubject de batalles
+  private battleSocketSub: Subscription | null = null; //Subscripció al Subject de socket
 
   constructor(
     private route: ActivatedRoute,
@@ -53,8 +54,11 @@ export class BattleComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.battleService.unsubscribeFromBattleChannel(this.battleId);
-    if (this.battleSub) {
-      this.battleSub.unsubscribe();
+    if (this.battleSubBattles) {
+      this.battleSubBattles.unsubscribe();
+    }
+    if (this.battleSocketSub) {
+      this.battleSocketSub.unsubscribe();
     }
   }
 
@@ -62,8 +66,8 @@ export class BattleComponent implements OnInit, OnDestroy {
   loadBattle() {
     this.battleService.loadBattles();
     //Ens subscrivim als canvis de les batalles per obtenir la batalla actual
-    if (!this.battleSub) {
-      this.battleSub = this.battleService.battles$.subscribe(battles => {
+    if (!this.battleSubBattles) {
+      this.battleSubBattles = this.battleService.battles$.subscribe(battles => {
         const found = battles.find(b => b.id === this.battleId);
         if (found) {
           this.battle = found;
@@ -103,13 +107,13 @@ export class BattleComponent implements OnInit, OnDestroy {
 
   //Subscriu el component al canal Pusher de la batalla per rebre el resultat en temps real sense polling
   subscribeToBattleSocket() {
-    this.battleService.subscribeToBattleChannel(this.battleId, (battle: Battle) => {
+    this.battleService.subscribeToBattleChannel(this.battleId);
+    this.battleSocketSub = this.battleService.battleSocketUpdate$.subscribe((battle: Battle) => {
       this.battle = battle;
       if (battle.status === 'completed') {
         this.battleResult = battle;
         this.waitingForOpponent = false;
         this.refreshOwnedXuxemons();
-        this.battleService.loadBattles();
       }
     });
   }

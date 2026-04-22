@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Battle } from '../../../interfaces/battle';
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+import { SocketService } from './socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,49 +12,32 @@ export class BattleService {
   private apiUrl = 'http://localhost:8000/api';
   private battlesSubject = new BehaviorSubject<Battle[]>([]);
   public battles$;
-  private echo: Echo<any> | null = null;
 
-  constructor(private http: HttpClient) { 
+  //Subject que emet la batalla actualitzada quan arriba un event de socket
+  private battleSocketUpdateSubject = new Subject<Battle>();
+  public battleSocketUpdate$ = this.battleSocketUpdateSubject.asObservable();
+
+  constructor(private http: HttpClient, private socketService: SocketService) { 
     this.battles$ = this.battlesSubject.asObservable();
   }
 
-  //Inicialitza Laravel Echo amb Pusher per escoltar events de batalla en temps real
-  private initializeEcho(): boolean {
-    const token = localStorage.getItem('access_token');
-    if (!token) return false;
-    if (this.echo) return true;
+  //Subscriu al canal privat de la batalla per rebre actualitzacions en temps real.
+  //Quan arriba un event, actualitza el BehaviorSubject de batalles i emet per battleSocketUpdate$
+  subscribeToBattleChannel(battleId: number): void {
+    const echo = this.socketService.getEcho();
+    if (!echo) return;
 
-    (window as any).Pusher = Pusher;
-    this.echo = new Echo({
-      broadcaster: 'pusher',
-      key: '8a9ee89cc6e88037db28',
-      cluster: 'eu',
-      forceTLS: true,
-      authEndpoint: 'http://localhost:8000/broadcasting/auth',
-      auth: {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    });
-
-    return true;
-  }
-
-  //Subscriu el component al canal privat de la batalla per rebre actualitzacions en temps real
-  subscribeToBattleChannel(battleId: number, callback: (battle: Battle) => void): void {
-    if (!this.initializeEcho() || !this.echo) return;
-
-    this.echo.private(`battle.${battleId}`)
+    echo.private(`battle.${battleId}`)
       .listen('.battle.updated', (data: any) => {
-        callback(data.battle);
+        const battle: Battle = data.battle;
+        this.loadBattles();
+        this.battleSocketUpdateSubject.next(battle);
       });
   }
 
   //Cancel·la la subscripció al canal de la batalla
   unsubscribeFromBattleChannel(battleId: number): void {
-    if (!this.echo) return;
-    this.echo.leave(`battle.${battleId}`);
+    this.socketService.leaveChannel(`battle.${battleId}`);
   }
 
   //Mètode que carrega les battalles de l'usuari autenticat i les actualitza al BehaviorSubject.
