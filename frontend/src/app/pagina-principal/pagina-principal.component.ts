@@ -15,5 +15,13 @@ import { Notification } from '../../../interfaces/notification';
   styleUrl: './pagina-principal.component.css'
 })
 export class PaginaPrincipalComponent {
-  
+  usuario: any;
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getUser().subscribe((data: any) => {
+      this.usuario = data;
+    });
+  }
 }
