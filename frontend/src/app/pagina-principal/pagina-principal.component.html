@@ -1,8 +1,10 @@
 <router-outlet></router-outlet>
-@if (router.url === '/main/principal') {
+<div class="caja-central">
+    @if (router.url === '/main/principal') {
     <h2>
         @if(usuario){
             Bienvenido usuario, {{usuario.name}}
         }
     </h2>
-}
+    }
+</div>
