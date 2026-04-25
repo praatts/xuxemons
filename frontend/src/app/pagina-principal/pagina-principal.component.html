@@ -1,6 +1,8 @@
 <router-outlet></router-outlet>
-<h2>
-    @if(usuario){
-        Bienvenido usuario, {{usuario.name}}
-    }
-</h2>
+@if (router.url === '/main/principal') {
+    <h2>
+        @if(usuario){
+            Bienvenido usuario, {{usuario.name}}
+        }
+    </h2>
+}

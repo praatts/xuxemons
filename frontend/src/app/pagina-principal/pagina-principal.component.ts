@@ -17,7 +17,7 @@ import { Notification } from '../../../interfaces/notification';
 export class PaginaPrincipalComponent {
   usuario: any;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, public router: Router) {}
 
   ngOnInit(): void {
     this.userService.getUser().subscribe((data: any) => {
