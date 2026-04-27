@@ -48,9 +48,9 @@
     <div class="link-wrapper">
       @for(ruta of rutas; track ruta.label){
       <div class="link-nav">
-        <img [src]="theme.darkMode ? 'dark-mode/' + ruta.img : ruta.img" alt="{{ruta.label}} icon">
         <a routerLink="{{ruta.route}}" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}"
           (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
+          <img [src]="theme.darkMode ? 'dark-mode/' + ruta.img : ruta.img" alt="{{ruta.label}} icon">
           {{ruta.label}}
         </a>
       </div>

@@ -10,7 +10,8 @@
 
 .panel-container {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   background-color: #ffaf92;
 }
 
@@ -39,6 +40,10 @@
 }
 
 .link-wrapper .link-nav {
+  width: 100%;
+}
+
+.link-wrapper .link-nav a {
   display: flex;
   align-items: center;
   gap: 15px;

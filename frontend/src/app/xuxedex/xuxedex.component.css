@@ -45,6 +45,7 @@
     min-width: 0;
     min-height: 0;
     box-sizing: border-box;
+    flex: 1 1 auto;
     height: 100%;
 }
 
@@ -440,6 +441,10 @@
     padding: 10px 20px;
     cursor: pointer;
     margin-top: 10px;
+}
+
+.action-btn {
+    background-color: var(--bg-select);
 }
 
 .action-btn.active {
