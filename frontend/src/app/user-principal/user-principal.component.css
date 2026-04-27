@@ -392,3 +392,28 @@ input:checked+.slider::before {
     color: #e5e5e5;
   }
 }
+
+@media (max-width: 576px) {
+  .top-navbar {
+    flex-wrap: nowrap;
+    padding: 6px 10px;
+  }
+
+  .logo-img-top {
+    height: 36px;
+  }
+
+  .top-right {
+    gap: 8px;
+  }
+
+  .top-navbar .user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .dark-toggle-top img {
+    width: 22px;
+    height: 22px;
+  }
+}
