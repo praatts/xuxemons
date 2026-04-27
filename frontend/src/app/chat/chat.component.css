@@ -134,11 +134,31 @@ p {
     flex-direction: column;
     gap: 20px;
     border-radius: 30px;
-    background-color: rgba(255, 213, 197, 0.5);
+    background-color: #FFD9A3;
     border: 1px solid var(--text-main);
     padding: 20px;
     box-sizing: border-box;
     height: calc(100vh - 100px);
+}
+
+.chat-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.chat-container.chat-modal {
+    width: min(920px, 100%);
+    height: calc(100vh - 24px);
+    max-height: calc(100vh - 24px);
+    border-radius: 20px;
+    padding: 16px;
 }
 
 .conversation-header h2 {
@@ -147,6 +167,24 @@ p {
     font-weight: bold;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 10px;
+}
+
+.conversation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.close-modal-btn {
+    border: none;
+    border-radius: 999px;
+    background-color: var(--bg-send-button);
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
 }
 
 /* ── Missatges ── */
@@ -346,9 +384,58 @@ p {
 }
 
 @media (max-width: 992px) {
+    .main-layout {
+        padding: 16px 12px;
+        gap: 14px;
+    }
+
+    .sidebar-friend {
+        width: 100%;
+    }
+
+    .sidebar-title h3 {
+        font-size: 28px;
+    }
+
+    .friends-list {
+        height: calc(100vh - 210px);
+        border-radius: 20px;
+        padding: 8px;
+    }
+
+    .chat-container {
+        width: 100%;
+    }
+
     .message-bubble {
         max-width: 86%;
         min-width: 180px;
+    }
+}
+
+@media (max-width: 576px) {
+    .chat-container.chat-modal {
+        border-radius: 16px;
+        padding: 12px;
+    }
+
+    .conversation-header h2 {
+        font-size: 18px;
+    }
+
+    .close-modal-btn {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+
+    .input-group {
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .send-button {
+        padding: 10px 14px;
+        font-size: 12px;
     }
 }
 

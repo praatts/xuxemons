@@ -19,6 +19,7 @@
         </div>
     </div>
 
+    @if (!isMobileView) {
     <div class="chat-container">
         @if (conversation) {
         <div class="conversation-header">
@@ -114,4 +115,98 @@
         </div>
         }
     </div>
+    } @else {
+        @if (conversation) {
+        <div class="chat-modal-overlay" (click)="closeConversation()">
+            <div class="chat-container chat-modal" (click)="$event.stopPropagation()">
+                <div class="conversation-header">
+                    <h2>Chat amb ???</h2> <!-- Afegir nom usuari -->
+                    <button class="close-modal-btn" type="button" (click)="closeConversation()">Tancar</button>
+                </div>
+                <div class="messages-container">
+                    @for (message of messages; track message.id) {
+                    <div class="message" [ngClass]="{
+                    'my-message': message.sender_id === sender_id,
+                    'received-message': message.sender_id !== sender_id
+                  }">
+                        <div class="message-bubble">
+                            @if (message.deleted) {
+                            <p class="deleted-message">Aquest missatge ha estat eliminat.</p>
+                            } @else {
+                            @if (isEditingMessage(message)) {
+                            <div class="inline-edit">
+                                <input
+                                    class="inline-edit-input"
+                                    type="text"
+                                    [formControl]="editingMessageControl"
+                                    (keyup.enter)="saveEditedMessage(message)"
+                                    placeholder="Edita el missatge...">
+                                <div class="inline-edit-actions">
+                                    <button
+                                        class="inline-edit-button save"
+                                        type="button"
+                                        [disabled]="!(editingMessageControl.value?.trim())"
+                                        (click)="saveEditedMessage(message)">
+                                        Guardar
+                                    </button>
+                                    <button
+                                        class="inline-edit-button cancel"
+                                        type="button"
+                                        (click)="cancelEditingMessage()">
+                                        Cancel.lar
+                                    </button>
+                                </div>
+                            </div>
+                            } @else {
+                            <p>{{ message.content }}</p>
+                            }
+                            }
+                            <div class="message-meta">
+                                @if (!message.deleted) {
+                                    @if (message.created_at != message.updated_at) {
+                                        <span class="message-time">{{ formatRelativeTime(message.updated_at) }} (editat)</span>
+                                    } @else {
+                                        <span class="message-time">{{ formatRelativeTime(message.created_at) }}</span>
+                                    }
+                                }
+                                @if (canModifyMessage(message) && !isEditingMessage(message)) {
+                                <div class="message-actions">
+                                    <button class="message-action edit" type="button" (click)="startEditingMessage(message)" title="Editar missatge">
+                                        <span aria-hidden="true"></span>
+                                    </button>
+                                    <button class="message-action delete" type="button" (click)="deleteMessage(message.id)" title="Eliminar missatge">
+                                        <span aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    } @empty {
+                    <div class="empty-chat">
+                        <p>No hi ha missatges en aquesta conversa.</p>
+                    </div>
+                    }
+                </div>
+
+                <div class="chat-input-box">
+                <div class="input-group">
+                  <input 
+                    type="text" 
+                    [formControl]="messageControl" 
+                    (keyup.enter)="sendMessage()"  
+                    placeholder="Escriu el teu missatge aquí..."> <!-- permet enviar el missatge presionant Enter  -->
+                  
+                  <button 
+                    class="send-button"
+                    (click)="sendMessage()" 
+                    [disabled]="messageControl.invalid">
+                    Enviar
+                  </button>
+                </div>
+              </div>
+            </div>
+        </div>
+        }
+    }
 </div>
