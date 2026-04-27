@@ -37,6 +37,16 @@ export class UserPrincipalComponent {
   }
   
   botonInfoHover = false;
+  menuOpen = false;
+
+  //Mètodes auxiliars per gestionar menú
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu() {
+    this.menuOpen = false;
+  }
 
   //Rutes del menú lateral
   rutas: rutas[] = [
