@@ -2,7 +2,7 @@
 
     <!-- Little to Middle -->
     <div class="form-group">
-        <label for="littleToMiddle">Pequeño a Mediano:</label>
+        <label for="littleToMiddle">Petit a Mitjà:</label>
         <input id="littleToMiddle" type="number" formControlName="littleToMiddle"
             placeholder="Introduce un valor entre 3 y 10" />
         @if(settingsForm.get('littleToMiddle')?.touched) {
@@ -14,7 +14,7 @@
 
     <!-- Middle to Big -->
     <div class="form-group">
-        <label for="middleToBig">Mediano a Grande:</label>
+        <label for="middleToBig">Mitjà a Gran:</label>
         <input id="middleToBig" type="number" formControlName="middleToBig"
             placeholder="Introduce un valor entre 5 y 15" />
         @if(settingsForm.get('middleToBig')?.touched) {
@@ -26,7 +26,7 @@
 
     <!-- Daily Xuxes Quantity -->
     <div class="form-group">
-        <label for="daylyXuxesQuantity">Cantidad diaria de Xuxes:</label>
+        <label for="daylyXuxesQuantity">Quantitat diària de Xuxes:</label>
         <input id="daylyXuxesQuantity" type="number" formControlName="daylyXuxesQuantity"
             placeholder="Introduce un valor entre 5 y 20" />
         @if(settingsForm.get('daylyXuxesQuantity')?.touched) {
@@ -38,7 +38,7 @@
 
     <!-- Daily Xuxes Time -->
     <div class="form-group">
-        <label for="dailyXuxesTime">Hora diaria de Xuxes (HH:mm):</label>
+        <label for="dailyXuxesTime">Hora diària de Xuxes (HH:mm):</label>
         <input id="dailyXuxesTime" type="text" formControlName="dailyXuxesTime" placeholder="08:00 - 18:30" />
         @if(settingsForm.get('dailyXuxesTime')?.touched) {
         <div class="error">
@@ -49,7 +49,7 @@
 
     <!-- Daily Xuxemon Time -->
     <div class="form-group">
-        <label for="dailyXuxemonTime">Hora diaria de Xuxemon (HH:mm):</label>
+        <label for="dailyXuxemonTime">Hora diària de Xuxemon (HH:mm):</label>
         <input id="dailyXuxemonTime" type="text" formControlName="dailyXuxemonTime" placeholder="08:00 - 18:30" />
         @if(settingsForm.get('dailyXuxemonTime')?.touched) {
         <div class="error">
@@ -73,6 +73,6 @@
     </div>
     }
 
-    <button type="submit" [disabled]="settingsForm.invalid">Guardar Configuración</button>
+    <button type="submit" [disabled]="settingsForm.invalid">Guardar Configuració</button>
 
 </form>

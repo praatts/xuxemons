@@ -1,6 +1,8 @@
 .admin-container {
     width: 100%;
     padding: 20px;
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 .users-grid {
@@ -14,6 +16,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
+    min-width: 0;
 
     border: 2px solid var(--text-main);
     border-left: 6px solid var(--accent-color, #FF4400);
@@ -31,6 +35,11 @@
     flex-wrap: wrap;
     font-size: 14px;
     color: var(--text-main);
+    min-width: 0;
+}
+
+.user-info span {
+    word-break: break-word;
 }
 
 /* acciones */
@@ -67,4 +76,33 @@
 
 .btn-restore:hover {
     background: #218838;
+}
+
+@media (max-width: 576px) {
+    .admin-container {
+        padding: 10px;
+    }
+
+    .admin-container h2 {
+        font-size: 20px;
+        margin: 0 0 10px;
+    }
+
+    .user-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .user-info {
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .user-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
 }

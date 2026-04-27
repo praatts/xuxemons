@@ -49,12 +49,12 @@
 .profile-container {
     display: grid;
 
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
 
     grid-template-areas:
-        "header header"
-        "favorite main";
+        "header"
+        "main";
 
     gap: 20px;
 
@@ -101,9 +101,17 @@
 
 
 /* user info */
-.user-info h2 {
+.user-info .user-name {
     margin: 0;
-    font-size: 28px;
+    font-size: 24px;
+    line-height: 1.1;
+}
+
+.user-info .user-id {
+    margin: 4px 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.8;
 }
 
 .level-row {
@@ -113,7 +121,7 @@
 }
 
 .level {
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .xp-bar {
@@ -169,31 +177,6 @@
         0 0 6px black;
 }
 
-
-/* ============================= */
-/* FAVORITE */
-/* ============================= */
-.favorite {
-    grid-area: favorite;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-
-    text-align: center;
-    font-weight: bold;
-}
-
-.favorite img {
-    width: 160px;
-    max-width: 100%;
-}
-
-
-/* ============================= */
-/* MAIN PANEL */
-/* ============================= */
 .main-panel {
     grid-area: main;
 
@@ -206,10 +189,6 @@
     margin: auto;
 }
 
-
-/* ============================= */
-/* TABS */
-/* ============================= */
 .tabs {
     display: flex;
     background: var(--tabs-bg);
@@ -242,10 +221,6 @@
     margin-right: 6px;
 }
 
-
-/* ============================= */
-/* CONTENT PANEL */
-/* ============================= */
 .content {
     background: var(--content-bg);
 
@@ -258,10 +233,6 @@
     position: relative;
 }
 
-
-/* ============================= */
-/* EMPTY ROUTE */
-/* ============================= */
 .empty-background {
     position: absolute;
     inset: 0;
@@ -396,4 +367,69 @@
 .modal-actions .cancel-btn {
     background-color: #FF0000;
     color: white;
+}
+
+@media (max-width: 576px) {
+    :host {
+        padding: 12px;
+    }
+
+    .profile-container {
+        min-height: calc(100vh - 24px);
+        gap: 12px;
+    }
+
+    .profile-header {
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .avatar {
+        width: 84px;
+        height: 84px;
+    }
+
+    .user-info {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .user-info h2 {
+        font-size: 24px;
+        word-break: break-word;
+    }
+
+    .friends {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .streak {
+        margin-left: 0;
+        font-size: 36px;
+    }
+
+    .fire {
+        font-size: 36px;
+    }
+
+    .main-panel {
+        max-width: 100%;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab {
+        min-width: 120px;
+        font-size: 13px;
+        padding: 10px;
+    }
+
+    .content {
+        padding: 12px;
+        min-height: 280px;
+    }
 }
