@@ -8,13 +8,13 @@
             <option value="{{ element.id }}">{{ element.name }}</option>
             }
         </select>
-        <div class="xuxemon-filter">
+        <div class="xuxemon-filter search-bar-btns">
             <button class="action-btn" [class.active]="activeViewFilter === 'all'" (click)="filterByView('all')">Tots</button>
             <button class="action-btn" [class.active]="activeViewFilter === 'owned'" (click)="filterByView('owned')">Capturat</button>
         </div>
 
         @if (isAdmin) {
-        <div class="admin-controls">
+        <div class="admin-controls search-bar-btns">
 
             <button class="action-btn" (click)="openModal()">
                 + Afegir xuxemon aleatori
@@ -23,6 +23,17 @@
         </div>
         }
     </nav>
+
+    <div class="filter-row">
+        <button class="action-btn" [class.active]="activeViewFilter === 'all'" (click)="filterByView('all')">Tots</button>
+        <button class="action-btn" [class.active]="activeViewFilter === 'owned'" (click)="filterByView('owned')">Capturat</button>
+
+        @if (isAdmin) {
+        <button class="action-btn" (click)="openModal()">
+            + Afegir xuxemon aleatori
+        </button>
+        }
+    </div>
 
     <section class="xuxedex-wrapper" role="grid" aria-label="Llista de xuxemons">
         @for (xuxemon of filteredXuxemons; track xuxemon.id) {

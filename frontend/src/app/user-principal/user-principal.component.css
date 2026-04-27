@@ -296,7 +296,7 @@ input:checked+.slider::before {
     display: block;
     width: 26px;
     height: 3px;
-    background-color: #FF4400;
+    background-color: #000000;
     border-radius: 2px;
     transition: background-color 0.2s;
   }
