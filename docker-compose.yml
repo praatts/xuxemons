@@ -31,8 +31,8 @@ services:
       - "4200:4200"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
-    command: npm start -- --host 0.0.0.0 --poll 2000
+      - node_modules:/app/node_modules
+    command: sh -c "npm start -- --host 0.0.0.0 --poll 2000"
     depends_on:
       - backend
     networks:
@@ -56,6 +56,7 @@ services:
       retries: 5
 volumes:
   db_volume:
+  node_modules:
 
 networks:
   fullstack-network:
