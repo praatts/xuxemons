@@ -23,8 +23,6 @@ export class UserInfoComponent {
   title = 'Informació de l\'usuari';
   text = 'Des d\'aquesta pàgina pots veure i canviar la teva informació personal.';
 
-  botonInfoHover = false;
-
   infoForm: FormGroup;
   msg = '';
   showDeleteDialog = false;

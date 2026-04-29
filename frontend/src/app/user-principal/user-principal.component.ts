@@ -37,13 +37,23 @@ export class UserPrincipalComponent {
   }
   
   botonInfoHover = false;
+  menuOpen = false;
+
+  //Mètodes auxiliars per gestionar menú
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu() {
+    this.menuOpen = false;
+  }
 
   //Rutes del menú lateral
   rutas: rutas[] = [
     //{ label: 'Inicio', route: 'inicio', exact: true, img: 'inicio.png' },
     { label: 'Pàgina principal', route: 'principal', exact: true, img: 'Home.webp'},
-    { label: 'Usuario', route: 'principal/userstats', exact: false, img: 'user.webp' },
-    { label: 'xuxedex', route: 'principal/xuxedex', exact: true, img: 'xuxedex.webp' },
+    { label: 'Usuari', route: 'principal/userstats', exact: false, img: 'user.webp' },
+    { label: 'Xuxedex', route: 'principal/xuxedex', exact: true, img: 'xuxedex.webp' },
     { label: 'Motxilla', route: 'principal/motxilla', exact: true, img: 'inventari.webp' },
     { label: 'Amics', route: 'principal/friends', exact: true, img: 'friends.webp' },
     { label: 'Chat', route: 'principal/chat', exact: true, img: 'chat.webp' },

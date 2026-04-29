@@ -1,12 +1,56 @@
 <div class="panel-container" [ngClass]="{'dark-mode': theme.darkMode}">
+
+  <!-- Top navbar (visible < 1400px) -->
+  <nav class="top-navbar">
+    <img src="logo_xuxemons.webp" alt="Xuxemons Logo" class="logo-img-top">
+
+    <div class="top-right">
+      <div class="dark-toggle-top">
+        <img [src]="theme.darkMode ? 'dark-mode/whitemode.webp' : 'modo_oscuro.webp'" alt="modo oscuro icon">
+        <label class="switch">
+          <input type="checkbox" [checked]="theme.darkMode" (change)="theme.toggleDarkMode()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <img src="{{pfpValue}}" alt="Usuario" class="user-avatar">
+
+      <button class="hamburger" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen" aria-label="Menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Dropdown -->
+    <div class="top-dropdown" [class.open]="menuOpen">
+      @for(ruta of rutas; track ruta.label){
+      <div class="link-nav-top">
+        <img [src]="theme.darkMode ? 'dark-mode/' + ruta.img : ruta.img" alt="{{ruta.label}} icon">
+        <a routerLink="{{ruta.route}}" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}"
+          (click)="closeMenu()">
+          {{ruta.label}}
+        </a>
+      </div>
+      }
+      <div class="dropdown-footer">
+        <p class="user-name">{{displayNameVal}}</p>
+        <a (click)="logout()">
+          <img [src]="theme.darkMode ? 'dark-mode/logout.webp' : 'logout.webp'" alt="Logout" class="logout-icon">
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar (visible >= 1400px) -->
   <nav class="panel-menu">
     <img src="logo_xuxemons.webp" alt="Xuxemons Logo" class="logo-img">
     <div class="link-wrapper">
       @for(ruta of rutas; track ruta.label){
       <div class="link-nav">
-        <img [src]="theme.darkMode ? 'dark-mode/' + ruta.img : ruta.img" alt="{{ruta.label}} icon">
         <a routerLink="{{ruta.route}}" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: ruta.exact}"
           (mouseenter)="botonInfoHover = true" (mouseleave)="botonInfoHover = false">
+          <img [src]="theme.darkMode ? 'dark-mode/' + ruta.img : ruta.img" alt="{{ruta.label}} icon">
           {{ruta.label}}
         </a>
       </div>

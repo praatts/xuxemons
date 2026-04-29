@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ChatService } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
 import { FriendshipService } from '../services/friendship.service';
@@ -32,6 +32,7 @@ export class ChatComponent {
   editingMessageId: number | null = null;
   editingMessageControl = new FormControl('');
   activeConversationId: number | null = null;
+  isMobileView = false;
 
   constructor(public chatService: ChatService, private authService: AuthService, private friendshipService: FriendshipService, private userService: UserService) { 
     this.messages$ = this.chatService.messages$;
@@ -41,6 +42,7 @@ export class ChatComponent {
 
   //Al iniciar el component, es subscriu als canvis de la conversa actual i recupera la id del usuari autenticat.
   ngOnInit() {
+    this.updateViewportMode();
     this.getFriends()
 
     //Quan canvia la conversa actual, es carrega els missatges d'aquesta conversa.
@@ -89,6 +91,20 @@ export class ChatComponent {
     this.subscription.unsubscribe();
   }
 
+  /*
+  * Escolta els canvis en la mida de la finestra per actualitzar el mode de visualització (mòbil o escriptori).
+  * (desenvolupament no aplica cap funcionalitat)
+  */
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateViewportMode();
+  }
+
+  updateViewportMode() {
+    this.isMobileView = window.innerWidth <= 992; //True o false segons la mida de la finestra (mòbil o escriptori)
+  }
+
   //Carrega els missatges d'una conversa concreta i actualitza l'estat dels missatges a través del servei.
   loadMessages(conversation_id: number) {
     this.chatService.getMessages(conversation_id).subscribe({
@@ -133,6 +149,11 @@ export class ChatComponent {
       },
       error: (error) => console.error('Error seleccionant amic:', error)
     });
+  }
+
+  closeConversation() {
+    this.cancelEditingMessage();
+    this.chatService.setConversation(null);
   }
   
   //Mètode per formatar la data de creació amb temps relatiu (ex: "fa 5 minuts", "fa 2 hores", etc.)

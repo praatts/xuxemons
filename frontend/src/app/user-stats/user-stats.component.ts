@@ -62,9 +62,9 @@ export class UserStatsComponent {
 
   //Definició de les rutes del menú lateral, amb una propietat "admin" per indicar si la ruta és només per administradors o no.
   rutas: rutas[] = [
-    { label: 'Modificar Usuario', route: 'userinfo', exact: true, admin: false },
-    { label: 'Usuarios', route: 'useradmin', exact: true, admin: true },
-    { label: 'Ajustes', route: 'adminsettings', exact: true, admin: true }
+    { label: 'Modificar Usuari', route: 'userinfo', exact: true, admin: false },
+    { label: 'Usuaris', route: 'useradmin', exact: true, admin: true },
+    { label: 'Configruació', route: 'adminsettings', exact: true, admin: true }
   ];
 
   //Getter per comprovar si la ruta actual és la ruta principal de "userstats", per mostrar o ocultar certs elements al HTML segons la ruta actual.

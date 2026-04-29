@@ -148,6 +148,32 @@ p {
     border-radius: 50px;
 }
 
+.item-actions .give-xuxes-btn {
+    width: auto;
+    min-width: 150px;
+    max-width: 220px;
+    height: 40px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 20px;
+    background-color: var(--bg-button);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.item-actions .give-xuxes-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    filter: brightness(0.95);
+}
+
+.item-actions .give-xuxes-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .item-actions .delete-item {
     border: none;
     background-color: #FF0000;
@@ -223,7 +249,7 @@ p {
     flex-direction: column;
     height: 100vh;
     border-radius: 30px;
-    gap: 20px;
+    gap: 10px;
     min-height: 0;
     overflow: hidden;
     border-bottom-right-radius: 0px;
@@ -231,7 +257,7 @@ p {
 }
 
 .object-list .sections-wrapper {
-    margin-top: 10px;
+    margin-top: 6px;
     margin-left: 10px;
     margin-right: 10px;
     background-color: var(--bg-card);
@@ -257,7 +283,7 @@ p {
 }
 
 .items {
-    padding-top: 10px;
+    padding-top: 2px;
     width: 100%;
     display: flex;
     flex: 1;
@@ -473,4 +499,182 @@ p {
 .btn-h2.active-tab{
     background-color: var(--bg-button);
     border: #FFFFFF solid 2px;
+}
+
+@media (max-width: 1200px) {
+    .motxilla-container {
+        flex-direction: column;
+        max-height: none;
+        padding: 24px 16px;
+        gap: 20px;
+        overflow: visible;
+    }
+
+    .motxilla-container .search-wrapper,
+    .object-wrapper {
+        width: 100%;
+    }
+
+    .search-wrapper .info-container {
+        height: auto;
+        min-height: 360px;
+        padding: 24px;
+        gap: 18px;
+    }
+
+    .info-container img {
+        width: 280px;
+        height: 280px;
+        max-width: 100%;
+    }
+
+    .info-container .item-base {
+        width: 280px;
+        max-width: 100%;
+    }
+
+    .object-list {
+        height: 60vh;
+        min-height: 420px;
+    }
+}
+
+@media (max-width: 992px) {
+    .search-wrapper .search-bar {
+        height: 54px;
+        min-height: 54px;
+        gap: 12px;
+    }
+
+    .search-wrapper img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .search-wrapper input::placeholder {
+        font-size: 16px;
+    }
+
+    .search-wrapper .info-container {
+        padding: 18px;
+        min-height: 300px;
+    }
+
+    .info-container img {
+        width: 220px;
+        height: 220px;
+    }
+
+    .info-container .item-base {
+        width: 220px;
+        height: 36px;
+    }
+
+    .header-h2,
+    .btn-h2 {
+        font-size: 20px;
+        padding: 12px;
+    }
+
+    .object-list .sections-wrapper {
+        height: auto;
+        min-height: 64px;
+        flex-wrap: wrap;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
+    .sections-wrapper button {
+        height: 34px;
+        min-width: 140px;
+    }
+}
+
+@media (max-width: 576px) {
+    .motxilla-container {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .search-wrapper .search-bar {
+        border-radius: 18px;
+        padding-right: 10px;
+    }
+
+    .search-wrapper .info-container {
+        border-radius: 18px;
+        padding: 12px;
+        min-height: 260px;
+    }
+
+    .info-container img {
+        width: 160px;
+        height: 160px;
+    }
+
+    .info-container .item-base {
+        width: 160px;
+        height: 30px;
+    }
+
+    .item-actions {
+        flex-direction: column;
+    }
+
+    .item-actions button,
+    .item-actions .delete-item,
+    .item-actions .use-item {
+        width: 100%;
+    }
+
+    .item-actions .give-xuxes-btn {
+        max-width: 100%;
+    }
+
+    .header-h2,
+    .btn-h2 {
+        font-size: 18px;
+        padding: 10px;
+    }
+
+    .object-list {
+        border-radius: 18px;
+        height: 52vh;
+        min-height: 320px;
+    }
+
+    .object-list .sections-wrapper {
+        gap: 8px;
+        margin: 6px;
+    }
+
+    .sections-wrapper button {
+        min-width: 100%;
+        font-size: 12px;
+    }
+
+    .items .item-card {
+        min-height: 64px;
+        gap: 12px;
+    }
+
+    .item-card .item-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .item-card .item-name,
+    .item-card .amount-item {
+        font-size: 13px;
+    }
+
+    .modal {
+        width: calc(100vw - 24px);
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .modal h2 {
+        font-size: 18px;
+    }
 }
