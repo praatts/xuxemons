@@ -57,7 +57,7 @@ export class UserPrincipalComponent {
     { label: 'Motxilla', route: 'principal/motxilla', exact: true, img: 'inventari.webp' },
     { label: 'Amics', route: 'principal/friends', exact: true, img: 'friends.webp' },
     { label: 'Chat', route: 'principal/chat', exact: true, img: 'chat.webp' },
-    { label: 'Batalles', route: 'principal/battles', exact: true, img: 'battles.webp'},
+    { label: 'Batalles', route: 'principal/battles', exact: true, img: 'batalla.webp'},
   ];
 
   //Funció per fer logout de l'usuari, eliminant el token d'autenticació i redirigint a la pàgina d'inici de sessió.
