@@ -78,7 +78,7 @@ export class ChatService {
 
   //Mètode per escoltar els missatges nous que arriben a la conversa actual, així com les actualitzacions i eliminacions de missatges existents.
   subscribeToConversation(conversation_id: number) {
-    const echo = this.socketService.getEcho();
+    const echo = this.socketService.getEcho(); //DEMANAR INSTANCIA AL ECHO (crida socket.service)
     if (!echo) return;
 
     echo.private(`chat.${conversation_id}`) //escolta el event MessageSent del backend

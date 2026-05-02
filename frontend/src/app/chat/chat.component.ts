@@ -56,7 +56,7 @@ export class ChatComponent {
         if (conversation) {
           this.activeConversationId = conversation.id;
           this.loadMessages(conversation.id);
-          this.chatService.subscribeToConversation(conversation.id);
+          this.chatService.subscribeToConversation(conversation.id); //ABRIR COMBERSACIÓN 
         }
       })
     );
