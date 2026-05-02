@@ -49,7 +49,7 @@ class XuxedexController extends Controller
     {
         $user = User::findOrFail($user_id);
 
-        $xuxemon = Xuxemon::inRandomOrder()->first();
+        $xuxemon = Xuxemon::inRandomOrder()->first(); //triar un xuxemon al azar entre tots el sde la DB
 
         if (!$xuxemon) {
             return response()->json(['error' => 'No hi ha xuxemons a la base de datos.'], 404);

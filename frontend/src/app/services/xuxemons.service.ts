@@ -51,7 +51,18 @@ export class XuxemonsService {
     this.ownedXuxemonsSubject.next(xuxemons);
   }
 
-  //Mètode per afegir un xuxemon a la llista de xuxemons propietat de l'usuari autenticat , torna a recorrer la llista i actualitza el estat de owned a true per al xuxemon afegit i emet els canvis als components subscrits.
+  // Mètode per afegir un xuxemon a la llista de xuxemons propietat de l'usuari autenticat , torna a recorrer la llista i actualitza el estat de owned a true per al xuxemon afegit i emet els canvis als components subscrits.
+  /**
+   * @description Agrega un Xuxemon a la colección de propiedad del usuario y actualiza sincrónicamente el estado en la lista global.
+   * @param xuxemon Objeto Xuxemon que se va a añadir a la colección "Owned".
+   * 
+   * Flujo técnico:
+   * 1. Inmutabilidad: Crea un nuevo array concatenando el valor actual del Subject con el nuevo elemento.
+   * 2. Reactividad: Notifica a los suscriptores de 'ownedXuxemons$' mediante el método .next().
+   * 3. Sincronización de estado: Mapea la lista general de Xuxemons para marcar el atributo 'owned: true' 
+   *    en el elemento correspondiente, asegurando consistencia en la UI sin necesidad de recargar del servidor.
+   * 4. Persistencia en memoria: Actualiza el caché local 'this.xuxemons' y emite el cambio en 'userXuxemons$'.
+   */
   addToOwnedXuxemons(xuxemon: Xuxemon): void {
     const updated = [...this.ownedXuxemonsSubject.value, xuxemon];
     this.ownedXuxemonsSubject.next(updated);

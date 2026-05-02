@@ -78,6 +78,20 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Inventory::class)->with('item');
     }
 
+    /**
+     * Calcula el número total de espacios (slots) físicos ocupados en el inventario.
+     * 
+     * Lógica técnica:
+     * 1. Accede a la colección de objetos en el inventario del usuario ($this->inventory).
+     * 2. Utiliza el método .sum() de las colecciones de Laravel con un callback.
+     * 3. Para cada registro en el inventario:
+     *    - Divide la cantidad actual ($slot->quantity) por la capacidad máxima de apilamiento del ítem ($slot->item->max_capacity).
+     *    - Aplica ceil() para redondear hacia arriba. Esto asegura que si tienes, por ejemplo, 21 items 
+     *      en un stack de 20, se cuenten como 2 slots ocupados (1.05 -> 2).
+     * 4. Retorna la suma total de estos cálculos como un entero.
+     * 
+     * @return int Total de slots físicos utilizados.
+     */
     public function getUsedSlots(): int
     {
         return $this->inventory->sum(function ($slot) {

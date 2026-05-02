@@ -83,6 +83,12 @@ export class XuxedexComponent {
     return this.theme.darkMode;
   }
 
+  /**
+   * Ciclo de vida inicial del componente.
+   * Ejecuta la carga inicial de datos desde el servicio, verifica privilegios administrativos,
+   * establece las suscripciones reactivas para el filtrado dinámico y carga la configuración
+   * del sistema (límites de evolución) desde el backend.
+   */
   ngOnInit(): void {
     //Carregem els xuxemons disponibles i els xuxemons capturats per l'usuari autenticat.
     this.getAllXuxemons();
@@ -102,9 +108,9 @@ export class XuxedexComponent {
 
     //Quan es canvia el filtre d'element, es comprova si el filtre és "all" per mostrar tots els xuxemons de l'usuari, o si no, es filtra la llista de xuxemons capturats per mostrar només els que coincideixen amb el tipus d'element seleccionat.
     this.xuxemonsService.ownedXuxemons$.subscribe(data => {
-      if (this.activeElement === 'owned') {
+      if (this.activeElement === 'owned') { //XUXEMONS CAPTURADOS
         this.filteredXuxemons = data;
-      } else if (this.activeElement !== 'all') {
+      } else if (this.activeElement !== 'all') { //TODOS XUXEMONS
         this.filteredXuxemons = data.filter(x => x.type === this.activeElement);
       }
     });
@@ -125,6 +131,11 @@ export class XuxedexComponent {
   }
 
   //Mètode per obtenir tots els xuxemons disponibles per l'usuari autenticat, i assignar-los al servei de xuxemons i a la variable de xuxemons filtrats per mostrar-los a la vista.
+  /**
+   * Obtiene la lista base de Xuxedex desde la API.
+   * Al recibir los datos, sincroniza el estado en el servicio para que otros componentes
+   * suscritos reciban la actualización y establece la lista de visualización inicial.
+   */
   getAllXuxemons(): void {
     this.xuxemonsService.getUserXuxemons().subscribe({
       next: (data) => {
@@ -138,6 +149,10 @@ export class XuxedexComponent {
   }
 
   //Mètode per obtenir els xuxemons capturats per l'usuari autenticat, i assignar-los al servei de xuxemons per mostrar-los a la vista quan es selecciona el filtre d'element corresponent.
+  /**
+   * Recupera exclusivamente los ejemplares que el usuario ya ha capturado.
+   * Estos datos incluyen información dinámica como tamaño, enfermedades y número de chuches consumidas.
+   */
   getOwnedXuxemons(): void {
     this.xuxemonsService.getOwnedXuxemons().subscribe({
       next: (data) => {
@@ -149,11 +164,19 @@ export class XuxedexComponent {
   }
 
   //Mètode per formatejar l'id del xuxemon rebuda del backend (1 es mostra com #001).
+  /**
+   * Formateador visual para el ID del Xuxemon.
+   * Utiliza padStart para asegurar un formato de tres dígitos prefijado con un hashtag.
+   */
   alterXuxemonId(id: number): string {
     return '#' + id.toString().padStart(3, '0');
   }
 
   //Mètode per filtrar els xuxemons segons el tipus d'element.
+  /**
+   * Cambia la fuente de datos principal entre la lista global y la lista de propiedad.
+   * @param type Identificador de vista ('all' para general, otros para owned).
+   */
   filterXuxemonsByType(type: string): void {
     if (type === 'all') {
       this.activeElement = 'all';
@@ -165,6 +188,11 @@ export class XuxedexComponent {
   }
 
   //Mètode per eliminar un xuxemon capturat específic
+  /**
+   * Ejecuta la liberación de un Xuxemon capturado.
+   * Requiere confirmación del usuario y, tras el éxito en el backend, actualiza
+   * el estado reactivo del servicio para eliminar el elemento de la UI localmente.
+   */
   deleteOwnedXuxemon(xuxemon: Xuxemon): void {
     if (!xuxemon.owned_xuxemon_id) {
       alert('No es pot eliminar un xuxemon que no has capturat!');
@@ -187,12 +215,20 @@ export class XuxedexComponent {
 
 
   //Filtra els xuxemons captirats segons l'element seleccionat, o mostra tots els xuxemons si el filtre és "all".
+  /**
+   * Actualiza el filtro por elemento natural (Agua, Tierra, Aire).
+   * Dispara el método centralizado de aplicación de filtros.
+   */
   filterXuxemonsByElement(element: string): void {
     this.activeElement = element;
     this.applyFilters();
   }
 
   //Carrega tots els usuaris del sistema per mostrar-los al modal d'administració de xuxemons, i configurar el filtre de cerca per player_id.
+  /**
+   * (Funcionalidad Admin) Obtiene el listado completo de usuarios registrados.
+   * Utilizado para la funcionalidad de asignación de Xuxemons por parte de administradores.
+   */
   loadUsers(): void {
     this.userService.getAllUsers().subscribe({
       next: (response: any) => {
@@ -205,6 +241,10 @@ export class XuxedexComponent {
   }
 
   //Obra el modal i carrega la llista completa d'usuaris i configura el filtre de cerca per player_id.
+  /**
+   * Inicializa el proceso de administración abriendo el modal y activando
+   * el flujo reactivo para buscar usuarios por su ID de jugador.
+   */
   openModal(): void {
     this.showModal = true;
     this.loadUsers();
@@ -215,6 +255,9 @@ export class XuxedexComponent {
   }
 
   //Tanca el modal
+  /**
+   * Resetea el estado del modal de administración y limpia los campos de búsqueda.
+   */
   closeModal(): void {
     this.showModal = false;
     this.searchUser.reset();
@@ -222,6 +265,10 @@ export class XuxedexComponent {
   }
 
   //Afegeix un xuxemon aleatori a l'usuari seleccionat al modal. S'utilitza timeout per mostrar una animació al botó mentre es carrega el xuxemon, i mostrar un missatge d'èxit quan s'ha afegit correctament.
+  /**
+   * (Funcionalidad Admin) Otorga un Xuxemon aleatorio a un usuario específico.
+   * Gestiona estados de carga (loading) y éxito (success) para proporcionar feedback visual en el botón.
+   */
   addRandomXuxemon(user_id: number): void {
 
     this.loadingUserId = user_id;
@@ -247,6 +294,12 @@ export class XuxedexComponent {
 
 
   //Obre el modal del xuxemon, s'ha de tenir aquest xuxemon capturat per poder obrir-lo.
+  /**
+   * Abre la vista detallada de un ejemplar.
+   * Realiza una búsqueda bidireccional (por owned_xuxemon_id o por id base) para localizar 
+   * el objeto exacto dentro de la colección del usuario, asegurando que se visualicen 
+   * los datos de instancia correctos (enfermedades, chuches).
+   */
   openXuxemon(xuxemon: Xuxemon) {
     if (!xuxemon.owned) {
       return;
@@ -268,6 +321,11 @@ export class XuxedexComponent {
 
 
   //Calcula el nombre màxim de xuxes que es poden donar al xuxemon, segons malalties i la seva mida
+  /**
+   * Determina el umbral de alimentación basado en las reglas de negocio.
+   * El límite varía según el tamaño actual del Xuxemon (petit/mitja) y se ve
+   * incrementado si padece la enfermedad "Bajón de azúcar".
+   */
   getMaxXuxes(): number {
     const base = this.selectedXuxemon?.size === 'petit' ? this.littleToMid :
       this.selectedXuxemon?.size === 'mitja' ? this.midToBig : 0;
@@ -278,12 +336,23 @@ export class XuxedexComponent {
   }
 
   //Tanca el model i reinicia les variables de item seleccionat
+  /**
+   * Cierra el panel de detalles y limpia las referencias de selección.
+   */
   closeDetail() {
     this.selectedXuxemon = null;
     this.selectedVaccine = null;
   }
 
   //Dóna xuxe al xuxemon seleccionat, si es gran, no fa res, actualitza les dades del xuxemon a la vista i al servei
+  /**
+   * Procesa la alimentación de un Xuxemon.
+   * 1. Validación: Impide alimentar si ya ha alcanzado el tamaño 'gran'.
+   * 2. Petición: Envía el tipo de chuche al backend.
+   * 3. Sincronización: Actualiza atributos (tamaño, chuches, enfermedades) tras la respuesta.
+   * 4. Evolución: Si el tamaño cambia, dispara una animación visual de 1 segundo.
+   * 5. Detección de Enfermedades: Compara el estado previo con el nuevo para alertar si ha contraído una infección.
+   */
   giveXuxe(xuxemon: Xuxemon) {
     if (xuxemon.size === 'gran') return;
 
@@ -333,6 +402,12 @@ export class XuxedexComponent {
   }
 
   //Carrega la motxilla de l'usuari, separant les xuxes i vacunes
+  /**
+   * Actualiza el inventario local del usuario consultando el servicio de Motxilla.
+   * Clasifica los ítems en:
+   * - Chuches: Almacenadas en un diccionario por color (verda, blava, vermella).
+   * - Vacunas: Ítems no apilables (stackable: false) que se gestionan como una lista de slots.
+   */
   loadInventory() {
     //Crida al backend per obtenir la motxilla/inventari de l'usuari autenticat
     this.motxillaService.getInventory().subscribe((data: any[]) => {
@@ -369,6 +444,11 @@ export class XuxedexComponent {
   }
 
   //Donar vacuna al xuxemon seleccionat, actualitza les dades del xuxemon a la vista i al servei, recarrega la motxilla de l'usuari per actualitzar la quantitat de vacunes disponibles.
+  /**
+   * Aplica un ítem de cura a un Xuxemon específico.
+   * Tras la curación, sincroniza la lista de enfermedades del objeto local y 
+   * refresca el inventario para reflejar el consumo del ítem.
+   */
   useVaccine(xuxemon: Xuxemon, item_id: number): void {
     this.xuxemonsService.giveVaccine(xuxemon.owned_xuxemon_id!, item_id).subscribe({
       next: (updated: any) => {
@@ -387,6 +467,13 @@ export class XuxedexComponent {
     });
   }
 
+  /**
+   * Motor centralizado de filtrado de la Xuxedex.
+   * Aplica de forma combinada (AND):
+   * 1. Búsqueda por texto (nombre).
+   * 2. Filtro por elemento natural (aire, agua, tierra).
+   * 3. Filtro de vista (Todos vs Capturados).
+   */
   applyFilters(): void {
     let list = this.xuxemonsService.getCurrentUserXuxemons();
 
@@ -411,12 +498,20 @@ export class XuxedexComponent {
   }
 
   //filtra els xuxemons segons els obtinguts o tots
+  /**
+   * Alterna la configuración de visibilidad entre la colección completa y los capturados.
+   * @param view Modo de vista seleccionado.
+   */
   filterByView(view: 'all' | 'owned'): void {
     this.activeViewFilter = view;
     this.applyFilters();
   }
 
   //Tancar modal amb Escape
+  /**
+   * Listener global de teclado para mejorar la accesibilidad.
+   * Permite cerrar cualquier modal activo (detalle o admin) mediante la tecla Escape.
+   */
   @HostListener('keydown.escape')
   onEscape() {
     if (this.selectedXuxemon) {
