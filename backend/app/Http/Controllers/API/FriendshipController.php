@@ -95,9 +95,10 @@ class FriendshipController extends Controller
     {
         $user = Auth::guard('api')->user();
 
+        //Comprova que la sol·licitud d'amistat pertanyi al usuari autenticat y que el estat sigui pendent
         $friendship = Friendship::where('id', $id)
-            ->where('friend_id', $user->id)
-            ->where('status', 'pending')
+            ->where('friend_id', $user->id) //Comprueba que el friend_id sea el del usuario autenticado
+            ->where('status', 'pending')//Comprueba que el estat sea pendiente
             ->first();
 
         if (!$friendship) {
