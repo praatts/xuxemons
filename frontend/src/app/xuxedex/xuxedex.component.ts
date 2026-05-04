@@ -229,9 +229,12 @@ export class XuxedexComponent {
     this.xuxemonsService.addRandomXuxemon(user_id).subscribe({
       next: (data) => {
         console.log('Xuxemon añadido:', data);
-
         this.xuxemonsService.addToOwnedXuxemons(data);
-        console.log("Xuxemon añadido: ", data);
+        const current = this.xuxemonsService.getCurrentOwnedXuxemons();
+        const updated = current.map(x =>
+           x.id === data.id ? { ...x, owned: true } : x
+        );
+          this.applyFilters();
         this.loadingUserId = null;
         this.successUserId = user_id;
         setTimeout(() => {
@@ -388,7 +391,9 @@ export class XuxedexComponent {
   }
 
   applyFilters(): void {
-    let list = this.xuxemonsService.getCurrentUserXuxemons();
+    let list = this.activeViewFilter === 'owned'
+    ? this.xuxemonsService.getCurrentOwnedXuxemons()
+    : this.xuxemonsService.getCurrentUserXuxemons();
 
     //búsqueda
     if (this.searchTerm) {
@@ -400,11 +405,6 @@ export class XuxedexComponent {
     //filtro por tipo (aire, agua, tierra)
     if (this.activeElement !== 'all') {
       list = list.filter(x => x.type === this.activeElement);
-    }
-
-    //filtro por capturados
-    if (this.activeViewFilter === 'owned') {
-      list = list.filter(x => x.owned);
     }
 
     this.filteredXuxemons = list;
