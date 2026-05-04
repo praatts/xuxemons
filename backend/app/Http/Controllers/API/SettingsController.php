@@ -16,7 +16,7 @@ class SettingsController extends Controller
     {
         $user = Auth::guard('api')->user();
 
-        if (!$user || $user->role !== 'admin') {
+        if (!$user) {
             return response()->json(['message' => 'No autorizado'], 403);
         }
 
