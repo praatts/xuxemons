@@ -14,10 +14,11 @@ Broadcast::channel('battle.{battle_id}', function ($user, $battle_id) {
 });
 
 Broadcast::channel('chat.{conversation_id}', function ($user, $conversation_id) {
-    if (!$user) {
+    if (!$user) { //si el usuario no está autenticado denegamos el accesso
         return false;
     }
 
+    //Comprueba que exista una combersación "conversation_id" donde el usuario autenticado sea el sender o el reciver
     return Conversation::query()
         ->where('id', $conversation_id)
         ->where(function ($query) use ($user) {

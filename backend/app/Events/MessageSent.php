@@ -23,16 +23,19 @@ class MessageSent implements ShouldBroadcastNow
        $this->conversation_id = $conversation_id;
    }
 
+   //Define a que canal se se enviará el evento
    public function broadcastOn()
    {
-       return new PrivateChannel('chat.' . $this->conversation_id);
+       return new PrivateChannel('chat.' . $this->conversation_id); //canal privado (pusher no se lo puede mandar a cualquier usuario)
    }
 
+   //Es lo que escucha el frontend
    public function broadcastAs()
    {
        return 'message.sent';
    }
 
+   //empaqueta el mensaje completo
    public function broadcastWith()
    {
        return [
