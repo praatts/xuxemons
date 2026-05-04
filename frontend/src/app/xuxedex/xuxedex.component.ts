@@ -95,18 +95,12 @@ export class XuxedexComponent {
 
     //Subscripció als observables de XuxemonsService per mantenir actualitzada la llista de xuxemons disponibles i capturats, i actualitzar la vista segons el filtre d'element seleccionat.
     this.xuxemonsService.userXuxemons$.subscribe(data => {
-      if (this.activeElement === 'all') {
-        this.filteredXuxemons = data;
-      }
+      this.applyFilters();
     });
 
     //Quan es canvia el filtre d'element, es comprova si el filtre és "all" per mostrar tots els xuxemons de l'usuari, o si no, es filtra la llista de xuxemons capturats per mostrar només els que coincideixen amb el tipus d'element seleccionat.
     this.xuxemonsService.ownedXuxemons$.subscribe(data => {
-      if (this.activeElement === 'owned') {
-        this.filteredXuxemons = data;
-      } else if (this.activeElement !== 'all') {
-        this.filteredXuxemons = data.filter(x => x.type === this.activeElement);
-      }
+      this.applyFilters();
     });
 
     //búsqueda de un xuxemon específic segons el nom, actualitza la llista de xuxemons mostrada a la vista segons el terme de cerca introduït per l'usuari al camp de cerca. La cerca es fa sobre la llista de xuxemons disponibles per l'usuari autenticat, i es filtra per nom del xuxemon que inclogui el terme de cerca (ignorant mayúsculas/minúsculas).
@@ -232,9 +226,9 @@ export class XuxedexComponent {
         this.xuxemonsService.addToOwnedXuxemons(data);
         const current = this.xuxemonsService.getCurrentOwnedXuxemons();
         const updated = current.map(x =>
-           x.id === data.id ? { ...x, owned: true } : x
+          x.id === data.id ? { ...x, owned: true } : x
         );
-          this.applyFilters();
+        this.applyFilters();
         this.loadingUserId = null;
         this.successUserId = user_id;
         setTimeout(() => {
@@ -310,6 +304,11 @@ export class XuxedexComponent {
           .map(x => x.owned_xuxemon_id === xuxemon.owned_xuxemon_id ? { ...xuxemon } : x);
         this.xuxemonsService.setOwnedXuxemons(owned);
 
+        //Actualiza los xuxemons del usuario para que se refleje el cambio en la lista
+        const allXuxemons = this.xuxemonsService.getCurrentUserXuxemons()
+          .map(x => x.id === xuxemon.id ? { ...xuxemon } : x);
+        this.xuxemonsService.setUserXuxemons(allXuxemons);
+
         //Si el xuxemon canvia de tamany, mostra la animació
         if (oldSize !== xuxemon.size) {
           this.isEvolving = true;
@@ -382,6 +381,11 @@ export class XuxedexComponent {
         const owned = this.xuxemonsService.getCurrentOwnedXuxemons().map(
           x => x.owned_xuxemon_id === xuxemon.owned_xuxemon_id ? { ...xuxemon } : x);
         this.xuxemonsService.setOwnedXuxemons(owned);
+
+        //Actualiza los xuxemons del usuario para que se refleje el cambio en la lista
+        const allXuxemons = this.xuxemonsService.getCurrentUserXuxemons().map(
+          x => x.id === xuxemon.id ? { ...xuxemon } : x);
+        this.xuxemonsService.setUserXuxemons(allXuxemons);
         this.loadInventory();
       },
       error: (err) => {
@@ -392,8 +396,8 @@ export class XuxedexComponent {
 
   applyFilters(): void {
     let list = this.activeViewFilter === 'owned'
-    ? this.xuxemonsService.getCurrentOwnedXuxemons()
-    : this.xuxemonsService.getCurrentUserXuxemons();
+      ? this.xuxemonsService.getCurrentOwnedXuxemons()
+      : this.xuxemonsService.getCurrentUserXuxemons();
 
     //búsqueda
     if (this.searchTerm) {
