@@ -1,14 +1,14 @@
-import { Component } from '@angular/core'; // Importa el decorador Component d'Angular
-import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms'; // Importa les eines per crear formularis reactius i validacions
-import { SettingsService } from '../services/settings.service'; // Importa el servei de configuracions (connexió amb backend)
-import { Illness, IllnessService } from '../services/illness.service'; // Importa el model i servei per gestionar les malalties
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms'; 
+import { SettingsService } from '../services/settings.service'; 
+import { Illness, IllnessService } from '../services/illness.service'; 
 
 @Component({
-  selector: 'app-admin-settings', // Nom de l'etiqueta HTML on es renderitzarà aquest component (<app-admin-settings>)
-  standalone: true, // Indica que és un component autònom i no necessita estar dins d'un NgModule per funcionar
-  imports: [ReactiveFormsModule], // Importa el mòdul necessari per utilitzar [formGroup] a l'HTML
-  templateUrl: './admin-settings.component.html', // Ruta del fitxer HTML associat
-  styleUrl: './admin-settings.component.css' // Ruta del fitxer d'estils CSS associat
+  selector: 'app-admin-settings', 
+  standalone: true, 
+  imports: [ReactiveFormsModule],
+  templateUrl: './admin-settings.component.html',
+  styleUrl: './admin-settings.component.css' 
 })
 export class AdminSettingsComponent {
 
